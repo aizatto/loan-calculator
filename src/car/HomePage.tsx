@@ -1,82 +1,55 @@
 import { Table } from 'antd'
 import { useState } from 'react'
-import { BudgetForm } from '../components/BudgetForm'
-import { BudgetFormDTO, Details, DownPaymentType } from '../components/types'
+import { LoanForm } from '../components/LoanForm'
+import { Details, DownPaymentType, LoanFormDTO } from '../components/types'
 import { setDocumentTitle } from '../hooks/setDocumentTitle'
 
-const calculateDTO = (dto: BudgetFormDTO): Details => {
-  if (dto.downPaymentType === DownPaymentType.FIXED) {
-    return calculateDTOFixed(dto)
-  } else {
-    return calculateDTOPercent(dto)
+const calculateLoan = (dto: LoanFormDTO): Details => {
+  if (dto.downPaymentType === DownPaymentType.PERCENTAGE) {
+    dto.downPaymentFixed = dto.price * (dto.downPaymentPercentage / 100)
   }
-}
 
-const calculateDTOFixed = (dto: BudgetFormDTO): Details => {
-  const lifetimeCost =
-    dto.monthly * dto.loanPeriodYears * 12 + dto.downPaymentFixed
+  const months = dto.loanPeriodYears * 12
+  const rate = dto.interestRate / 100 / 12
 
-  const totalLoanCost = lifetimeCost - dto.downPaymentFixed
+  const principle = dto.price - dto.downPaymentFixed
+  const monthly = principle * (rate / (1 - Math.pow(1 + rate, -1 * months)))
 
-  const totalInterest =
-    totalLoanCost * ((dto.interestRate / 100) * dto.loanPeriodYears)
-  const loanSize = totalLoanCost - totalInterest
-  const price = loanSize + dto.downPaymentFixed
-  const monthlyInterest = totalInterest / (dto.loanPeriodYears * 12)
+  const lifetimeCost = monthly * months + dto.downPaymentFixed
+
+  const totalInterest = lifetimeCost - principle
+  const totalLoanCost = principle + totalInterest - dto.downPaymentFixed
+
+  const monthlyInterest = totalInterest / months
 
   return {
     key: (Math.random() + 1).toString(36).substring(7),
     ...dto,
-    loanSize,
+    loanSize: principle,
     totalInterest,
     totalLoanCost,
     lifetimeCost,
     monthlyInterest,
-    price,
+    monthly,
   }
 }
 
-const calculateDTOPercent = (dto: BudgetFormDTO): Details => {
-  const totalLoanCost = dto.monthly * dto.loanPeriodYears * 12
-
-  const totalInterest =
-    totalLoanCost * ((dto.interestRate / 100) * dto.loanPeriodYears)
-  const loanSize = totalLoanCost - totalInterest
-  dto.downPaymentFixed =
-    loanSize * (1 / (1 - dto.downPaymentPercentage / 100)) - loanSize
-  const price = loanSize + dto.downPaymentFixed
-  const monthlyInterest = totalInterest / (dto.loanPeriodYears * 12)
-
-  const lifetimeCost = totalLoanCost + dto.downPaymentFixed
-
-  return {
-    key: (Math.random() + 1).toString(36).substring(7),
-    ...dto,
-    loanSize,
-    totalInterest,
-    totalLoanCost,
-    lifetimeCost,
-    monthlyInterest,
-    price,
-  }
-}
-
-export const CarBudgetPage: React.FC = () => {
-  setDocumentTitle(`Car Budget Calculator`)
+export const HomePage: React.FC = () => {
+  setDocumentTitle(`Home Loan Calculator`)
   const [values, setValues] = useState<Details[]>([
-    calculateDTO({
-      monthly: 2000,
+    calculateLoan({
+      price: 1000000,
       downPaymentType: DownPaymentType.PERCENTAGE,
-      downPaymentFixed: 26000,
       downPaymentPercentage: 10,
-      loanPeriodYears: 9,
-      interestRate: 2.5,
+      downPaymentFixed: 100000,
+      loanPeriodYears: 35,
+      interestRate: 2.88,
     }),
   ])
 
-  const onFinish = (dto: BudgetFormDTO) => {
+  const onFinish = (dto: LoanFormDTO) => {
     const newValues = values.slice(0)
-    newValues.push(calculateDTO(dto))
+    newValues.push(calculateLoan(dto))
     setValues(newValues)
   }
 
@@ -86,15 +59,15 @@ export const CarBudgetPage: React.FC = () => {
       dataIndex: 'name',
     },
     {
-      title: 'Monthly',
-      dataIndex: 'monthly',
+      title: 'Price',
+      dataIndex: 'price',
       render: (value: number) => {
         return Number(value).toLocaleString()
       },
     },
     {
-      title: 'Price',
-      dataIndex: 'price',
+      title: 'Monthly',
+      dataIndex: 'monthly',
       render: (value: number) => {
         return Number(value).toLocaleString()
       },
@@ -156,12 +129,11 @@ export const CarBudgetPage: React.FC = () => {
 
   return (
     <>
-      <h1>Reverse Car Loan Calculator</h1>
-      <p>Calculate what car you can afford based on your monthly budget</p>
-      <BudgetForm
+      <h1>Home Loan Calculator</h1>
+      <LoanForm
         initialValues={values[0]}
         onChange={(values) => {
-          return calculateDTO(values)
+          return calculateLoan(values)
         }}
         onFinish={onFinish}
       />

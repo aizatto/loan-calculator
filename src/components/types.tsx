@@ -3,9 +3,8 @@ export enum DownPaymentType {
   PERCENTAGE = 'percentage',
 }
 
-export type DTOShort = {
+type Form = {
   name?: string
-  monthly: number
   downPaymentType: DownPaymentType
   downPaymentFixed: number
   downPaymentPercentage: number
@@ -13,12 +12,30 @@ export type DTOShort = {
   interestRate: number
 }
 
-export type DTOLong = DTOShort & {
-  key: string
-  loanSize: number
-  totalInterest: number
-  totalLoanCost: number
-  lifetimeCost: number
-  monthlyInterest: number
+export type LoanFormDTO = Form & {
   price: number
 }
+
+export type BudgetFormDTO = Form & {
+  monthly: number
+}
+
+export type Details = BudgetFormDTO &
+  LoanFormDTO & {
+    key: string
+    loanSize: number
+    totalInterest: number
+    totalLoanCost: number
+    lifetimeCost: number
+    monthlyInterest: number
+  }
+
+// export type LoanDetails = LoanForm & {
+//   key: string
+//   loanSize: number
+//   totalInterest: number
+//   totalLoanCost: number
+//   lifetimeCost: number
+//   monthlyInterest: number
+//   monthly: number
+// }

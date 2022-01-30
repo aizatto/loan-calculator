@@ -1,10 +1,10 @@
 import { Table } from 'antd'
 import { useState } from 'react'
 import { BudgetForm } from '../components/BudgetForm'
-import { DTOShort, DTOLong, DownPaymentType } from '../components/types'
+import { BudgetFormDTO, Details, DownPaymentType } from '../components/types'
 import { setDocumentTitle } from '../hooks/setDocumentTitle'
 
-const calculateMortage = (dto: DTOShort): DTOLong => {
+const calculateMortage = (dto: BudgetFormDTO): Details => {
   if (dto.downPaymentType === DownPaymentType.FIXED) {
     return mortageFixed(dto)
   } else {
@@ -13,8 +13,9 @@ const calculateMortage = (dto: DTOShort): DTOLong => {
   }
 }
 
-const mortageFixed = (dto: DTOShort): DTOLong => {
-  const lifetimeCost = dto.monthly * dto.loanPeriodYears * 12 + dto.downPaymentFixed
+const mortageFixed = (dto: BudgetFormDTO): Details => {
+  const lifetimeCost =
+    dto.monthly * dto.loanPeriodYears * 12 + dto.downPaymentFixed
 
   const totalLoanCost = lifetimeCost - dto.downPaymentFixed
 
@@ -37,7 +38,7 @@ const mortageFixed = (dto: DTOShort): DTOLong => {
 }
 
 // https://en.wikipedia.org/wiki/Mortgage_calculator
-const mortagePercent = (dto: DTOShort): DTOLong => {
+const mortagePercent = (dto: BudgetFormDTO): Details => {
   const months = dto.loanPeriodYears * 12
   const rate = dto.interestRate / 100 / 12
 
@@ -46,7 +47,8 @@ const mortagePercent = (dto: DTOShort): DTOLong => {
   const loanSize = (dto.monthly * (1 - Math.pow(1 + rate, -1 * months))) / rate
   const totalInterest = totalLoanCost - loanSize
 
-  dto.downPaymentFixed = loanSize * (1 / (1 - (dto.downPaymentPercentage / 100))) - loanSize
+  dto.downPaymentFixed =
+    loanSize * (1 / (1 - dto.downPaymentPercentage / 100)) - loanSize
 
   const price = loanSize + dto.downPaymentFixed
   const monthlyInterest = totalInterest / (dto.loanPeriodYears * 12)
@@ -68,18 +70,18 @@ const mortagePercent = (dto: DTOShort): DTOLong => {
 export const HomeBudgetPage: React.FC = () => {
   // TODO change favicon to house
   setDocumentTitle(`Home Budget Calculator`)
-  const [values, setValues] = useState<DTOLong[]>([
+  const [values, setValues] = useState<Details[]>([
     calculateMortage({
       monthly: 10000,
       downPaymentType: DownPaymentType.PERCENTAGE,
       downPaymentFixed: 100000,
       downPaymentPercentage: 10,
       loanPeriodYears: 35,
-      interestRate: 3.6,
+      interestRate: 2.88,
     }),
   ])
 
-  const onFinish = (dto: DTOShort) => {
+  const onFinish = (dto: BudgetFormDTO) => {
     const newValues = values.slice(0)
     newValues.push(calculateMortage(dto))
     setValues(newValues)
@@ -162,6 +164,7 @@ export const HomeBudgetPage: React.FC = () => {
   return (
     <>
       <h1>Reverse Home Loan Calculator</h1>
+      <p>Calculate what home you can afford based on your monthly budget</p>
       <BudgetForm
         initialValues={values[0]}
         onChange={(values) => {

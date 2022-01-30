@@ -1,14 +1,14 @@
-import { Button, Form, Input, InputNumber, Radio, Space } from 'antd'
+import { Form, Input, InputNumber, Button, Radio, Space } from 'antd'
 import { useState } from 'react'
-import { DownPaymentType, Details, BudgetFormDTO } from './types'
+import { DownPaymentType, Details, LoanFormDTO } from './types'
 
 interface Props {
   initialValues: any
   onChange: (values: any) => Details
-  onFinish: (values: BudgetFormDTO) => void
+  onFinish: (values: LoanFormDTO) => void
 }
 
-export const BudgetForm: React.FC<Props> = (props) => {
+export const LoanForm: React.FC<Props> = (props) => {
   const [previewValues, setPreviewValues] = useState<Details>(
     props.initialValues
   )
@@ -32,7 +32,7 @@ export const BudgetForm: React.FC<Props> = (props) => {
     <Form
       name="basic"
       labelCol={{ span: 8 }}
-      wrapperCol={{ span: 8 }}
+      wrapperCol={{ span: 16 }}
       initialValues={props.initialValues}
       onFinish={props.onFinish}
       autoComplete="off"
@@ -44,18 +44,16 @@ export const BudgetForm: React.FC<Props> = (props) => {
           </Form.Item>
 
           <Form.Item
-            label="Monthly"
-            name="monthly"
-            rules={[
-              { required: true, message: 'Please input your Monthly Budget' },
-            ]}
+            label="Price"
+            name="price"
+            rules={[{ required: true, message: 'Please input your Price' }]}
           >
             <InputNumber
               onChange={(value: number) => {
                 setPreviewValues(
                   props.onChange({
                     ...previewValues,
-                    monthly: value,
+                    price: value,
                   })
                 )
               }}
@@ -66,7 +64,10 @@ export const BudgetForm: React.FC<Props> = (props) => {
             label="Down Payment (Type)"
             name="downPaymentType"
             rules={[
-              { required: true, message: 'Please input Down Payment Type' },
+              {
+                required: true,
+                message: 'Please input your Down Payment Type',
+              },
             ]}
           >
             <Radio.Group
@@ -159,8 +160,8 @@ export const BudgetForm: React.FC<Props> = (props) => {
           </Form.Item>
         </div>
         <div>
-          <Form.Item label="Price" name="price">
-            {Number(previewValues.price).toLocaleString()}
+          <Form.Item label="Monthly" name="monthly">
+            {Number(previewValues.monthly).toLocaleString()}
           </Form.Item>
 
           <Form.Item label="Down Payment" name="downPayment">
@@ -178,14 +179,14 @@ export const BudgetForm: React.FC<Props> = (props) => {
           <Form.Item label="Lifetime Cost" name="lifetimeCost">
             {Number(previewValues.lifetimeCost).toLocaleString()}
           </Form.Item>
+
+          <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+            <Button type="primary" htmlType="submit">
+              Submit
+            </Button>
+          </Form.Item>
         </div>
       </div>
-
-      <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-        <Button type="primary" htmlType="submit">
-          Save
-        </Button>
-      </Form.Item>
     </Form>
   )
 }

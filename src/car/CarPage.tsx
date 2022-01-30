@@ -1,32 +1,21 @@
-import { Form, Button, InputNumber, Input, Table } from 'antd'
+import { Table } from 'antd'
 import { useState } from 'react'
+import { LoanForm } from '../components/LoanForm'
+import { Details, DownPaymentType, LoanFormDTO } from '../components/types'
+import { setDocumentTitle } from '../hooks/setDocumentTitle'
 
-type DTOShort = {
-  name?: string
-  price: number
-  downPayment: number
-  loanPeriodYears: number
-  interestRate: number
-}
+const calculateLoan = (dto: LoanFormDTO): Details => {
+  if (dto.downPaymentType === DownPaymentType.PERCENTAGE) {
+    dto.downPaymentFixed = dto.price * (dto.downPaymentPercentage / 100)
+  }
 
-type DTOLong = DTOShort & {
-  key: string
-  loanSize: number
-  totalInterest: number
-  totalLoanCost: number
-  totalCost: number
-  monthlyInterest: number
-  monthly: number
-}
-
-const calculateDTO = (dto: DTOShort): DTOLong => {
-  const loanSize = dto.price - dto.downPayment
+  const loanSize = dto.price - dto.downPaymentFixed
   const totalInterest =
     (dto.interestRate / 100) * loanSize * dto.loanPeriodYears
   const totalLoanCost = loanSize + totalInterest
-  const totalCost = totalLoanCost + dto.downPayment
+  const lifetimeCost = totalLoanCost + dto.downPaymentFixed
   const monthlyInterest = totalInterest / (dto.loanPeriodYears * 12)
-  const monthly = totalCost / (dto.loanPeriodYears * 12)
+  const monthly = lifetimeCost / (dto.loanPeriodYears * 12)
 
   return {
     key: (Math.random() + 1).toString(36).substring(7),
@@ -34,30 +23,30 @@ const calculateDTO = (dto: DTOShort): DTOLong => {
     loanSize,
     totalInterest,
     totalLoanCost,
-    totalCost,
+    lifetimeCost,
     monthlyInterest,
     monthly,
   }
 }
 
 export const CarPage: React.FC = () => {
-  // export function CarPage() {
-  const [values, setValues] = useState<DTOLong[]>([
-    calculateDTO({
+  setDocumentTitle(`Car Loan Calculator`)
+  const [values, setValues] = useState<Details[]>([
+    calculateLoan({
       price: 260000,
-      downPayment: 26000,
-      loanPeriodYears: 7,
-      interestRate: 4,
+      downPaymentType: DownPaymentType.PERCENTAGE,
+      downPaymentPercentage: 10,
+      downPaymentFixed: 26000,
+      loanPeriodYears: 9,
+      interestRate: 2.5,
     }),
   ])
 
-  const onFinish = (dto: DTOShort) => {
+  const onFinish = (dto: LoanFormDTO) => {
     const newValues = values.slice(0)
-    newValues.push(calculateDTO(dto))
+    newValues.push(calculateLoan(dto))
     setValues(newValues)
   }
-
-  const onFinishFailed = () => {}
 
   const columns = [
     {
@@ -72,8 +61,15 @@ export const CarPage: React.FC = () => {
       },
     },
     {
+      title: 'Monthly',
+      dataIndex: 'monthly',
+      render: (value: number) => {
+        return Number(value).toLocaleString()
+      },
+    },
+    {
       title: 'Down Payment',
-      dataIndex: 'downPayment',
+      dataIndex: 'downPaymentFixed',
       render: (value: number) => {
         return Number(value).toLocaleString()
       },
@@ -111,8 +107,8 @@ export const CarPage: React.FC = () => {
       },
     },
     {
-      title: 'Total Cost',
-      dataIndex: 'totalCost',
+      title: 'Lifetime Cost',
+      dataIndex: 'lifetimeCost',
       render: (value: number) => {
         return Number(value).toLocaleString()
       },
@@ -124,69 +120,18 @@ export const CarPage: React.FC = () => {
         return Number(value).toLocaleString()
       },
     },
-    {
-      title: 'Monthly',
-      dataIndex: 'monthly',
-      render: (value: number) => {
-        return Number(value).toLocaleString()
-      },
-    },
   ]
 
   return (
     <>
       <h1>Car Loan Calculator</h1>
-      <Form
-        name="basic"
-        labelCol={{ span: 8 }}
-        wrapperCol={{ span: 16 }}
+      <LoanForm
         initialValues={values[0]}
+        onChange={(values) => {
+          return calculateLoan(values)
+        }}
         onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
-        autoComplete="off"
-      >
-        <Form.Item label="name" name="name">
-          <Input />
-        </Form.Item>
-
-        <Form.Item
-          label="Price"
-          name="price"
-          rules={[{ required: true, message: 'Please input your price!' }]}
-        >
-          <InputNumber />
-        </Form.Item>
-
-        <Form.Item
-          label="Down Payment"
-          name="downPayment"
-          rules={[{ required: true, message: 'Please input your password!' }]}
-        >
-          <InputNumber />
-        </Form.Item>
-
-        <Form.Item
-          label="Loan Period (Years)"
-          name="loanPeriodYears"
-          rules={[{ required: true, message: 'Please input your password!' }]}
-        >
-          <InputNumber addonAfter="years" />
-        </Form.Item>
-
-        <Form.Item
-          label="Interest Rate (%)"
-          name="interestRate"
-          rules={[{ required: true, message: 'Please input your password!' }]}
-        >
-          <InputNumber formatter={(value) => `${value}%`} />
-        </Form.Item>
-
-        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-          <Button type="primary" htmlType="submit">
-            Submit
-          </Button>
-        </Form.Item>
-      </Form>
+      />
       <Table columns={columns} dataSource={values} pagination={false} />
     </>
   )
