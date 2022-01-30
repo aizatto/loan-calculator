@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/static/css/main.85a3f757.css",
-    "main.js": "/static/js/main.1f06627c.js",
-    "static/js/787.903fcd7a.chunk.js": "/static/js/787.903fcd7a.chunk.js",
-    "index.html": "/index.html",
-    "main.85a3f757.css.map": "/static/css/main.85a3f757.css.map",
-    "main.1f06627c.js.map": "/static/js/main.1f06627c.js.map",
-    "787.903fcd7a.chunk.js.map": "/static/js/787.903fcd7a.chunk.js.map"
+    "main.css": "/loan-calculator/static/css/main.85a3f757.css",
+    "main.js": "/loan-calculator/static/js/main.8f662486.js",
+    "static/js/787.903fcd7a.chunk.js": "/loan-calculator/static/js/787.903fcd7a.chunk.js",
+    "index.html": "/loan-calculator/index.html",
+    "main.85a3f757.css.map": "/loan-calculator/static/css/main.85a3f757.css.map",
+    "main.8f662486.js.map": "/loan-calculator/static/js/main.8f662486.js.map",
+    "787.903fcd7a.chunk.js.map": "/loan-calculator/static/js/787.903fcd7a.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.85a3f757.css",
-    "static/js/main.1f06627c.js"
+    "static/js/main.8f662486.js"
   ]
 }
