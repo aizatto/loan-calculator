@@ -1,0 +1,3 @@
+yarn test --all --watchAll=false
+yarn lint-staged
+yarn build
