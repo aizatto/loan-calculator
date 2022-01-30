@@ -11,11 +11,11 @@ function App() {
       <BrowserRouter>
         <Menu />
         <Routes>
-          <Route path="/" element={<CarBudgetPage />} />
-          <Route path="/car" element={<CarPage />} />
-          <Route path="/car-budget" element={<CarBudgetPage />} />
-          <Route path="/home" element={<HomeBudgetPage />} />
-          <Route path="/home-budget" element={<HomeBudgetPage />} />
+          <Route path={`${process.env.REACT_APP_PATH}/`} element={<CarBudgetPage />} />
+          <Route path={`${process.env.REACT_APP_PATH}/car`} element={<CarPage />} />
+          <Route path={`${process.env.REACT_APP_PATH}/car-budget`} element={<CarBudgetPage />} />
+          <Route path={`${process.env.REACT_APP_PATH}/home`} element={<HomeBudgetPage />} />
+          <Route path={`${process.env.REACT_APP_PATH}/home-budget`} element={<HomeBudgetPage />} />
         </Routes>
       </BrowserRouter>
     </>

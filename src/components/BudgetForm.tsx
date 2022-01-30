@@ -35,7 +35,7 @@ export const BudgetForm: React.FC<Props> = (props) => {
       onFinish={props.onFinish}
       autoComplete="off"
     >
-      <div className="flex md:items-stretch">
+      <div>
         <div>
           <Form.Item label="name" name="name">
             <Input />

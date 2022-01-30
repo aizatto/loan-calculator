@@ -14,16 +14,16 @@ export const Menu: React.FC = () => {
   return (
     <AntMenu mode="horizontal">
       <AntMenu.Item key="car" icon={<CarOutlined />}>
-        <Link to="/car">Car Loan Calculator</Link>
+        <Link to={`${process.env.REACT_APP_PATH}/car`}>Car Loan Calculator</Link>
       </AntMenu.Item>
       <AntMenu.Item key="car-budget" icon={<CarOutlined />}>
-        <Link to="/car-budget">Reverse Car Loan Calculator</Link>
+        <Link to={`${process.env.REACT_APP_PATH}/car-budget`}>Reverse Car Loan Calculator</Link>
       </AntMenu.Item>
       <AntMenu.Item key="home" icon={<HomeOutlined />}>
-        <Link to="/home">Home Loan Calculator</Link>
+        <Link to={`${process.env.REACT_APP_PATH}/home`}>Home Loan Calculator</Link>
       </AntMenu.Item>
       <AntMenu.Item key="home-budget" icon={<HomeOutlined />}>
-        <Link to="/home-budget">Reverse Home Loan Calculator</Link>
+        <Link to={`${process.env.REACT_APP_PATH}/home-budget`}>Reverse Home Loan Calculator</Link>
       </AntMenu.Item>
 
       <AntMenu.Item key="aizatto.com" icon={<FileAddOutlined />}>
