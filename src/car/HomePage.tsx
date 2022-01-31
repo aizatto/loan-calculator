@@ -1,5 +1,6 @@
 import { Table } from 'antd'
 import { useState } from 'react'
+import { Helmet } from 'react-helmet'
 import { LoanForm } from '../components/LoanForm'
 import { Details, DownPaymentType, LoanFormDTO } from '../components/types'
 import { setDocumentTitle } from '../hooks/setDocumentTitle'
@@ -129,6 +130,25 @@ export const HomePage: React.FC = () => {
 
   return (
     <>
+      <Helmet>
+        <link
+          rel="apple-touch-icon"
+          sizes="180x180"
+          href={`${process.env.PUBLIC_URL}/favicons/home/apple-touch-icon.png`}
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="32x32"
+          href={`${process.env.PUBLIC_URL}/favicons/home/favicon-32x32.png`}
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="16x16"
+          href={`${process.env.PUBLIC_URL}/favicons/home/favicon-16x16.png`}
+        />
+      </Helmet>
       <h1>Home Loan Calculator</h1>
       <LoanForm
         initialValues={values[0]}

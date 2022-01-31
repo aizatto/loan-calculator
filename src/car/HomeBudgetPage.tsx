@@ -1,5 +1,6 @@
 import { Table } from 'antd'
 import { useState } from 'react'
+import { Helmet } from 'react-helmet'
 import { BudgetForm } from '../components/BudgetForm'
 import { BudgetFormDTO, Details, DownPaymentType } from '../components/types'
 import { setDocumentTitle } from '../hooks/setDocumentTitle'
@@ -163,6 +164,25 @@ export const HomeBudgetPage: React.FC = () => {
 
   return (
     <>
+      <Helmet>
+        <link
+          rel="apple-touch-icon"
+          sizes="180x180"
+          href={`${process.env.PUBLIC_URL}/favicons/home/apple-touch-icon.png`}
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="32x32"
+          href={`${process.env.PUBLIC_URL}/favicons/home/favicon-32x32.png`}
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="16x16"
+          href={`${process.env.PUBLIC_URL}/favicons/home/favicon-16x16.png`}
+        />
+      </Helmet>
       <h1>Reverse Home Loan Calculator</h1>
       <p>Calculate what home you can afford based on your monthly budget</p>
       <BudgetForm
