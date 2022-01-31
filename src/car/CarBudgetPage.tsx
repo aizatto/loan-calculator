@@ -76,7 +76,7 @@ export const CarBudgetPage: React.FC = () => {
 
   const onFinish = (dto: BudgetFormDTO) => {
     const newValues = values.slice(0)
-    newValues.push(calculateDTO(dto))
+    newValues.unshift(calculateDTO(dto))
     setValues(newValues)
   }
 

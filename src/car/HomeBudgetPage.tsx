@@ -83,7 +83,7 @@ export const HomeBudgetPage: React.FC = () => {
 
   const onFinish = (dto: BudgetFormDTO) => {
     const newValues = values.slice(0)
-    newValues.push(calculateMortage(dto))
+    newValues.unshift(calculateMortage(dto))
     setValues(newValues)
   }
 

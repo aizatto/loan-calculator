@@ -49,7 +49,7 @@ export const HomePage: React.FC = () => {
 
   const onFinish = (dto: LoanFormDTO) => {
     const newValues = values.slice(0)
-    newValues.push(calculateLoan(dto))
+    newValues.unshift(calculateLoan(dto))
     setValues(newValues)
   }
 
