@@ -3,7 +3,6 @@ import { useState } from 'react'
 import { Helmet } from 'react-helmet'
 import { BudgetForm } from '../components/BudgetForm'
 import { BudgetFormDTO, Details, DownPaymentType } from '../components/types'
-import { setDocumentTitle } from '../hooks/setDocumentTitle'
 
 const calculateMortage = (dto: BudgetFormDTO): Details => {
   if (dto.downPaymentType === DownPaymentType.FIXED) {
@@ -69,8 +68,6 @@ const mortagePercent = (dto: BudgetFormDTO): Details => {
 }
 
 export const HomeBudgetPage: React.FC = () => {
-  // TODO change favicon to house
-  setDocumentTitle(`Home Budget Calculator`)
   const [values, setValues] = useState<Details[]>([
     calculateMortage({
       monthly: 10000,
@@ -165,6 +162,7 @@ export const HomeBudgetPage: React.FC = () => {
   return (
     <>
       <Helmet>
+        <title>Home Budget Calculator</title>
         <link
           rel="apple-touch-icon"
           sizes="180x180"

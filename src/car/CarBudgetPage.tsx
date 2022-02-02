@@ -3,7 +3,6 @@ import { useState } from 'react'
 import { Helmet } from 'react-helmet'
 import { BudgetForm } from '../components/BudgetForm'
 import { BudgetFormDTO, Details, DownPaymentType } from '../components/types'
-import { setDocumentTitle } from '../hooks/setDocumentTitle'
 
 const calculateDTO = (dto: BudgetFormDTO): Details => {
   if (dto.downPaymentType === DownPaymentType.FIXED) {
@@ -63,7 +62,6 @@ const calculateDTOPercent = (dto: BudgetFormDTO): Details => {
 }
 
 export const CarBudgetPage: React.FC = () => {
-  setDocumentTitle(`Car Budget Calculator`)
   const [values, setValues] = useState<Details[]>([
     calculateDTO({
       monthly: 2000,
@@ -158,6 +156,7 @@ export const CarBudgetPage: React.FC = () => {
   return (
     <>
       <Helmet>
+        <title>Car Budget Calculator</title>
         <link
           rel="apple-touch-icon"
           sizes="180x180"

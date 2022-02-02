@@ -3,7 +3,6 @@ import { useState } from 'react'
 import { Helmet } from 'react-helmet'
 import { LoanForm } from '../components/LoanForm'
 import { Details, DownPaymentType, LoanFormDTO } from '../components/types'
-import { setDocumentTitle } from '../hooks/setDocumentTitle'
 
 const calculateLoan = (dto: LoanFormDTO): Details => {
   if (dto.downPaymentType === DownPaymentType.PERCENTAGE) {
@@ -31,7 +30,6 @@ const calculateLoan = (dto: LoanFormDTO): Details => {
 }
 
 export const CarPage: React.FC = () => {
-  setDocumentTitle(`Car Loan Calculator`)
   const [values, setValues] = useState<Details[]>([
     calculateLoan({
       price: 260000,
@@ -126,6 +124,7 @@ export const CarPage: React.FC = () => {
   return (
     <>
       <Helmet>
+        <title>Car Loan Calculator</title>
         <link
           rel="apple-touch-icon"
           sizes="180x180"
