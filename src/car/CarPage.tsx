@@ -1,8 +1,8 @@
 import { Table } from 'antd'
-import { useState } from 'react'
 import { Helmet } from 'react-helmet'
 import { LoanForm } from '../components/LoanForm'
 import { Details, DownPaymentType, LoanFormDTO } from '../components/types'
+import { useLocalStorage } from '../hooks/useLocalStorage'
 
 const calculateLoan = (dto: LoanFormDTO): Details => {
   if (dto.downPaymentType === DownPaymentType.PERCENTAGE) {
@@ -30,7 +30,7 @@ const calculateLoan = (dto: LoanFormDTO): Details => {
 }
 
 export const CarPage: React.FC = () => {
-  const [values, setValues] = useState<Details[]>([
+  const [values, setValues] = useLocalStorage<Details[]>('car-loan', [
     calculateLoan({
       price: 260000,
       downPaymentType: DownPaymentType.PERCENTAGE,

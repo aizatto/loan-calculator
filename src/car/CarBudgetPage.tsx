@@ -1,8 +1,8 @@
 import { Table } from 'antd'
-import { useState } from 'react'
 import { Helmet } from 'react-helmet'
 import { BudgetForm } from '../components/BudgetForm'
 import { BudgetFormDTO, Details, DownPaymentType } from '../components/types'
+import { useLocalStorage } from '../hooks/useLocalStorage'
 
 const calculateDTO = (dto: BudgetFormDTO): Details => {
   if (dto.downPaymentType === DownPaymentType.FIXED) {
@@ -62,7 +62,7 @@ const calculateDTOPercent = (dto: BudgetFormDTO): Details => {
 }
 
 export const CarBudgetPage: React.FC = () => {
-  const [values, setValues] = useState<Details[]>([
+  const [values, setValues] = useLocalStorage<Details[]>('car-budget', [
     calculateDTO({
       monthly: 2000,
       downPaymentType: DownPaymentType.PERCENTAGE,
