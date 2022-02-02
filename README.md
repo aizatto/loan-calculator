@@ -11,8 +11,16 @@ Features I want:
 - Receive values from query param
 - Reverse Calculator. Based on a budget, what can you afford?
 
-# Install git hooks
+# Contributing
+
+## Install git hooks
 
 ```sh
 git config core.hooksPath .githooks
+```
+
+## Run prettier
+
+```sh
+./scripts/prettier.sh all
 ```
