@@ -12,7 +12,7 @@ function App() {
       <HashRouter>
         <Menu />
         <Routes>
-          <Route path="/" element={<CarBudgetPage />} />
+          <Route path="/" element={<CarPage />} />
           <Route path="/car" element={<CarPage />} />
           <Route path="/car-budget" element={<CarBudgetPage />} />
           <Route path="/home" element={<HomePage />} />

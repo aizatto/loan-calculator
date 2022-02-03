@@ -12,7 +12,7 @@ import { Link } from 'react-router-dom'
 
 export const Menu: React.FC = () => {
   return (
-    <AntMenu mode="horizontal">
+    <AntMenu mode="horizontal" defaultSelectedKeys={['car']}>
       <AntMenu.Item key="car" icon={<CarOutlined />}>
         <Link to="/car">Car Loan Calculator</Link>
       </AntMenu.Item>
