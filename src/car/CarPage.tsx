@@ -1,8 +1,10 @@
-import { Table } from 'antd'
+import { Space, Table } from 'antd'
 import { Helmet } from 'react-helmet'
 import { LoanForm } from '../components/LoanForm'
 import { Details, DownPaymentType, LoanFormDTO } from '../components/types'
 import { useLocalStorage } from '../hooks/useLocalStorage'
+import { DeleteButton } from '../table/DeleteButton'
+import { EditButton } from '../table/EditButton'
 
 const calculateLoan = (dto: LoanFormDTO): Details => {
   if (dto.downPaymentType === DownPaymentType.PERCENTAGE) {
@@ -30,21 +32,22 @@ const calculateLoan = (dto: LoanFormDTO): Details => {
 }
 
 export const CarPage: React.FC = () => {
-  const [values, setValues] = useLocalStorage<Details[]>('car-loan', [
-    calculateLoan({
-      price: 260000,
-      downPaymentType: DownPaymentType.PERCENTAGE,
-      downPaymentPercentage: 10,
-      downPaymentFixed: 26000,
-      loanPeriodYears: 9,
-      interestRate: 2.5,
-    }),
+  const defaultLoan = calculateLoan({
+    price: 260000,
+    downPaymentType: DownPaymentType.PERCENTAGE,
+    downPaymentPercentage: 10,
+    downPaymentFixed: 26000,
+    loanPeriodYears: 9,
+    interestRate: 2.5,
+  })
+  const [dataSource, setDataSource] = useLocalStorage<Details[]>('car-loan', [
+    defaultLoan,
   ])
 
   const onFinish = (dto: LoanFormDTO) => {
-    const newValues = values.slice(0)
-    newValues.unshift(calculateLoan(dto))
-    setValues(newValues)
+    const newDataSource = dataSource.slice(0)
+    newDataSource.unshift(calculateLoan(dto))
+    setDataSource(newDataSource)
   }
 
   const columns = [
@@ -119,6 +122,36 @@ export const CarPage: React.FC = () => {
         return Number(value).toLocaleString()
       },
     },
+    {
+      title: 'Action',
+      dataIndex: 'action',
+      render: (_: any, record: Details, index: number) => {
+        return (
+          <Space>
+            <EditButton
+              record={record}
+              onChange={(values) => {
+                return calculateLoan(values)
+              }}
+              onUpdate={(values) => {
+                const details = calculateLoan(values)
+                const newDataSource = dataSource.slice(0)
+                newDataSource[index] = details
+                setDataSource(newDataSource)
+              }}
+              onDuplicate={onFinish}
+            />
+            <DeleteButton
+              onDelete={() => {
+                const newDataSource = dataSource.slice(0)
+                newDataSource.splice(index, 1)
+                setDataSource(newDataSource)
+              }}
+            />
+          </Space>
+        )
+      },
+    },
   ]
 
   return (
@@ -145,13 +178,13 @@ export const CarPage: React.FC = () => {
       </Helmet>
       <h1>Car Loan Calculator</h1>
       <LoanForm
-        initialValues={values[0]}
+        initialValues={defaultLoan}
         onChange={(values) => {
           return calculateLoan(values)
         }}
         onFinish={onFinish}
       />
-      <Table columns={columns} dataSource={values} pagination={false} />
+      <Table columns={columns} dataSource={dataSource} pagination={false} />
     </>
   )
 }

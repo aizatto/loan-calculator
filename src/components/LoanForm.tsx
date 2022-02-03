@@ -1,11 +1,21 @@
-import { Form, Input, InputNumber, Button, Radio, Space } from 'antd'
+import {
+  Form,
+  Input,
+  InputNumber,
+  Button,
+  Radio,
+  Space,
+  FormInstance,
+} from 'antd'
 import { useState } from 'react'
 import { DownPaymentType, Details, LoanFormDTO } from './types'
 
 interface Props {
+  form?: FormInstance
   initialValues: any
   onChange: (values: any) => Details
   onFinish: (values: LoanFormDTO) => void
+  disableSubmit?: boolean
 }
 
 export const LoanForm: React.FC<Props> = (props) => {
@@ -31,6 +41,7 @@ export const LoanForm: React.FC<Props> = (props) => {
   return (
     <Form
       name="basic"
+      form={props.form}
       labelCol={{ span: 8 }}
       wrapperCol={{ span: 16 }}
       initialValues={props.initialValues}
@@ -180,11 +191,13 @@ export const LoanForm: React.FC<Props> = (props) => {
             {Number(previewValues.lifetimeCost).toLocaleString()}
           </Form.Item>
 
-          <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-            <Button type="primary" htmlType="submit">
-              Submit
-            </Button>
-          </Form.Item>
+          {props.disableSubmit ? null : (
+            <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+              <Button type="primary" htmlType="submit">
+                Submit
+              </Button>
+            </Form.Item>
+          )}
         </div>
       </div>
     </Form>
