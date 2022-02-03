@@ -1,10 +1,10 @@
 import './App.css'
 import { HashRouter, Route, Routes } from 'react-router-dom'
 import { Menu } from './components/menu'
-import { CarPage } from './car/CarPage'
-import { CarBudgetPage } from './car/CarBudgetPage'
-import { HomePage } from './car/HomePage'
-import { HomeBudgetPage } from './car/HomeBudgetPage'
+import { CarPage } from './routes/CarPage'
+import { CarBudgetPage } from './routes/CarBudgetPage'
+import { HomePage } from './routes/HomePage'
+import { HomeBudgetPage } from './routes/HomeBudgetPage'
 
 function App() {
   return (
