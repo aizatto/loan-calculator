@@ -54,6 +54,8 @@ export const CarPage: React.FC = () => {
     {
       title: 'Name',
       dataIndex: 'name',
+      sorter: (a: Details, b: Details) =>
+        a.name?.localeCompare(b.name ?? '') ?? 0,
     },
     {
       title: 'Price',
@@ -61,6 +63,7 @@ export const CarPage: React.FC = () => {
       render: (value: number) => {
         return Number(value).toLocaleString()
       },
+      sorter: (a: Details, b: Details) => a.price - b.price,
     },
     {
       title: 'Monthly',
@@ -68,6 +71,7 @@ export const CarPage: React.FC = () => {
       render: (value: number) => {
         return Number(value).toLocaleString()
       },
+      sorter: (a: Details, b: Details) => a.monthly - b.monthly,
     },
     {
       title: 'Down Payment',
@@ -75,10 +79,13 @@ export const CarPage: React.FC = () => {
       render: (value: number) => {
         return Number(value).toLocaleString()
       },
+      sorter: (a: Details, b: Details) =>
+        a.downPaymentFixed - b.downPaymentFixed,
     },
     {
       title: 'Loan Period (Years)',
       dataIndex: 'loanPeriodYears',
+      sorter: (a: Details, b: Details) => a.loanPeriodYears - b.loanPeriodYears,
     },
     {
       title: 'Interest Rate',
@@ -86,6 +93,7 @@ export const CarPage: React.FC = () => {
       render: (value: number) => {
         return `${value} %`
       },
+      sorter: (a: Details, b: Details) => a.interestRate - b.interestRate,
     },
     {
       title: 'Loan Size',
@@ -93,6 +101,7 @@ export const CarPage: React.FC = () => {
       render: (value: number) => {
         return Number(value).toLocaleString()
       },
+      sorter: (a: Details, b: Details) => a.loanSize - b.loanSize,
     },
     {
       title: 'Total Interest',
@@ -100,6 +109,7 @@ export const CarPage: React.FC = () => {
       render: (value: number) => {
         return Number(value).toLocaleString()
       },
+      sorter: (a: Details, b: Details) => a.totalInterest - b.totalInterest,
     },
     {
       title: 'Total Loan Cost',
@@ -107,6 +117,7 @@ export const CarPage: React.FC = () => {
       render: (value: number) => {
         return Number(value).toLocaleString()
       },
+      sorter: (a: Details, b: Details) => a.totalLoanCost - b.totalLoanCost,
     },
     {
       title: 'Lifetime Cost',
@@ -114,6 +125,7 @@ export const CarPage: React.FC = () => {
       render: (value: number) => {
         return Number(value).toLocaleString()
       },
+      sorter: (a: Details, b: Details) => a.lifetimeCost - b.lifetimeCost,
     },
     {
       title: 'Monthly Interest',
@@ -121,11 +133,12 @@ export const CarPage: React.FC = () => {
       render: (value: number) => {
         return Number(value).toLocaleString()
       },
+      sorter: (a: Details, b: Details) => a.monthlyInterest - b.monthlyInterest,
     },
     {
       title: 'Action',
       dataIndex: 'action',
-      render: (_: any, record: Details, index: number) => {
+      render: (_: any, record: Details) => {
         return (
           <Space>
             <EditButton
@@ -136,6 +149,7 @@ export const CarPage: React.FC = () => {
               onUpdate={(values) => {
                 const details = calculateLoan(values)
                 const newDataSource = dataSource.slice(0)
+                const index = newDataSource.indexOf(record)
                 newDataSource[index] = details
                 setDataSource(newDataSource)
               }}
@@ -144,6 +158,7 @@ export const CarPage: React.FC = () => {
             <DeleteButton
               onDelete={() => {
                 const newDataSource = dataSource.slice(0)
+                const index = newDataSource.indexOf(record)
                 newDataSource.splice(index, 1)
                 setDataSource(newDataSource)
               }}
