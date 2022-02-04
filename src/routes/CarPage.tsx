@@ -5,6 +5,7 @@ import { Details, DownPaymentType, LoanFormDTO } from '../components/types'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { DeleteButton } from '../table/DeleteButton'
 import { EditButton } from '../table/EditButton'
+import { ViewButton } from '../table/ViewButton'
 
 const calculateLoan = (dto: LoanFormDTO): Details => {
   if (dto.downPaymentType === DownPaymentType.PERCENTAGE) {
@@ -127,20 +128,21 @@ export const CarPage: React.FC = () => {
       },
       sorter: (a: Details, b: Details) => a.lifetimeCost - b.lifetimeCost,
     },
-    {
-      title: 'Monthly Interest',
-      dataIndex: 'monthlyInterest',
-      render: (value: number) => {
-        return Number(value).toLocaleString()
-      },
-      sorter: (a: Details, b: Details) => a.monthlyInterest - b.monthlyInterest,
-    },
+    // {
+    //   title: 'Monthly Interest',
+    //   dataIndex: 'monthlyInterest',
+    //   render: (value: number) => {
+    //     return Number(value).toLocaleString()
+    //   },
+    //   sorter: (a: Details, b: Details) => a.monthlyInterest - b.monthlyInterest,
+    // },
     {
       title: 'Action',
       dataIndex: 'action',
       render: (_: any, record: Details) => {
         return (
           <Space>
+            <ViewButton record={record} />
             <EditButton
               record={record}
               onChange={(values) => {
