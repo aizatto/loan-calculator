@@ -18,7 +18,7 @@ const calculateLoan = (dto: LoanFormDTO): Details => {
   const totalLoanCost = loanSize + totalInterest
   const lifetimeCost = totalLoanCost + dto.downPaymentFixed
   const monthlyInterest = totalInterest / (dto.loanPeriodYears * 12)
-  const monthly = lifetimeCost / (dto.loanPeriodYears * 12)
+  const monthly = totalLoanCost / (dto.loanPeriodYears * 12)
 
   return {
     key: (Math.random() + 1).toString(36).substring(7),
