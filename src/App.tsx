@@ -18,6 +18,18 @@ function App() {
           <Route path="/home" element={<HomePage />} />
           <Route path="/home-budget" element={<HomeBudgetPage />} />
         </Routes>
+        <div className="p-3">
+          Build:{' '}
+          {process.env.NODE_ENV === 'development' ? (
+            'development'
+          ) : (
+            <a
+              href={`https://github.com/aizatto/loan-calculator/commit/${process.env.REACT_APP_GIT_SHA}`}
+            >
+              {process.env.REACT_APP_GIT_SHA}
+            </a>
+          )}
+        </div>
       </HashRouter>
     </>
   )
