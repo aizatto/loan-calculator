@@ -185,14 +185,16 @@ export const CarPage: React.FC = () => {
           href={`${process.env.PUBLIC_URL}/favicons/car/favicon-16x16.png`}
         />
       </Helmet>
-      <h1>Car Loan Calculator</h1>
-      <LoanForm
-        initialValues={defaultLoan}
-        onChange={(values) => {
-          return calculateLoan(values)
-        }}
-        onFinish={onFinish}
-      />
+      <div className="p-3">
+        <h1>Car Loan Calculator</h1>
+        <LoanForm
+          initialValues={defaultLoan}
+          onChange={(values) => {
+            return calculateLoan(values)
+          }}
+          onFinish={onFinish}
+        />
+      </div>
       <Table columns={columns} dataSource={dataSource} pagination={false} />
     </>
   )

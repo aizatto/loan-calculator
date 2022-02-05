@@ -175,15 +175,17 @@ export const CarBudgetPage: React.FC = () => {
           href={`${process.env.PUBLIC_URL}/favicons/car/favicon-16x16.png`}
         />
       </Helmet>
-      <h1>Reverse Car Loan Calculator</h1>
-      <p>Calculate what car you can afford based on your monthly budget</p>
-      <BudgetForm
-        initialValues={values[0]}
-        onChange={(values) => {
-          return calculateDTO(values)
-        }}
-        onFinish={onFinish}
-      />
+      <div className="p-3">
+        <h1>Reverse Car Loan Calculator</h1>
+        <p>Calculate what car you can afford based on your monthly budget</p>
+        <BudgetForm
+          initialValues={values[0]}
+          onChange={(values) => {
+            return calculateDTO(values)
+          }}
+          onFinish={onFinish}
+        />
+      </div>
       <Table columns={columns} dataSource={values} pagination={false} />
     </>
   )

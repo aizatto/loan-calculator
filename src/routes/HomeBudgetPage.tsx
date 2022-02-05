@@ -181,15 +181,17 @@ export const HomeBudgetPage: React.FC = () => {
           href={`${process.env.PUBLIC_URL}/favicons/home/favicon-16x16.png`}
         />
       </Helmet>
-      <h1>Reverse Home Loan Calculator</h1>
-      <p>Calculate what home you can afford based on your monthly budget</p>
-      <BudgetForm
-        initialValues={values[0]}
-        onChange={(values) => {
-          return calculateMortage(values)
-        }}
-        onFinish={onFinish}
-      />
+      <div className="p-3">
+        <h1>Reverse Home Loan Calculator</h1>
+        <p>Calculate what home you can afford based on your monthly budget</p>
+        <BudgetForm
+          initialValues={values[0]}
+          onChange={(values) => {
+            return calculateMortage(values)
+          }}
+          onFinish={onFinish}
+        />
+      </div>
       <Table columns={columns} dataSource={values} pagination={false} />
     </>
   )

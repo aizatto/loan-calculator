@@ -148,14 +148,16 @@ export const HomePage: React.FC = () => {
           href={`${process.env.PUBLIC_URL}/favicons/home/favicon-16x16.png`}
         />
       </Helmet>
-      <h1>Home Loan Calculator</h1>
-      <LoanForm
-        initialValues={values[0]}
-        onChange={(values) => {
-          return calculateLoan(values)
-        }}
-        onFinish={onFinish}
-      />
+      <div className="p-3">
+        <h1>Home Loan Calculator</h1>
+        <LoanForm
+          initialValues={values[0]}
+          onChange={(values) => {
+            return calculateLoan(values)
+          }}
+          onFinish={onFinish}
+        />
+      </div>
       <Table columns={columns} dataSource={values} pagination={false} />
     </>
   )
