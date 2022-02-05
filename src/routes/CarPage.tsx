@@ -128,14 +128,6 @@ export const CarPage: React.FC = () => {
       },
       sorter: (a: Details, b: Details) => a.lifetimeCost - b.lifetimeCost,
     },
-    // {
-    //   title: 'Monthly Interest',
-    //   dataIndex: 'monthlyInterest',
-    //   render: (value: number) => {
-    //     return Number(value).toLocaleString()
-    //   },
-    //   sorter: (a: Details, b: Details) => a.monthlyInterest - b.monthlyInterest,
-    // },
     {
       title: 'Action',
       dataIndex: 'action',
