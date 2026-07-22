@@ -1,3 +1,5 @@
+import { useState } from 'react'
+import { Check, Copy } from 'lucide-react'
 import { Controller } from 'react-hook-form'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -5,7 +7,11 @@ import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Field, FieldLabel } from '@/components/ui/field'
 import { DownPaymentType, Details, BudgetFormDTO } from './types'
-import { toBudgetDTO, useBudgetForm } from './loanForms'
+import {
+  budgetFormToClipboardText,
+  toBudgetDTO,
+  useBudgetForm,
+} from './loanForms'
 import { FormNumberField } from './FormNumberField'
 
 interface Props {
@@ -16,6 +22,7 @@ interface Props {
 
 export const BudgetForm: React.FC<Props> = (props) => {
   const form = useBudgetForm(props.initialValues)
+  const [copied, setCopied] = useState(false)
 
   const values = form.watch()
   const preview = props.onChange(toBudgetDTO(values))
@@ -24,6 +31,19 @@ export const BudgetForm: React.FC<Props> = (props) => {
     values.downPaymentType === DownPaymentType.FIXED
       ? { name: 'downPaymentFixed' as const, suffix: undefined }
       : { name: 'downPaymentPercentage' as const, suffix: '%' }
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(
+        budgetFormToClipboardText(toBudgetDTO(values), preview)
+      )
+    } catch {
+      // clipboard access denied (e.g. document not focused); no feedback
+      return
+    }
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
 
   return (
     <form
@@ -108,8 +128,12 @@ export const BudgetForm: React.FC<Props> = (props) => {
         <dd>{Number(preview.lifetimeCost).toLocaleString()}</dd>
       </dl>
 
-      <div>
+      <div className="flex gap-2">
         <Button type="submit">Save</Button>
+        <Button type="button" variant="outline" onClick={handleCopy}>
+          {copied ? <Check /> : <Copy />}
+          {copied ? 'Copied' : 'Copy'}
+        </Button>
       </div>
     </form>
   )

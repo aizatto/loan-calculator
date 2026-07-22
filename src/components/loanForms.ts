@@ -77,6 +77,29 @@ export const formToClipboardText = (
   return lines.join('\n')
 }
 
+export const budgetFormToClipboardText = (
+  dto: BudgetFormDTO,
+  preview: Details
+): string => {
+  const lines = [
+    `Name: ${dto.name ?? ''}`,
+    `Monthly: ${Number(dto.monthly).toLocaleString()}`,
+    `Down Payment (Type): ${dto.downPaymentType}`,
+    dto.downPaymentType === DownPaymentType.PERCENTAGE
+      ? `Down Payment: ${dto.downPaymentPercentage} %`
+      : `Down Payment: ${Number(dto.downPaymentFixed).toLocaleString()}`,
+    `Loan Period (Years): ${dto.loanPeriodYears} years`,
+    `Interest Rate: ${dto.interestRate} %`,
+    '---',
+    `Price: ${Number(preview.price).toLocaleString()}`,
+    `Down Payment: ${Number(preview.downPaymentFixed).toLocaleString()}`,
+    `Loan Size: ${Number(preview.loanSize).toLocaleString()}`,
+    `Total Interest: ${Number(preview.totalInterest).toLocaleString()}`,
+    `Lifetime Cost: ${Number(preview.lifetimeCost).toLocaleString()}`,
+  ]
+  return lines.join('\n')
+}
+
 export const useLoanForm = (initialValues: LoanFormDTO) =>
   useForm<LoanFormDTO>({
     resolver: zodResolver(loanFormSchema) as unknown as Resolver<LoanFormDTO>,

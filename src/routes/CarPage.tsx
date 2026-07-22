@@ -119,6 +119,7 @@ export const CarPage: React.FC = () => {
           return calculateLoan(values)
         }}
         onFinish={onFinish}
+        showCopy
       />
       <LoanTable
         columns={columns}
