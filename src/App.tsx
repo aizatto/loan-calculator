@@ -19,6 +19,19 @@ function App() {
             <Route path="/home-budget" element={<HomeBudgetPage />} />
           </Routes>
         </main>
+        <footer className="p-4 text-sm text-muted-foreground">
+          Build:{' '}
+          {import.meta.env.DEV ? (
+            'development'
+          ) : (
+            <a
+              className="underline underline-offset-4"
+              href={`https://github.com/aizatto/loan-calculator/commit/${import.meta.env.VITE_GIT_SHA}`}
+            >
+              {import.meta.env.VITE_GIT_SHA}
+            </a>
+          )}
+        </footer>
       </HashRouter>
     </>
   )

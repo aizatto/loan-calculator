@@ -51,7 +51,7 @@
   "scripts": {
     "dev": "vite",
     "start": "vite",
-    "build": "tsc --noEmit && vite build",
+    "build": "tsc --noEmit && VITE_GIT_SHA=`git rev-parse --short HEAD` vite build",
     "preview": "vite preview",
     "test": "vitest run",
     "lint": "eslint src",

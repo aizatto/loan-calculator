@@ -25,17 +25,19 @@ interface Props {
 interface AmortizationRow {
   key: string
   month: number
-  year: number
+  year: string
   interestPaid: number
   principlePaid: number
+  totalInterestPaid: number
   totalPrinciplePaid: number
   totalPaid: number
+  remainingInterest: number
   remainingPrinciple: number
-  lifetimeCostRemaining: number
+  remainingLifetimeCost: number
 }
 
 const COLUMNS: { title: string; render: (row: AmortizationRow) => string }[] = [
-  { title: 'Year', render: (row) => `${row.year}` },
+  { title: 'Year', render: (row) => row.year },
   { title: 'Month', render: (row) => `${row.month}` },
   {
     title: 'Interest Paid',
@@ -46,20 +48,28 @@ const COLUMNS: { title: string; render: (row: AmortizationRow) => string }[] = [
     render: (row) => Number(row.principlePaid).toLocaleString(),
   },
   {
-    title: 'Total Principle Paid',
-    render: (row) => Number(row.totalPrinciplePaid).toLocaleString(),
+    title: 'Total Interest Paid',
+    render: (row) => Number(row.totalInterestPaid).toLocaleString(),
   },
   {
-    title: 'Remaining Principle',
-    render: (row) => Number(row.remainingPrinciple).toLocaleString(),
+    title: 'Total Principle Paid',
+    render: (row) => Number(row.totalPrinciplePaid).toLocaleString(),
   },
   {
     title: 'Total Paid',
     render: (row) => Number(row.totalPaid).toLocaleString(),
   },
   {
+    title: 'Remaining Interest',
+    render: (row) => Number(row.remainingInterest).toLocaleString(),
+  },
+  {
+    title: 'Remaining Principle',
+    render: (row) => Number(row.remainingPrinciple).toLocaleString(),
+  },
+  {
     title: 'Remaining Lifetime Cost',
-    render: (row) => Number(row.lifetimeCostRemaining).toLocaleString(),
+    render: (row) => Number(row.remainingLifetimeCost).toLocaleString(),
   },
 ]
 
@@ -72,23 +82,29 @@ export const ViewButton: React.FC<Props> = (props) => {
   const rows: AmortizationRow[] = []
 
   let totalPrinciplePaid = 0
+  let totalInterestPaid = 0
 
-  const rule78 = (months * (months + 1)) / 2
+  const monthlyInterestRate = (months * (months + 1)) / 2
+
   for (let i = 0; i < months; i++) {
-    const interestPaid = ((months - i) / rule78) * record.totalInterest
+    const interestPaid =
+      ((months - i) / monthlyInterestRate) * record.totalInterest
     const principlePaid = record.monthly - interestPaid
     totalPrinciplePaid += principlePaid
+    totalInterestPaid += interestPaid
 
     rows.push({
       key: `${record.key}:${i}`,
-      year: Math.floor(i / 12),
+      year: `Y${Math.floor(i / 12) + 1}M${(i % 12) + 1}`,
       month: i + 1,
       interestPaid,
       principlePaid,
+      totalInterestPaid,
       totalPrinciplePaid,
       totalPaid: (i + 1) * record.monthly,
+      remainingInterest: record.totalInterest - totalInterestPaid,
       remainingPrinciple: record.price - totalPrinciplePaid,
-      lifetimeCostRemaining: record.lifetimeCost - (i + 1) * record.monthly,
+      remainingLifetimeCost: record.lifetimeCost - (i + 1) * record.monthly,
     })
   }
 
@@ -99,7 +115,7 @@ export const ViewButton: React.FC<Props> = (props) => {
           <Eye />
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[900px]">
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[1000px]">
         <DialogHeader>
           <DialogTitle>View</DialogTitle>
         </DialogHeader>
