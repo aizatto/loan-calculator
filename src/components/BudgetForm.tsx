@@ -1,7 +1,6 @@
-import { useState } from 'react'
-import { Check, Copy } from 'lucide-react'
 import { Controller, type UseFormReturn } from 'react-hook-form'
 import { Button } from '@/components/ui/button'
+import { CopyButton } from '@/components/CopyButton'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
@@ -25,7 +24,6 @@ interface Props {
 export const BudgetForm: React.FC<Props> = (props) => {
   const internalForm = useBudgetForm(props.initialValues)
   const form = props.form ?? internalForm
-  const [copied, setCopied] = useState(false)
 
   const values = form.watch()
   const preview = props.onChange(toBudgetDTO(values))
@@ -34,19 +32,6 @@ export const BudgetForm: React.FC<Props> = (props) => {
     values.downPaymentType === DownPaymentType.FIXED
       ? { name: 'downPaymentFixed' as const, suffix: undefined }
       : { name: 'downPaymentPercentage' as const, suffix: '%' }
-
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(
-        budgetFormToClipboardText(toBudgetDTO(values), preview)
-      )
-    } catch {
-      // clipboard access denied (e.g. document not focused); no feedback
-      return
-    }
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }
 
   return (
     <form
@@ -134,10 +119,11 @@ export const BudgetForm: React.FC<Props> = (props) => {
       {props.disableSubmit ? null : (
         <div className="flex gap-2">
           <Button type="submit">Save</Button>
-          <Button type="button" variant="outline" onClick={handleCopy}>
-            {copied ? <Check /> : <Copy />}
-            {copied ? 'Copied' : 'Copy'}
-          </Button>
+          <CopyButton
+            getText={() =>
+              budgetFormToClipboardText(toBudgetDTO(values), preview)
+            }
+          />
         </div>
       )}
     </form>

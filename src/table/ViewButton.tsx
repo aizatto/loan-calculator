@@ -16,12 +16,13 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { CopyButton } from '@/components/CopyButton'
 import {
   amortizationSchedule,
   type AmortizationKind,
   type AmortizationRow,
 } from '@/lib/calculations'
-import { Details } from '../components/types'
+import { Details, DownPaymentType } from '../components/types'
 
 interface Props {
   record: Details
@@ -31,6 +32,29 @@ interface Props {
 // snap floating point residue (e.g. -1e-10 rendering as "-0") to zero
 const money = (value: number) =>
   (Math.abs(value) < 0.0005 ? 0 : value).toLocaleString()
+
+// every field and computed value of a saved row, driving both the summary
+// list in the dialog and its copy button
+const detailRows = (record: Details): [string, string][] => [
+  ['Name', record.name ?? ''],
+  ['Price', money(record.price)],
+  ['Monthly', money(record.monthly)],
+  ['Down Payment (Type)', record.downPaymentType],
+  ...(record.downPaymentType === DownPaymentType.PERCENTAGE
+    ? ([['Down Payment (%)', `${record.downPaymentPercentage} %`]] as [
+        string,
+        string,
+      ][])
+    : []),
+  ['Down Payment', money(record.downPaymentFixed)],
+  ['Loan Period (Years)', `${record.loanPeriodYears} years`],
+  ['Interest Rate', `${record.interestRate} %`],
+  ['Loan Size', money(record.loanSize)],
+  ['Total Interest', money(record.totalInterest)],
+  ['Total Loan Cost', money(record.totalLoanCost)],
+  ['Lifetime Cost', money(record.lifetimeCost)],
+  ['Monthly Interest', money(record.monthlyInterest)],
+]
 
 const COLUMNS: { title: string; render: (row: AmortizationRow) => string }[] = [
   { title: 'Year', render: (row) => row.year },
@@ -78,19 +102,22 @@ export const ViewButton: React.FC<Props> = (props) => {
           <DialogTitle>View</DialogTitle>
         </DialogHeader>
         <dl className="grid grid-cols-[14rem_1fr] gap-y-1 text-sm">
-          <dt className="text-muted-foreground">Price</dt>
-          <dd>{Number(record.price).toLocaleString()}</dd>
-          <dt className="text-muted-foreground">Monthly</dt>
-          <dd>{Number(record.monthly).toLocaleString()}</dd>
-          <dt className="text-muted-foreground">Down Payment</dt>
-          <dd>{Number(record.downPaymentFixed).toLocaleString()}</dd>
-          <dt className="text-muted-foreground">Loan Period (Years)</dt>
-          <dd>{Number(record.loanPeriodYears).toLocaleString()}</dd>
-          <dt className="text-muted-foreground">Total Expected Interest</dt>
-          <dd>{Number(record.totalInterest).toLocaleString()}</dd>
-          <dt className="text-muted-foreground">Expected Lifetime Cost</dt>
-          <dd>{Number(record.lifetimeCost).toLocaleString()}</dd>
+          {detailRows(record).map(([label, value]) => (
+            <div key={label} className="col-span-2 grid grid-cols-subgrid">
+              <dt className="text-muted-foreground">{label}</dt>
+              <dd>{value}</dd>
+            </div>
+          ))}
         </dl>
+        <div>
+          <CopyButton
+            getText={() =>
+              detailRows(record)
+                .map(([label, value]) => `${label}: ${value}`)
+                .join('\n')
+            }
+          />
+        </div>
         <Table>
           <TableHeader>
             <TableRow>
