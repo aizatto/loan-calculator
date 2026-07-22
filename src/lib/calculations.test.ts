@@ -138,6 +138,12 @@ describe('amortization schedule', () => {
     expect(last.totalPrinciplePaid).toBeCloseTo(carLoan.loanSize, 6)
     expect(last.remainingPrinciple).toBeCloseTo(0, 6)
     expect(last.remainingInterest).toBeCloseTo(0, 6)
+    // the down payment is paid upfront, not owed across the term
+    expect(last.remainingLifetimeCost).toBeCloseTo(0, 6)
+    expect(rows[0].remainingLifetimeCost).toBeCloseTo(
+      carLoan.totalLoanCost - carLoan.monthly,
+      6
+    )
   })
 
   test('amortized schedule pays off interest and principal exactly', () => {
@@ -147,6 +153,7 @@ describe('amortization schedule', () => {
     expect(last.totalInterestPaid).toBeCloseTo(homeLoan.totalInterest, 4)
     expect(last.totalPrinciplePaid).toBeCloseTo(homeLoan.loanSize, 4)
     expect(last.remainingPrinciple).toBeCloseTo(0, 4)
+    expect(last.remainingLifetimeCost).toBeCloseTo(0, 4)
     // amortized interest is front-loaded: first month strictly above average
     expect(rows[0].interestPaid).toBeGreaterThan(homeLoan.monthlyInterest)
     expect(rows[0].interestPaid).toBeCloseTo(

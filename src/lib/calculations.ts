@@ -63,7 +63,9 @@ export const amortizationSchedule = (
       totalPaid: (i + 1) * record.monthly,
       remainingInterest: record.totalInterest - totalInterestPaid,
       remainingPrinciple: record.loanSize - totalPrinciplePaid,
-      remainingLifetimeCost: record.lifetimeCost - (i + 1) * record.monthly,
+      // the down payment is paid upfront, so only the loan repayments
+      // remain over the term; this reaches zero at the final month
+      remainingLifetimeCost: record.totalLoanCost - (i + 1) * record.monthly,
     })
   }
 
