@@ -12,6 +12,12 @@ const requiredNumber = (message: string) =>
     z.coerce.number({ error: message })
   )
 
+const optionalNumber = () =>
+  z.preprocess(
+    (value) => (value === '' || value === null ? undefined : value),
+    z.coerce.number().optional()
+  )
+
 const baseFormSchema = {
   name: z.string().optional(),
   downPaymentType: z.enum(DownPaymentType),
@@ -24,6 +30,7 @@ const baseFormSchema = {
 export const loanFormSchema = z.object({
   ...baseFormSchema,
   price: requiredNumber('Please input your Price'),
+  sqft: optionalNumber(),
 })
 
 export const budgetFormSchema = z.object({
@@ -37,6 +44,8 @@ export const budgetFormSchema = z.object({
 export const toLoanDTO = (values: LoanFormDTO): LoanFormDTO => ({
   name: values.name,
   price: Number(values.price),
+  // sqft is optional; an empty input must stay undefined, not become 0
+  sqft: values.sqft ? Number(values.sqft) : undefined,
   downPaymentType: values.downPaymentType,
   downPaymentFixed: Number(values.downPaymentFixed),
   downPaymentPercentage: Number(values.downPaymentPercentage),
@@ -61,6 +70,7 @@ export const formToClipboardText = (
   const lines = [
     `Name: ${dto.name ?? ''}`,
     `Price: ${Number(dto.price).toLocaleString()}`,
+    ...(dto.sqft ? [`Sqft: ${Number(dto.sqft).toLocaleString()}`] : []),
     `Down Payment (Type): ${dto.downPaymentType}`,
     dto.downPaymentType === DownPaymentType.PERCENTAGE
       ? `Down Payment: ${dto.downPaymentPercentage} %`
@@ -73,6 +83,9 @@ export const formToClipboardText = (
     `Loan Size: ${Number(preview.loanSize).toLocaleString()}`,
     `Total Interest: ${Number(preview.totalInterest).toLocaleString()}`,
     `Lifetime Cost: ${Number(preview.lifetimeCost).toLocaleString()}`,
+    ...(preview.pricePerSqft !== undefined
+      ? [`Price / Sqft: ${Number(preview.pricePerSqft).toLocaleString()}`]
+      : []),
   ]
   return lines.join('\n')
 }

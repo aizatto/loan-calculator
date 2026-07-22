@@ -16,6 +16,7 @@ interface Props {
   onFinish: (values: LoanFormDTO) => void
   disableSubmit?: boolean
   showCopy?: boolean
+  showSqft?: boolean
 }
 
 export const LoanForm: React.FC<Props> = (props) => {
@@ -48,6 +49,14 @@ export const LoanForm: React.FC<Props> = (props) => {
       </Field>
 
       <FormNumberField control={form.control} name="price" label="Price" />
+
+      {props.showSqft ? (
+        <FormNumberField
+          control={form.control}
+          name="sqft"
+          label="Sqft (optional)"
+        />
+      ) : null}
 
       <Field>
         <FieldLabel>Down Payment (Type)</FieldLabel>
@@ -111,6 +120,12 @@ export const LoanForm: React.FC<Props> = (props) => {
         <dd>{Number(preview.totalInterest).toLocaleString()}</dd>
         <dt className="text-muted-foreground">Lifetime Cost</dt>
         <dd>{Number(preview.lifetimeCost).toLocaleString()}</dd>
+        {preview.pricePerSqft !== undefined ? (
+          <>
+            <dt className="text-muted-foreground">Price / Sqft</dt>
+            <dd>{Number(preview.pricePerSqft).toLocaleString()}</dd>
+          </>
+        ) : null}
       </dl>
 
       {props.disableSubmit && !props.showCopy ? null : (

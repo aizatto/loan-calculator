@@ -14,6 +14,7 @@ type Form = {
 
 export type LoanFormDTO = Form & {
   price: number
+  sqft?: number
 }
 
 export type BudgetFormDTO = Form & {
@@ -28,6 +29,7 @@ export type Details = BudgetFormDTO &
     totalLoanCost: number
     lifetimeCost: number
     monthlyInterest: number
+    pricePerSqft?: number
   }
 
 // export type LoanDetails = LoanForm & {

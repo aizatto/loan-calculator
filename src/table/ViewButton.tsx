@@ -38,6 +38,15 @@ const money = (value: number) =>
 const detailRows = (record: Details): [string, string][] => [
   ['Name', record.name ?? ''],
   ['Price', money(record.price)],
+  ...(record.sqft
+    ? ([
+        ['Sqft', money(record.sqft)],
+        [
+          'Price / Sqft',
+          money(record.pricePerSqft ?? record.price / record.sqft),
+        ],
+      ] as [string, string][])
+    : []),
   ['Monthly', money(record.monthly)],
   ['Down Payment (Type)', record.downPaymentType],
   ...(record.downPaymentType === DownPaymentType.PERCENTAGE

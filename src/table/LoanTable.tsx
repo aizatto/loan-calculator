@@ -14,6 +14,8 @@ import { Details } from '@/components/types'
 export type LoanTableColumnKey =
   | 'name'
   | 'price'
+  | 'sqft'
+  | 'pricePerSqft'
   | 'monthly'
   | 'downPaymentFixed'
   | 'loanPeriodYears'
@@ -33,6 +35,8 @@ interface ColumnDef {
 const COLUMNS: Record<LoanTableColumnKey, ColumnDef> = {
   name: { title: 'Name' },
   price: { title: 'Price', numeric: true },
+  sqft: { title: 'Sqft', numeric: true },
+  pricePerSqft: { title: 'Price / Sqft', numeric: true },
   monthly: { title: 'Monthly', numeric: true },
   downPaymentFixed: { title: 'Down Payment', numeric: true },
   loanPeriodYears: { title: 'Loan Period (Years)' },
@@ -54,6 +58,9 @@ const renderCell = (key: LoanTableColumnKey, record: Details) => {
     return column.format(record)
   }
   const value = record[key]
+  if (value === undefined || value === null) {
+    return ''
+  }
   if (column.numeric) {
     return Number(value).toLocaleString()
   }

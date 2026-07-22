@@ -32,6 +32,7 @@ export const HomePage: React.FC = () => {
   const columns: LoanTableColumnKey[] = [
     'name',
     'price',
+    'pricePerSqft',
     'monthly',
     'downPaymentFixed',
     'loanPeriodYears',
@@ -73,6 +74,7 @@ export const HomePage: React.FC = () => {
         }}
         onFinish={onFinish}
         showCopy
+        showSqft
       />
       <LoanTable
         columns={columns}
@@ -83,6 +85,7 @@ export const HomePage: React.FC = () => {
             <LoadButton onLoad={() => form.reset(toLoanDTO(record))} />
             <EditButton
               record={record}
+              showSqft
               onChange={(values) => {
                 return calculateLoan(values)
               }}

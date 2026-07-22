@@ -110,6 +110,21 @@ describe('home loan (amortized)', () => {
     closeTo(budget.downPaymentFixed, 100000)
     closeTo(budget.totalInterest, loan.totalInterest)
   })
+
+  test('price per sqft is computed when sqft is provided', () => {
+    const withSqft = calculateHomeLoan({
+      price: 1000000,
+      sqft: 1250,
+      downPaymentType: DownPaymentType.PERCENTAGE,
+      downPaymentPercentage: 10,
+      downPaymentFixed: 0,
+      loanPeriodYears: 35,
+      interestRate: 2.88,
+    })
+    closeTo(withSqft.pricePerSqft!, 800)
+    // and stays absent without sqft
+    expect(loan.pricePerSqft).toBeUndefined()
+  })
 })
 
 describe('amortization schedule', () => {

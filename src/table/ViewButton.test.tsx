@@ -7,6 +7,8 @@ const record: Details = {
   key: 'test',
   name: 'My Car',
   price: 260000,
+  sqft: 1000,
+  pricePerSqft: 260,
   monthly: 2654.17,
   downPaymentType: DownPaymentType.PERCENTAGE,
   downPaymentPercentage: 10,
@@ -31,6 +33,8 @@ test('view dialog lists every field and copies them', async () => {
   for (const label of [
     'Name',
     'Price',
+    'Sqft',
+    'Price / Sqft',
     'Monthly',
     'Down Payment (Type)',
     'Down Payment (%)',
@@ -50,6 +54,8 @@ test('view dialog lists every field and copies them', async () => {
   const text = writeText.mock.calls[0][0]
   expect(text).toContain('Name: My Car')
   expect(text).toContain('Price: 260,000')
+  expect(text).toContain('Sqft: 1,000')
+  expect(text).toContain('Price / Sqft: 260')
   expect(text).toContain('Monthly: 2,654.17')
   expect(text).toContain('Down Payment (Type): percentage')
   expect(text).toContain('Down Payment (%): 10 %')

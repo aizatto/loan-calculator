@@ -161,6 +161,7 @@ export const calculateHomeLoan = (dto: LoanFormDTO): Details => {
     lifetimeCost,
     monthlyInterest,
     monthly,
+    pricePerSqft: dto.sqft ? dto.price / dto.sqft : undefined,
   }
 }
 
