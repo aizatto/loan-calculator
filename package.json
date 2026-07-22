@@ -55,8 +55,7 @@
     "preview": "vite preview",
     "test": "vitest run",
     "lint": "eslint src",
-    "predeploy": "pnpm run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "pnpm run build && gh-pages -d dist"
   },
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
