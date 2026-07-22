@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "license": "MIT",
   "homepage": "https://aizatto.github.io/loan-calculator",
+  "engines": {
+    "node": ">=24"
+  },
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
     "@testing-library/jest-dom": "^5.14.1",
