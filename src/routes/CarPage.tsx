@@ -1,37 +1,13 @@
 import { LoanForm } from '../components/LoanForm'
 import { toLoanDTO, useLoanForm } from '../components/loanForms'
 import { Details, DownPaymentType, LoanFormDTO } from '../components/types'
+import { calculateCarLoan as calculateLoan } from '@/lib/calculations'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { DeleteButton } from '../table/DeleteButton'
 import { EditButton } from '../table/EditButton'
 import { LoadButton } from '../table/LoadButton'
 import { LoanTable, LoanTableColumnKey } from '../table/LoanTable'
 import { ViewButton } from '../table/ViewButton'
-
-const calculateLoan = (dto: LoanFormDTO): Details => {
-  if (dto.downPaymentType === DownPaymentType.PERCENTAGE) {
-    dto.downPaymentFixed = dto.price * (dto.downPaymentPercentage / 100)
-  }
-
-  const loanSize = dto.price - dto.downPaymentFixed
-  const totalInterest =
-    (dto.interestRate / 100) * loanSize * dto.loanPeriodYears
-  const totalLoanCost = loanSize + totalInterest
-  const lifetimeCost = totalLoanCost + dto.downPaymentFixed
-  const monthlyInterest = totalInterest / (dto.loanPeriodYears * 12)
-  const monthly = totalLoanCost / (dto.loanPeriodYears * 12)
-
-  return {
-    key: (Math.random() + 1).toString(36).substring(7),
-    ...dto,
-    loanSize,
-    totalInterest,
-    totalLoanCost,
-    lifetimeCost,
-    monthlyInterest,
-    monthly,
-  }
-}
 
 export const CarPage: React.FC = () => {
   const defaultLoan = calculateLoan({

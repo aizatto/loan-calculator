@@ -1,66 +1,10 @@
 import { BudgetForm } from '../components/BudgetForm'
 import { toBudgetDTO, useBudgetForm } from '../components/loanForms'
 import { BudgetFormDTO, Details, DownPaymentType } from '../components/types'
+import { calculateCarBudget as calculateDTO } from '@/lib/calculations'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { LoadButton } from '../table/LoadButton'
 import { LoanTable, LoanTableColumnKey } from '../table/LoanTable'
-
-const calculateDTO = (dto: BudgetFormDTO): Details => {
-  if (dto.downPaymentType === DownPaymentType.FIXED) {
-    return calculateDTOFixed(dto)
-  } else {
-    return calculateDTOPercent(dto)
-  }
-}
-
-const calculateDTOFixed = (dto: BudgetFormDTO): Details => {
-  const lifetimeCost =
-    dto.monthly * dto.loanPeriodYears * 12 + dto.downPaymentFixed
-
-  const totalLoanCost = lifetimeCost - dto.downPaymentFixed
-
-  const totalInterest =
-    totalLoanCost * ((dto.interestRate / 100) * dto.loanPeriodYears)
-  const loanSize = totalLoanCost - totalInterest
-  const price = loanSize + dto.downPaymentFixed
-  const monthlyInterest = totalInterest / (dto.loanPeriodYears * 12)
-
-  return {
-    key: (Math.random() + 1).toString(36).substring(7),
-    ...dto,
-    loanSize,
-    totalInterest,
-    totalLoanCost,
-    lifetimeCost,
-    monthlyInterest,
-    price,
-  }
-}
-
-const calculateDTOPercent = (dto: BudgetFormDTO): Details => {
-  const totalLoanCost = dto.monthly * dto.loanPeriodYears * 12
-
-  const totalInterest =
-    totalLoanCost * ((dto.interestRate / 100) * dto.loanPeriodYears)
-  const loanSize = totalLoanCost - totalInterest
-  dto.downPaymentFixed =
-    loanSize * (1 / (1 - dto.downPaymentPercentage / 100)) - loanSize
-  const price = loanSize + dto.downPaymentFixed
-  const monthlyInterest = totalInterest / (dto.loanPeriodYears * 12)
-
-  const lifetimeCost = totalLoanCost + dto.downPaymentFixed
-
-  return {
-    key: (Math.random() + 1).toString(36).substring(7),
-    ...dto,
-    loanSize,
-    totalInterest,
-    totalLoanCost,
-    lifetimeCost,
-    monthlyInterest,
-    price,
-  }
-}
 
 export const CarBudgetPage: React.FC = () => {
   const [values, setValues] = useLocalStorage<Details[]>('car-budget', [

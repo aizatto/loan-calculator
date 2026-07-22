@@ -1,72 +1,10 @@
 import { BudgetForm } from '../components/BudgetForm'
 import { toBudgetDTO, useBudgetForm } from '../components/loanForms'
 import { BudgetFormDTO, Details, DownPaymentType } from '../components/types'
+import { calculateHomeBudget as calculateMortage } from '@/lib/calculations'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { LoadButton } from '../table/LoadButton'
 import { LoanTable, LoanTableColumnKey } from '../table/LoanTable'
-
-const calculateMortage = (dto: BudgetFormDTO): Details => {
-  if (dto.downPaymentType === DownPaymentType.FIXED) {
-    return mortageFixed(dto)
-  } else {
-    const mortage = mortagePercent(dto)
-    return mortage
-  }
-}
-
-const mortageFixed = (dto: BudgetFormDTO): Details => {
-  const lifetimeCost =
-    dto.monthly * dto.loanPeriodYears * 12 + dto.downPaymentFixed
-
-  const totalLoanCost = lifetimeCost - dto.downPaymentFixed
-
-  const totalInterest =
-    totalLoanCost * ((dto.interestRate / 100) * dto.loanPeriodYears)
-  const loanSize = totalLoanCost - totalInterest
-  const price = loanSize + dto.downPaymentFixed
-  const monthlyInterest = totalInterest / (dto.loanPeriodYears * 12)
-
-  return {
-    key: (Math.random() + 1).toString(36).substring(7),
-    ...dto,
-    loanSize,
-    totalInterest,
-    totalLoanCost,
-    lifetimeCost,
-    monthlyInterest,
-    price,
-  }
-}
-
-// https://en.wikipedia.org/wiki/Mortgage_calculator
-const mortagePercent = (dto: BudgetFormDTO): Details => {
-  const months = dto.loanPeriodYears * 12
-  const rate = dto.interestRate / 100 / 12
-
-  const totalLoanCost = dto.monthly * months
-
-  const loanSize = (dto.monthly * (1 - Math.pow(1 + rate, -1 * months))) / rate
-  const totalInterest = totalLoanCost - loanSize
-
-  dto.downPaymentFixed =
-    loanSize * (1 / (1 - dto.downPaymentPercentage / 100)) - loanSize
-
-  const price = loanSize + dto.downPaymentFixed
-  const monthlyInterest = totalInterest / (dto.loanPeriodYears * 12)
-
-  const lifetimeCost = totalLoanCost + dto.downPaymentFixed
-
-  return {
-    key: (Math.random() + 1).toString(36).substring(7),
-    ...dto,
-    loanSize,
-    totalInterest,
-    totalLoanCost,
-    lifetimeCost,
-    monthlyInterest,
-    price,
-  }
-}
 
 export const HomeBudgetPage: React.FC = () => {
   const [values, setValues] = useLocalStorage<Details[]>('home-budget', [

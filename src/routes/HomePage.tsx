@@ -1,39 +1,10 @@
 import { LoanForm } from '../components/LoanForm'
 import { toLoanDTO, useLoanForm } from '../components/loanForms'
 import { Details, DownPaymentType, LoanFormDTO } from '../components/types'
+import { calculateHomeLoan as calculateLoan } from '@/lib/calculations'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { LoadButton } from '../table/LoadButton'
 import { LoanTable, LoanTableColumnKey } from '../table/LoanTable'
-
-const calculateLoan = (dto: LoanFormDTO): Details => {
-  if (dto.downPaymentType === DownPaymentType.PERCENTAGE) {
-    dto.downPaymentFixed = dto.price * (dto.downPaymentPercentage / 100)
-  }
-
-  const months = dto.loanPeriodYears * 12
-  const rate = dto.interestRate / 100 / 12
-
-  const principle = dto.price - dto.downPaymentFixed
-  const monthly = principle * (rate / (1 - Math.pow(1 + rate, -1 * months)))
-
-  const lifetimeCost = monthly * months + dto.downPaymentFixed
-
-  const totalInterest = lifetimeCost - principle
-  const totalLoanCost = principle + totalInterest - dto.downPaymentFixed
-
-  const monthlyInterest = totalInterest / months
-
-  return {
-    key: (Math.random() + 1).toString(36).substring(7),
-    ...dto,
-    loanSize: principle,
-    totalInterest,
-    totalLoanCost,
-    lifetimeCost,
-    monthlyInterest,
-    monthly,
-  }
-}
 
 export const HomePage: React.FC = () => {
   const [values, setValues] = useLocalStorage<Details[]>('home-loan', [
