@@ -23,7 +23,7 @@ export const LoanForm: React.FC<Props> = (props) => {
     props.initialValues
   )
 
-  let downPayment = {
+  const downPayment = {
     name: 'downPaymentPercentage',
     addonAfter: '',
   }
