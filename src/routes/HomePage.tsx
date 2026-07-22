@@ -1,6 +1,8 @@
 import { LoanForm } from '../components/LoanForm'
+import { toLoanDTO, useLoanForm } from '../components/loanForms'
 import { Details, DownPaymentType, LoanFormDTO } from '../components/types'
 import { useLocalStorage } from '../hooks/useLocalStorage'
+import { LoadButton } from '../table/LoadButton'
 import { LoanTable, LoanTableColumnKey } from '../table/LoanTable'
 
 const calculateLoan = (dto: LoanFormDTO): Details => {
@@ -45,6 +47,8 @@ export const HomePage: React.FC = () => {
     }),
   ])
 
+  const form = useLoanForm(values[0])
+
   const onFinish = (dto: LoanFormDTO) => {
     const newValues = values.slice(0)
     newValues.unshift(calculateLoan(dto))
@@ -88,6 +92,7 @@ export const HomePage: React.FC = () => {
       />
       <h1>Home Loan Calculator</h1>
       <LoanForm
+        form={form}
         initialValues={values[0]}
         onChange={(values) => {
           return calculateLoan(values)
@@ -95,7 +100,13 @@ export const HomePage: React.FC = () => {
         onFinish={onFinish}
         showCopy
       />
-      <LoanTable columns={columns} dataSource={values} />
+      <LoanTable
+        columns={columns}
+        dataSource={values}
+        actions={(record) => (
+          <LoadButton onLoad={() => form.reset(toLoanDTO(record))} />
+        )}
+      />
     </>
   )
 }

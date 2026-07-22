@@ -1,6 +1,8 @@
 import { BudgetForm } from '../components/BudgetForm'
+import { toBudgetDTO, useBudgetForm } from '../components/loanForms'
 import { BudgetFormDTO, Details, DownPaymentType } from '../components/types'
 import { useLocalStorage } from '../hooks/useLocalStorage'
+import { LoadButton } from '../table/LoadButton'
 import { LoanTable, LoanTableColumnKey } from '../table/LoanTable'
 
 const calculateDTO = (dto: BudgetFormDTO): Details => {
@@ -72,6 +74,8 @@ export const CarBudgetPage: React.FC = () => {
     }),
   ])
 
+  const form = useBudgetForm(values[0])
+
   const onFinish = (dto: BudgetFormDTO) => {
     const newValues = values.slice(0)
     newValues.unshift(calculateDTO(dto))
@@ -116,13 +120,20 @@ export const CarBudgetPage: React.FC = () => {
       <h1>Reverse Car Loan Calculator</h1>
       <p>Calculate what car you can afford based on your monthly budget</p>
       <BudgetForm
+        form={form}
         initialValues={values[0]}
         onChange={(values) => {
           return calculateDTO(values)
         }}
         onFinish={onFinish}
       />
-      <LoanTable columns={columns} dataSource={values} />
+      <LoanTable
+        columns={columns}
+        dataSource={values}
+        actions={(record) => (
+          <LoadButton onLoad={() => form.reset(toBudgetDTO(record))} />
+        )}
+      />
     </>
   )
 }

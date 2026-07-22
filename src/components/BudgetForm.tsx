@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Check, Copy } from 'lucide-react'
-import { Controller } from 'react-hook-form'
+import { Controller, type UseFormReturn } from 'react-hook-form'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -15,13 +15,15 @@ import {
 import { FormNumberField } from './FormNumberField'
 
 interface Props {
+  form?: UseFormReturn<BudgetFormDTO>
   initialValues: BudgetFormDTO
   onChange: (values: BudgetFormDTO) => Details
   onFinish: (values: BudgetFormDTO) => void
 }
 
 export const BudgetForm: React.FC<Props> = (props) => {
-  const form = useBudgetForm(props.initialValues)
+  const internalForm = useBudgetForm(props.initialValues)
+  const form = props.form ?? internalForm
   const [copied, setCopied] = useState(false)
 
   const values = form.watch()

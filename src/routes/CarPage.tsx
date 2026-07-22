@@ -1,8 +1,10 @@
 import { LoanForm } from '../components/LoanForm'
+import { toLoanDTO, useLoanForm } from '../components/loanForms'
 import { Details, DownPaymentType, LoanFormDTO } from '../components/types'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { DeleteButton } from '../table/DeleteButton'
 import { EditButton } from '../table/EditButton'
+import { LoadButton } from '../table/LoadButton'
 import { LoanTable, LoanTableColumnKey } from '../table/LoanTable'
 import { ViewButton } from '../table/ViewButton'
 
@@ -44,6 +46,8 @@ export const CarPage: React.FC = () => {
     defaultLoan,
   ])
 
+  const form = useLoanForm(defaultLoan)
+
   const onFinish = (dto: LoanFormDTO) => {
     const newDataSource = dataSource.slice(0)
     newDataSource.unshift(calculateLoan(dto))
@@ -66,6 +70,7 @@ export const CarPage: React.FC = () => {
   const actions = (record: Details) => (
     <>
       <ViewButton record={record} />
+      <LoadButton onLoad={() => form.reset(toLoanDTO(record))} />
       <EditButton
         record={record}
         onChange={(values) => {
@@ -114,6 +119,7 @@ export const CarPage: React.FC = () => {
       />
       <h1>Car Loan Calculator</h1>
       <LoanForm
+        form={form}
         initialValues={defaultLoan}
         onChange={(values) => {
           return calculateLoan(values)
