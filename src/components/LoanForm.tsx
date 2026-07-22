@@ -1,205 +1,121 @@
-import {
-  Form,
-  Input,
-  InputNumber,
-  Button,
-  Radio,
-  Space,
-  FormInstance,
-} from 'antd'
-import { useState } from 'react'
+import { Controller, type UseFormReturn } from 'react-hook-form'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { Field, FieldLabel } from '@/components/ui/field'
 import { DownPaymentType, Details, LoanFormDTO } from './types'
+import { toLoanDTO, useLoanForm } from './loanForms'
+import { FormNumberField } from './FormNumberField'
 
 interface Props {
-  form?: FormInstance
-  initialValues: any
-  onChange: (values: any) => Details
+  form?: UseFormReturn<LoanFormDTO>
+  initialValues: LoanFormDTO
+  onChange: (values: LoanFormDTO) => Details
   onFinish: (values: LoanFormDTO) => void
   disableSubmit?: boolean
 }
 
 export const LoanForm: React.FC<Props> = (props) => {
-  const [previewValues, setPreviewValues] = useState<Details>(
-    props.initialValues
-  )
+  const internalForm = useLoanForm(props.initialValues)
+  const form = props.form ?? internalForm
 
-  let downPayment = {
-    name: 'downPaymentPercentage',
-    addonAfter: '',
-  }
-  switch (previewValues.downPaymentType) {
-    case DownPaymentType.FIXED:
-      downPayment.name = 'downPaymentFixed'
-      downPayment.addonAfter = ''
-      break
-    case DownPaymentType.PERCENTAGE:
-      downPayment.name = 'downPaymentPercentage'
-      downPayment.addonAfter = '%'
-      break
-  }
+  const values = form.watch()
+  const preview = props.onChange(toLoanDTO(values))
+
+  const downPayment =
+    values.downPaymentType === DownPaymentType.FIXED
+      ? { name: 'downPaymentFixed' as const, suffix: undefined }
+      : { name: 'downPaymentPercentage' as const, suffix: '%' }
 
   return (
-    <Form
-      name="basic"
-      form={props.form}
-      labelCol={{ span: 8 }}
-      wrapperCol={{ span: 16 }}
-      initialValues={props.initialValues}
-      onFinish={props.onFinish}
+    <form
       autoComplete="off"
+      onSubmit={form.handleSubmit(props.onFinish)}
+      className="flex max-w-md flex-col gap-4"
     >
-      <div>
-        <div>
-          <Form.Item label="Name" name="name">
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="Price"
-            name="price"
-            rules={[{ required: true, message: 'Please input your Price' }]}
-          >
-            <InputNumber
-              onChange={(value: number) => {
-                setPreviewValues(
-                  props.onChange({
-                    ...previewValues,
-                    price: value,
-                  })
-                )
-              }}
-            />
-          </Form.Item>
-
-          <Form.Item
-            label="Down Payment (Type)"
-            name="downPaymentType"
-            rules={[
-              {
-                required: true,
-                message: 'Please input your Down Payment Type',
-              },
-            ]}
-          >
-            <Radio.Group
-              onChange={(e) => {
-                setPreviewValues(
-                  props.onChange({
-                    ...previewValues,
-                    downPaymentType: e.target.value,
-                  })
-                )
-              }}
-            >
-              <Space direction="vertical">
-                <Radio value="percentage">Percentage</Radio>
-                <Radio value="fixed">Fixed</Radio>
-              </Space>
-            </Radio.Group>
-          </Form.Item>
-
-          <Form.Item
-            label="Down Payment"
-            name={downPayment.name}
-            rules={[
-              { required: true, message: 'Please input your Down Payment' },
-            ]}
-          >
-            <InputNumber
-              addonAfter={downPayment.addonAfter}
-              onChange={(value: number) => {
-                switch (previewValues.downPaymentType) {
-                  case DownPaymentType.FIXED:
-                    setPreviewValues(
-                      props.onChange({
-                        ...previewValues,
-                        downPaymentFixed: value,
-                      })
-                    )
-                    break
-                  case DownPaymentType.PERCENTAGE:
-                    setPreviewValues(
-                      props.onChange({
-                        ...previewValues,
-                        downPaymentPercentage: value,
-                      })
-                    )
-                    break
-                }
-              }}
-            />
-          </Form.Item>
-
-          <Form.Item
-            label="Loan Period (Years)"
-            name="loanPeriodYears"
-            rules={[
-              { required: true, message: 'Please input your Loan Period' },
-            ]}
-          >
-            <InputNumber
-              addonAfter="years"
-              onChange={(value: number) => {
-                setPreviewValues(
-                  props.onChange({
-                    ...previewValues,
-                    loanPeriodYears: value,
-                  })
-                )
-              }}
-            />
-          </Form.Item>
-
-          <Form.Item
-            label="Interest Rate (%)"
-            name="interestRate"
-            rules={[
-              { required: true, message: 'Please input your Interest Rate' },
-            ]}
-          >
-            <InputNumber
-              formatter={(value) => `${value}%`}
-              onChange={(value: number) => {
-                setPreviewValues(
-                  props.onChange({
-                    ...previewValues,
-                    interestRate: value,
-                  })
-                )
-              }}
-            />
-          </Form.Item>
-        </div>
-        <div>
-          <Form.Item label="Monthly" name="monthly">
-            {Number(previewValues.monthly).toLocaleString()}
-          </Form.Item>
-
-          <Form.Item label="Down Payment" name="downPayment">
-            {Number(previewValues.downPaymentFixed).toLocaleString()}
-          </Form.Item>
-
-          <Form.Item label="Loan Size" name="loanSize">
-            {Number(previewValues.loanSize).toLocaleString()}
-          </Form.Item>
-
-          <Form.Item label="Total Interest" name="totalInterest">
-            {Number(previewValues.totalInterest).toLocaleString()}
-          </Form.Item>
-
-          <Form.Item label="Lifetime Cost" name="lifetimeCost">
-            {Number(previewValues.lifetimeCost).toLocaleString()}
-          </Form.Item>
-
-          {props.disableSubmit ? null : (
-            <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-              <Button type="primary" htmlType="submit">
-                Save
-              </Button>
-            </Form.Item>
+      <Field>
+        <FieldLabel htmlFor="name">Name</FieldLabel>
+        <Controller
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <Input id="name" {...field} value={field.value ?? ''} />
           )}
+        />
+      </Field>
+
+      <FormNumberField control={form.control} name="price" label="Price" />
+
+      <Field>
+        <FieldLabel>Down Payment (Type)</FieldLabel>
+        <Controller
+          control={form.control}
+          name="downPaymentType"
+          render={({ field }) => (
+            <RadioGroup
+              value={field.value}
+              onValueChange={field.onChange}
+              className="gap-2"
+            >
+              <div className="flex items-center gap-2">
+                <RadioGroupItem
+                  value={DownPaymentType.PERCENTAGE}
+                  id="downPaymentType-percentage"
+                />
+                <Label htmlFor="downPaymentType-percentage">Percentage</Label>
+              </div>
+              <div className="flex items-center gap-2">
+                <RadioGroupItem
+                  value={DownPaymentType.FIXED}
+                  id="downPaymentType-fixed"
+                />
+                <Label htmlFor="downPaymentType-fixed">Fixed</Label>
+              </div>
+            </RadioGroup>
+          )}
+        />
+      </Field>
+
+      <FormNumberField
+        control={form.control}
+        name={downPayment.name}
+        label="Down Payment"
+        suffix={downPayment.suffix}
+      />
+
+      <FormNumberField
+        control={form.control}
+        name="loanPeriodYears"
+        label="Loan Period (Years)"
+        suffix="years"
+      />
+
+      <FormNumberField
+        control={form.control}
+        name="interestRate"
+        label="Interest Rate (%)"
+        suffix="%"
+      />
+
+      <dl className="grid grid-cols-[10rem_1fr] gap-y-1 text-sm">
+        <dt className="text-muted-foreground">Monthly</dt>
+        <dd>{Number(preview.monthly).toLocaleString()}</dd>
+        <dt className="text-muted-foreground">Down Payment</dt>
+        <dd>{Number(preview.downPaymentFixed).toLocaleString()}</dd>
+        <dt className="text-muted-foreground">Loan Size</dt>
+        <dd>{Number(preview.loanSize).toLocaleString()}</dd>
+        <dt className="text-muted-foreground">Total Interest</dt>
+        <dd>{Number(preview.totalInterest).toLocaleString()}</dd>
+        <dt className="text-muted-foreground">Lifetime Cost</dt>
+        <dd>{Number(preview.lifetimeCost).toLocaleString()}</dd>
+      </dl>
+
+      {props.disableSubmit ? null : (
+        <div>
+          <Button type="submit">Save</Button>
         </div>
-      </div>
-    </Form>
+      )}
+    </form>
   )
 }

@@ -1,76 +1,90 @@
-import { Menu as AntMenu } from 'antd'
 import {
-  GithubOutlined,
-  LinkedinOutlined,
-  QuestionOutlined,
-  ExperimentOutlined,
-  FileAddOutlined,
-  CarOutlined,
-  HomeOutlined,
-} from '@ant-design/icons'
-import { Link } from 'react-router-dom'
+  Briefcase,
+  Car,
+  CircleHelp,
+  FilePlus,
+  FlaskConical,
+  GitBranch,
+  House,
+  type LucideIcon,
+} from 'lucide-react'
+import { Link, useLocation } from 'react-router'
+import { cn } from '@/lib/utils'
+import { buttonVariants } from '@/components/ui/button'
+
+interface InternalItem {
+  to: string
+  label: string
+  icon: LucideIcon
+}
+
+interface ExternalItem {
+  href: string
+  label: string
+  icon: LucideIcon
+}
+
+const internalItems: InternalItem[] = [
+  { to: '/car', label: 'Car Loan Calculator', icon: Car },
+  { to: '/car-budget', label: 'Reverse Car Loan Calculator', icon: Car },
+  { to: '/home', label: 'Home Loan Calculator', icon: House },
+  { to: '/home-budget', label: 'Reverse Home Loan Calculator', icon: House },
+]
+
+const externalItems: ExternalItem[] = [
+  { href: 'https://www.aizatto.com/', label: 'aizatto.com', icon: FilePlus },
+  { href: 'https://www.build.my/', label: 'build.my', icon: FlaskConical },
+  {
+    href: 'https://www.deepthought.app/',
+    label: 'Deep Thought',
+    icon: CircleHelp,
+  },
+  {
+    href: 'https://www.github.com/aizatto/loan-calculator/',
+    label: 'GitHub',
+    icon: GitBranch,
+  },
+  {
+    href: 'https://www.linkedin.com/in/aizatto/',
+    label: 'LinkedIn',
+    icon: Briefcase,
+  },
+]
 
 export const Menu: React.FC = () => {
-  return (
-    <AntMenu mode="horizontal" defaultSelectedKeys={['car']}>
-      <AntMenu.Item key="car" icon={<CarOutlined />}>
-        <Link to="/car">Car Loan Calculator</Link>
-      </AntMenu.Item>
-      <AntMenu.Item key="car-budget" icon={<CarOutlined />}>
-        <Link to="/car-budget">Reverse Car Loan Calculator</Link>
-      </AntMenu.Item>
-      <AntMenu.Item key="home" icon={<HomeOutlined />}>
-        <Link to="/home">Home Loan Calculator</Link>
-      </AntMenu.Item>
-      <AntMenu.Item key="home-budget" icon={<HomeOutlined />}>
-        <Link to="/home-budget">Reverse Home Loan Calculator</Link>
-      </AntMenu.Item>
+  const { pathname } = useLocation()
 
-      <AntMenu.Item key="aizatto.com" icon={<FileAddOutlined />}>
+  return (
+    <nav className="flex flex-wrap items-center gap-1 border-b px-2 py-2">
+      {internalItems.map((item) => {
+        // "/" renders CarPage, so treat it as /car for highlighting
+        const active =
+          pathname === item.to || (pathname === '/' && item.to === '/car')
+        return (
+          <Link
+            key={item.to}
+            to={item.to}
+            className={cn(
+              buttonVariants({ variant: active ? 'secondary' : 'ghost' })
+            )}
+          >
+            <item.icon data-icon="inline-start" />
+            {item.label}
+          </Link>
+        )
+      })}
+      {externalItems.map((item) => (
         <a
-          href="https://www.aizatto.com/"
+          key={item.href}
+          href={item.href}
           target="_blank"
           rel="noopener noreferrer"
+          className={cn(buttonVariants({ variant: 'ghost' }))}
         >
-          aizatto.com
+          <item.icon data-icon="inline-start" />
+          {item.label}
         </a>
-      </AntMenu.Item>
-      <AntMenu.Item key="build.my" icon={<ExperimentOutlined />}>
-        <a
-          href="https://www.build.my/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          build.my
-        </a>
-      </AntMenu.Item>
-      <AntMenu.Item key="deepthought" icon={<QuestionOutlined />}>
-        <a
-          href="https://www.deepthought.app/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Deep Thought
-        </a>
-      </AntMenu.Item>
-      <AntMenu.Item key="github" icon={<GithubOutlined />}>
-        <a
-          href="https://www.github.com/aizatto/loan-calculator/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          GitHub
-        </a>
-      </AntMenu.Item>
-      <AntMenu.Item key="linkedin" icon={<LinkedinOutlined />}>
-        <a
-          href="https://www.linkedin.com/in/aizatto/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          LinkedIn
-        </a>
-      </AntMenu.Item>
-    </AntMenu>
+      ))}
+    </nav>
   )
 }

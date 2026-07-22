@@ -1,5 +1,4 @@
-import './App.css'
-import { HashRouter, Route, Routes } from 'react-router-dom'
+import { HashRouter, Route, Routes } from 'react-router'
 import { Menu } from './components/menu'
 import { CarPage } from './routes/CarPage'
 import { CarBudgetPage } from './routes/CarBudgetPage'
@@ -11,13 +10,15 @@ function App() {
     <>
       <HashRouter>
         <Menu />
-        <Routes>
-          <Route path="/" element={<CarPage />} />
-          <Route path="/car" element={<CarPage />} />
-          <Route path="/car-budget" element={<CarBudgetPage />} />
-          <Route path="/home" element={<HomePage />} />
-          <Route path="/home-budget" element={<HomeBudgetPage />} />
-        </Routes>
+        <main className="flex flex-col gap-4 p-4">
+          <Routes>
+            <Route path="/" element={<CarPage />} />
+            <Route path="/car" element={<CarPage />} />
+            <Route path="/car-budget" element={<CarBudgetPage />} />
+            <Route path="/home" element={<HomePage />} />
+            <Route path="/home-budget" element={<HomeBudgetPage />} />
+          </Routes>
+        </main>
       </HashRouter>
     </>
   )
