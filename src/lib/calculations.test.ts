@@ -1,4 +1,5 @@
 import {
+  amortizationSchedule,
   calculateCarBudget,
   calculateCarLoan,
   calculateHomeBudget,
@@ -108,5 +109,49 @@ describe('home loan (amortized)', () => {
     closeTo(budget.price, 1000000)
     closeTo(budget.downPaymentFixed, 100000)
     closeTo(budget.totalInterest, loan.totalInterest)
+  })
+})
+
+describe('amortization schedule', () => {
+  const carLoan = calculateCarLoan({
+    price: 260000,
+    downPaymentType: DownPaymentType.PERCENTAGE,
+    downPaymentPercentage: 10,
+    downPaymentFixed: 0,
+    loanPeriodYears: 9,
+    interestRate: 2.5,
+  })
+  const homeLoan = calculateHomeLoan({
+    price: 1000000,
+    downPaymentType: DownPaymentType.PERCENTAGE,
+    downPaymentPercentage: 10,
+    downPaymentFixed: 0,
+    loanPeriodYears: 35,
+    interestRate: 2.88,
+  })
+
+  test('flat schedule pays off interest and principal exactly', () => {
+    const rows = amortizationSchedule(carLoan, 'flat')
+    expect(rows).toHaveLength(9 * 12)
+    const last = rows[rows.length - 1]
+    expect(last.totalInterestPaid).toBeCloseTo(carLoan.totalInterest, 6)
+    expect(last.totalPrinciplePaid).toBeCloseTo(carLoan.loanSize, 6)
+    expect(last.remainingPrinciple).toBeCloseTo(0, 6)
+    expect(last.remainingInterest).toBeCloseTo(0, 6)
+  })
+
+  test('amortized schedule pays off interest and principal exactly', () => {
+    const rows = amortizationSchedule(homeLoan, 'amortized')
+    expect(rows).toHaveLength(35 * 12)
+    const last = rows[rows.length - 1]
+    expect(last.totalInterestPaid).toBeCloseTo(homeLoan.totalInterest, 4)
+    expect(last.totalPrinciplePaid).toBeCloseTo(homeLoan.loanSize, 4)
+    expect(last.remainingPrinciple).toBeCloseTo(0, 4)
+    // amortized interest is front-loaded: first month strictly above average
+    expect(rows[0].interestPaid).toBeGreaterThan(homeLoan.monthlyInterest)
+    expect(rows[0].interestPaid).toBeCloseTo(
+      homeLoan.loanSize * (0.0288 / 12),
+      6
+    )
   })
 })

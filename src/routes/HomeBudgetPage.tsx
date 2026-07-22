@@ -4,8 +4,10 @@ import { BudgetFormDTO, Details, DownPaymentType } from '../components/types'
 import { calculateHomeBudget as calculateMortage } from '@/lib/calculations'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { DeleteButton } from '../table/DeleteButton'
+import { EditBudgetButton } from '../table/EditBudgetButton'
 import { LoadButton } from '../table/LoadButton'
 import { LoanTable, LoanTableColumnKey } from '../table/LoanTable'
+import { ViewButton } from '../table/ViewButton'
 
 export const HomeBudgetPage: React.FC = () => {
   const [values, setValues] = useLocalStorage<Details[]>('home-budget', [
@@ -77,7 +79,22 @@ export const HomeBudgetPage: React.FC = () => {
         dataSource={values}
         actions={(record) => (
           <>
+            <ViewButton record={record} kind="amortized" />
             <LoadButton onLoad={() => form.reset(toBudgetDTO(record))} />
+            <EditBudgetButton
+              record={record}
+              onChange={(values) => {
+                return calculateMortage(values)
+              }}
+              onUpdate={(dto) => {
+                const details = calculateMortage(dto)
+                const newValues = values.slice(0)
+                const index = newValues.indexOf(record)
+                newValues[index] = details
+                setValues(newValues)
+              }}
+              onDuplicate={onFinish}
+            />
             <DeleteButton
               onDelete={() => {
                 const newValues = values.slice(0)

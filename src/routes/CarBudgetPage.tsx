@@ -4,8 +4,10 @@ import { BudgetFormDTO, Details, DownPaymentType } from '../components/types'
 import { calculateCarBudget as calculateDTO } from '@/lib/calculations'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { DeleteButton } from '../table/DeleteButton'
+import { EditBudgetButton } from '../table/EditBudgetButton'
 import { LoadButton } from '../table/LoadButton'
 import { LoanTable, LoanTableColumnKey } from '../table/LoanTable'
+import { ViewButton } from '../table/ViewButton'
 
 export const CarBudgetPage: React.FC = () => {
   const [values, setValues] = useLocalStorage<Details[]>('car-budget', [
@@ -77,7 +79,22 @@ export const CarBudgetPage: React.FC = () => {
         dataSource={values}
         actions={(record) => (
           <>
+            <ViewButton record={record} kind="flat" />
             <LoadButton onLoad={() => form.reset(toBudgetDTO(record))} />
+            <EditBudgetButton
+              record={record}
+              onChange={(values) => {
+                return calculateDTO(values)
+              }}
+              onUpdate={(dto) => {
+                const details = calculateDTO(dto)
+                const newValues = values.slice(0)
+                const index = newValues.indexOf(record)
+                newValues[index] = details
+                setValues(newValues)
+              }}
+              onDuplicate={onFinish}
+            />
             <DeleteButton
               onDelete={() => {
                 const newValues = values.slice(0)

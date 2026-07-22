@@ -16,60 +16,47 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import {
+  amortizationSchedule,
+  type AmortizationKind,
+  type AmortizationRow,
+} from '@/lib/calculations'
 import { Details } from '../components/types'
 
 interface Props {
   record: Details
+  kind: AmortizationKind
 }
 
-interface AmortizationRow {
-  key: string
-  month: number
-  year: string
-  interestPaid: number
-  principlePaid: number
-  totalInterestPaid: number
-  totalPrinciplePaid: number
-  totalPaid: number
-  remainingInterest: number
-  remainingPrinciple: number
-  remainingLifetimeCost: number
-}
+// snap floating point residue (e.g. -1e-10 rendering as "-0") to zero
+const money = (value: number) =>
+  (Math.abs(value) < 0.0005 ? 0 : value).toLocaleString()
 
 const COLUMNS: { title: string; render: (row: AmortizationRow) => string }[] = [
   { title: 'Year', render: (row) => row.year },
   { title: 'Month', render: (row) => `${row.month}` },
-  {
-    title: 'Interest Paid',
-    render: (row) => Number(row.interestPaid).toLocaleString(),
-  },
-  {
-    title: 'Principle Paid',
-    render: (row) => Number(row.principlePaid).toLocaleString(),
-  },
+  { title: 'Interest Paid', render: (row) => money(row.interestPaid) },
+  { title: 'Principle Paid', render: (row) => money(row.principlePaid) },
   {
     title: 'Total Interest Paid',
-    render: (row) => Number(row.totalInterestPaid).toLocaleString(),
+    render: (row) => money(row.totalInterestPaid),
   },
   {
     title: 'Total Principle Paid',
-    render: (row) => Number(row.totalPrinciplePaid).toLocaleString(),
+    render: (row) => money(row.totalPrinciplePaid),
   },
-  {
-    title: 'Total Paid',
-    render: (row) => Number(row.totalPaid).toLocaleString(),
-  },
+  { title: 'Total Paid', render: (row) => money(row.totalPaid) },
   {
     title: 'Remaining Interest',
-    render: (row) => Number(row.remainingInterest).toLocaleString(),
+    render: (row) => money(row.remainingInterest),
   },
   {
     title: 'Remaining Principle',
-    render: (row) => Number(row.remainingPrinciple).toLocaleString(),
+    render: (row) => money(row.remainingPrinciple),
   },
   {
     title: 'Remaining Lifetime Cost',
-    render: (row) => Number(row.remainingLifetimeCost).toLocaleString(),
+    render: (row) => money(row.remainingLifetimeCost),
   },
 ]
 
@@ -77,36 +64,7 @@ export const ViewButton: React.FC<Props> = (props) => {
   const [open, setOpen] = useState(false)
 
   const record = props.record
-
-  const months = record.loanPeriodYears * 12
-  const rows: AmortizationRow[] = []
-
-  let totalPrinciplePaid = 0
-  let totalInterestPaid = 0
-
-  const monthlyInterestRate = (months * (months + 1)) / 2
-
-  for (let i = 0; i < months; i++) {
-    const interestPaid =
-      ((months - i) / monthlyInterestRate) * record.totalInterest
-    const principlePaid = record.monthly - interestPaid
-    totalPrinciplePaid += principlePaid
-    totalInterestPaid += interestPaid
-
-    rows.push({
-      key: `${record.key}:${i}`,
-      year: `Y${Math.floor(i / 12) + 1}M${(i % 12) + 1}`,
-      month: i + 1,
-      interestPaid,
-      principlePaid,
-      totalInterestPaid,
-      totalPrinciplePaid,
-      totalPaid: (i + 1) * record.monthly,
-      remainingInterest: record.totalInterest - totalInterestPaid,
-      remainingPrinciple: record.price - totalPrinciplePaid,
-      remainingLifetimeCost: record.lifetimeCost - (i + 1) * record.monthly,
-    })
-  }
+  const rows = amortizationSchedule(record, props.kind)
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

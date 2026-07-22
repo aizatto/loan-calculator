@@ -19,6 +19,7 @@ interface Props {
   initialValues: BudgetFormDTO
   onChange: (values: BudgetFormDTO) => Details
   onFinish: (values: BudgetFormDTO) => void
+  disableSubmit?: boolean
 }
 
 export const BudgetForm: React.FC<Props> = (props) => {
@@ -130,13 +131,15 @@ export const BudgetForm: React.FC<Props> = (props) => {
         <dd>{Number(preview.lifetimeCost).toLocaleString()}</dd>
       </dl>
 
-      <div className="flex gap-2">
-        <Button type="submit">Save</Button>
-        <Button type="button" variant="outline" onClick={handleCopy}>
-          {copied ? <Check /> : <Copy />}
-          {copied ? 'Copied' : 'Copy'}
-        </Button>
-      </div>
+      {props.disableSubmit ? null : (
+        <div className="flex gap-2">
+          <Button type="submit">Save</Button>
+          <Button type="button" variant="outline" onClick={handleCopy}>
+            {copied ? <Check /> : <Copy />}
+            {copied ? 'Copied' : 'Copy'}
+          </Button>
+        </div>
+      )}
     </form>
   )
 }

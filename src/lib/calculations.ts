@@ -7,6 +7,69 @@ import {
 
 const key = () => (Math.random() + 1).toString(36).substring(7)
 
+export type AmortizationKind = 'flat' | 'amortized'
+
+export interface AmortizationRow {
+  key: string
+  month: number
+  year: string
+  interestPaid: number
+  principlePaid: number
+  totalInterestPaid: number
+  totalPrinciplePaid: number
+  totalPaid: number
+  remainingInterest: number
+  remainingPrinciple: number
+  remainingLifetimeCost: number
+}
+
+// Monthly repayment schedule for a saved loan.
+// - flat: interest allocated by the Rule of 78 (sum of digits), as used for
+//   flat-rate car loans
+// - amortized: declining-balance interest, matching the home loan formula
+export const amortizationSchedule = (
+  record: Details,
+  kind: AmortizationKind
+): AmortizationRow[] => {
+  const months = record.loanPeriodYears * 12
+  const monthlyRate = record.interestRate / 100 / 12
+  const sumOfMonths = (months * (months + 1)) / 2
+
+  const rows: AmortizationRow[] = []
+
+  let totalPrinciplePaid = 0
+  let totalInterestPaid = 0
+  let balance = record.loanSize
+
+  for (let i = 0; i < months; i++) {
+    const interestPaid =
+      kind === 'flat'
+        ? ((months - i) / sumOfMonths) * record.totalInterest
+        : balance * monthlyRate
+    const principlePaid = record.monthly - interestPaid
+
+    totalPrinciplePaid += principlePaid
+    totalInterestPaid += interestPaid
+    balance -= principlePaid
+
+    rows.push({
+      key: `${record.key}:${i}`,
+      year: `Y${Math.floor(i / 12) + 1}M${(i % 12) + 1}`,
+      month: i + 1,
+      interestPaid,
+      principlePaid,
+      totalInterestPaid,
+      totalPrinciplePaid,
+      totalPaid: (i + 1) * record.monthly,
+      remainingInterest: record.totalInterest - totalInterestPaid,
+      remainingPrinciple: record.loanSize - totalPrinciplePaid,
+      remainingLifetimeCost: record.lifetimeCost - (i + 1) * record.monthly,
+    })
+  }
+
+  return rows
+}
+
 // Car loans use flat (simple) interest on the borrowed principal:
 // totalLoanCost = loanSize * (1 + rate * years)
 export const calculateCarLoan = (dto: LoanFormDTO): Details => {
