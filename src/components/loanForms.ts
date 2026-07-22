@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm, type Resolver } from 'react-hook-form'
 import { z } from 'zod'
-import { BudgetFormDTO, DownPaymentType, LoanFormDTO } from './types'
+import { BudgetFormDTO, Details, DownPaymentType, LoanFormDTO } from './types'
 
 // HTML number inputs yield strings (and '' when cleared); antd's InputNumber
 // yielded numbers. Coerce on validation so the DTOs keep their exact shape,
@@ -53,6 +53,29 @@ export const toBudgetDTO = (values: BudgetFormDTO): BudgetFormDTO => ({
   loanPeriodYears: Number(values.loanPeriodYears),
   interestRate: Number(values.interestRate),
 })
+
+export const formToClipboardText = (
+  dto: LoanFormDTO,
+  preview: Details
+): string => {
+  const lines = [
+    `Name: ${dto.name ?? ''}`,
+    `Price: ${Number(dto.price).toLocaleString()}`,
+    `Down Payment (Type): ${dto.downPaymentType}`,
+    dto.downPaymentType === DownPaymentType.PERCENTAGE
+      ? `Down Payment: ${dto.downPaymentPercentage} %`
+      : `Down Payment: ${Number(dto.downPaymentFixed).toLocaleString()}`,
+    `Loan Period (Years): ${dto.loanPeriodYears} years`,
+    `Interest Rate: ${dto.interestRate} %`,
+    '---',
+    `Monthly: ${Number(preview.monthly).toLocaleString()}`,
+    `Down Payment: ${Number(preview.downPaymentFixed).toLocaleString()}`,
+    `Loan Size: ${Number(preview.loanSize).toLocaleString()}`,
+    `Total Interest: ${Number(preview.totalInterest).toLocaleString()}`,
+    `Lifetime Cost: ${Number(preview.lifetimeCost).toLocaleString()}`,
+  ]
+  return lines.join('\n')
+}
 
 export const useLoanForm = (initialValues: LoanFormDTO) =>
   useForm<LoanFormDTO>({

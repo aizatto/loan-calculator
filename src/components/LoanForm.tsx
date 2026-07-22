@@ -1,3 +1,5 @@
+import { useState } from 'react'
+import { Check, Copy } from 'lucide-react'
 import { Controller, type UseFormReturn } from 'react-hook-form'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -5,7 +7,7 @@ import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Field, FieldLabel } from '@/components/ui/field'
 import { DownPaymentType, Details, LoanFormDTO } from './types'
-import { toLoanDTO, useLoanForm } from './loanForms'
+import { formToClipboardText, toLoanDTO, useLoanForm } from './loanForms'
 import { FormNumberField } from './FormNumberField'
 
 interface Props {
@@ -14,11 +16,13 @@ interface Props {
   onChange: (values: LoanFormDTO) => Details
   onFinish: (values: LoanFormDTO) => void
   disableSubmit?: boolean
+  showCopy?: boolean
 }
 
 export const LoanForm: React.FC<Props> = (props) => {
   const internalForm = useLoanForm(props.initialValues)
   const form = props.form ?? internalForm
+  const [copied, setCopied] = useState(false)
 
   const values = form.watch()
   const preview = props.onChange(toLoanDTO(values))
@@ -27,6 +31,19 @@ export const LoanForm: React.FC<Props> = (props) => {
     values.downPaymentType === DownPaymentType.FIXED
       ? { name: 'downPaymentFixed' as const, suffix: undefined }
       : { name: 'downPaymentPercentage' as const, suffix: '%' }
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(
+        formToClipboardText(toLoanDTO(values), preview)
+      )
+    } catch {
+      // clipboard access denied (e.g. document not focused); no feedback
+      return
+    }
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
 
   return (
     <form
@@ -111,9 +128,15 @@ export const LoanForm: React.FC<Props> = (props) => {
         <dd>{Number(preview.lifetimeCost).toLocaleString()}</dd>
       </dl>
 
-      {props.disableSubmit ? null : (
-        <div>
-          <Button type="submit">Save</Button>
+      {props.disableSubmit && !props.showCopy ? null : (
+        <div className="flex gap-2">
+          {props.disableSubmit ? null : <Button type="submit">Save</Button>}
+          {props.showCopy ? (
+            <Button type="button" variant="outline" onClick={handleCopy}>
+              {copied ? <Check /> : <Copy />}
+              {copied ? 'Copied' : 'Copy'}
+            </Button>
+          ) : null}
         </div>
       )}
     </form>

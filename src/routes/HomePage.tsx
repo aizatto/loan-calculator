@@ -93,6 +93,7 @@ export const HomePage: React.FC = () => {
           return calculateLoan(values)
         }}
         onFinish={onFinish}
+        showCopy
       />
       <LoanTable columns={columns} dataSource={values} />
     </>
