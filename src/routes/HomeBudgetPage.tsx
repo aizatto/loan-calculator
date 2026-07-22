@@ -1,4 +1,3 @@
-import { Helmet } from 'react-helmet'
 import { BudgetForm } from '../components/BudgetForm'
 import { BudgetFormDTO, Details, DownPaymentType } from '../components/types'
 import { useLocalStorage } from '../hooks/useLocalStorage'
@@ -101,26 +100,25 @@ export const HomeBudgetPage: React.FC = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Home Budget Calculator</title>
-        <link
-          rel="apple-touch-icon"
-          sizes="180x180"
-          href={`${import.meta.env.BASE_URL}favicons/home/apple-touch-icon.png`}
-        />
-        <link
-          rel="icon"
-          type="image/png"
-          sizes="32x32"
-          href={`${import.meta.env.BASE_URL}favicons/home/favicon-32x32.png`}
-        />
-        <link
-          rel="icon"
-          type="image/png"
-          sizes="16x16"
-          href={`${import.meta.env.BASE_URL}favicons/home/favicon-16x16.png`}
-        />
-      </Helmet>
+      {/* React 19 hoists title/link tags into <head> */}
+      <title>Home Budget Calculator</title>
+      <link
+        rel="apple-touch-icon"
+        sizes="180x180"
+        href={`${import.meta.env.BASE_URL}favicons/home/apple-touch-icon.png`}
+      />
+      <link
+        rel="icon"
+        type="image/png"
+        sizes="32x32"
+        href={`${import.meta.env.BASE_URL}favicons/home/favicon-32x32.png`}
+      />
+      <link
+        rel="icon"
+        type="image/png"
+        sizes="16x16"
+        href={`${import.meta.env.BASE_URL}favicons/home/favicon-16x16.png`}
+      />
       <h1>Reverse Home Loan Calculator</h1>
       <p>Calculate what home you can afford based on your monthly budget</p>
       <BudgetForm

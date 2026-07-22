@@ -39,7 +39,7 @@ export const LoanForm: React.FC<Props> = (props) => {
         <Controller
           control={form.control}
           name="name"
-          render={({ field: { ref: _ref, ...field } }) => (
+          render={({ field }) => (
             <Input id="name" {...field} value={field.value ?? ''} />
           )}
         />

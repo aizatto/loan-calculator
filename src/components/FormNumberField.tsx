@@ -24,7 +24,7 @@ export function FormNumberField<T extends FieldValues>({
     <Controller
       control={control}
       name={name}
-      render={({ field: { ref: _ref, ...field }, fieldState }) => (
+      render={({ field, fieldState }) => (
         <Field data-invalid={fieldState.invalid || undefined}>
           <FieldLabel htmlFor={name}>{label}</FieldLabel>
           <div className="flex items-center gap-2">

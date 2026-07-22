@@ -47,12 +47,9 @@ function Button({
   size = 'default',
   asChild = false,
   ...props
-}: React.ComponentPropsWithoutRef<'button'> &
+}: React.ComponentProps<'button'> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean
-    // React.ComponentProps<"button"> under @types/react 17 types `ref` as
-    // LegacyRef (string refs included), which Slot.Root rejects; narrow it.
-    ref?: React.Ref<HTMLButtonElement>
   }) {
   const Comp = asChild ? Slot.Root : 'button'
 
