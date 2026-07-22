@@ -3,6 +3,7 @@ import { toLoanDTO, useLoanForm } from '../components/loanForms'
 import { Details, DownPaymentType, LoanFormDTO } from '../components/types'
 import { calculateHomeLoan as calculateLoan } from '@/lib/calculations'
 import { useLocalStorage } from '../hooks/useLocalStorage'
+import { DeleteButton } from '../table/DeleteButton'
 import { LoadButton } from '../table/LoadButton'
 import { LoanTable, LoanTableColumnKey } from '../table/LoanTable'
 
@@ -75,7 +76,17 @@ export const HomePage: React.FC = () => {
         columns={columns}
         dataSource={values}
         actions={(record) => (
-          <LoadButton onLoad={() => form.reset(toLoanDTO(record))} />
+          <>
+            <LoadButton onLoad={() => form.reset(toLoanDTO(record))} />
+            <DeleteButton
+              onDelete={() => {
+                const newValues = values.slice(0)
+                const index = newValues.indexOf(record)
+                newValues.splice(index, 1)
+                setValues(newValues)
+              }}
+            />
+          </>
         )}
       />
     </>

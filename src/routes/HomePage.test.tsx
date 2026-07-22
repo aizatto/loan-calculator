@@ -42,3 +42,22 @@ test('load button fills the form with the selected row', async () => {
   expect(price.value).toBe('222222')
   expect(screen.getByLabelText<HTMLInputElement>('Name').value).toBe('row-b')
 })
+
+test('delete button removes the row after confirmation', async () => {
+  window.localStorage.setItem(
+    'home-loan',
+    JSON.stringify([row('a', 111111), row('b', 222222)])
+  )
+
+  render(<HomePage />)
+  expect(screen.getAllByRole('button', { name: 'Delete' })).toHaveLength(2)
+
+  await userEvent.click(screen.getAllByRole('button', { name: 'Delete' })[0])
+  // confirm in the alert dialog
+  await userEvent.click(screen.getByRole('button', { name: 'Delete' }))
+
+  expect(screen.getAllByRole('button', { name: 'Delete' })).toHaveLength(1)
+  const stored = JSON.parse(window.localStorage.getItem('home-loan')!)
+  expect(stored).toHaveLength(1)
+  expect(stored[0].key).toBe('b')
+})
