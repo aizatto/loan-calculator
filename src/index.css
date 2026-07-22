@@ -132,4 +132,8 @@ body {
   html {
     @apply font-sans;
   }
+  /* Tailwind preflight strips heading styles; restore page titles */
+  h1 {
+    @apply text-2xl font-semibold;
+  }
 }

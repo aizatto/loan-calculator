@@ -1,57 +1,49 @@
 import { useState } from 'react'
-import { Modal, Button, Form } from 'antd'
-import { EditOutlined } from '@ant-design/icons'
+import { Pencil } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
 import { Details, LoanFormDTO } from '../components/types'
 import { LoanForm } from '../components/LoanForm'
+import { toLoanDTO, useLoanForm } from '../components/loanForms'
 
 interface Props {
   record: Details
-  onChange: (values: any) => Details
+  onChange: (values: LoanFormDTO) => Details
   onUpdate: (values: LoanFormDTO) => void
   onDuplicate: (values: LoanFormDTO) => void
 }
 
 export const EditButton: React.FC<Props> = (props) => {
-  const [form] = Form.useForm()
-  const [isModalVisible, setIsModalVisible] = useState(false)
+  const [open, setOpen] = useState(false)
+  const form = useLoanForm(props.record)
 
-  const showModal = () => {
-    setIsModalVisible(true)
-  }
-
-  const handleOk = () => {
-    setIsModalVisible(false)
-    form.submit()
+  const handleUpdate = () => {
+    setOpen(false)
+    form.handleSubmit(props.onUpdate)()
   }
 
   const handleDuplicate = () => {
-    props.onDuplicate(form.getFieldsValue())
-  }
-
-  const handleCancel = () => {
-    setIsModalVisible(false)
+    props.onDuplicate(toLoanDTO(form.getValues()))
   }
 
   return (
-    <>
-      <Button type="primary" onClick={showModal} icon={<EditOutlined />} />
-      <Modal
-        title="Edit"
-        visible={isModalVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
-        footer={[
-          <Button key="cancel" onClick={handleCancel}>
-            Cancel
-          </Button>,
-          <Button key="submit" type="primary" onClick={handleOk}>
-            Update
-          </Button>,
-          <Button key="duplicate" type="primary" onClick={handleDuplicate}>
-            Save as Duplicate
-          </Button>,
-        ]}
-      >
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button size="icon" aria-label="Edit">
+          <Pencil />
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
+        <DialogHeader>
+          <DialogTitle>Edit</DialogTitle>
+        </DialogHeader>
         <LoanForm
           form={form}
           initialValues={props.record}
@@ -59,7 +51,14 @@ export const EditButton: React.FC<Props> = (props) => {
           onFinish={props.onUpdate}
           disableSubmit
         />
-      </Modal>
-    </>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => setOpen(false)}>
+            Cancel
+          </Button>
+          <Button onClick={handleUpdate}>Update</Button>
+          <Button onClick={handleDuplicate}>Save as Duplicate</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   )
 }

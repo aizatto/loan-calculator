@@ -1,42 +1,75 @@
 import { useState } from 'react'
-import { Modal, Button, Table } from 'antd'
-import { EyeOutlined } from '@ant-design/icons'
+import { Eye } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
 import { Details } from '../components/types'
-
-type AlignType = 'left' | 'center' | 'right'
 
 interface Props {
   record: Details
 }
 
-interface DataSource {
+interface AmortizationRow {
   key: string
   month: number
   year: number
   interestPaid: number
   principlePaid: number
   totalPrinciplePaid: number
-  totalInterestPaid: number
   totalPaid: number
   remainingPrinciple: number
   lifetimeCostRemaining: number
 }
 
+const COLUMNS: { title: string; render: (row: AmortizationRow) => string }[] = [
+  { title: 'Year', render: (row) => `${row.year}` },
+  { title: 'Month', render: (row) => `${row.month}` },
+  {
+    title: 'Interest Paid',
+    render: (row) => Number(row.interestPaid).toLocaleString(),
+  },
+  {
+    title: 'Principle Paid',
+    render: (row) => Number(row.principlePaid).toLocaleString(),
+  },
+  {
+    title: 'Total Principle Paid',
+    render: (row) => Number(row.totalPrinciplePaid).toLocaleString(),
+  },
+  {
+    title: 'Remaining Principle',
+    render: (row) => Number(row.remainingPrinciple).toLocaleString(),
+  },
+  {
+    title: 'Total Paid',
+    render: (row) => Number(row.totalPaid).toLocaleString(),
+  },
+  {
+    title: 'Remaining Lifetime Cost',
+    render: (row) => Number(row.lifetimeCostRemaining).toLocaleString(),
+  },
+]
+
 export const ViewButton: React.FC<Props> = (props) => {
-  const [isModalVisible, setIsModalVisible] = useState(false)
-
-  const showModal = () => {
-    setIsModalVisible(true)
-  }
-
-  const handleCancel = () => {
-    setIsModalVisible(false)
-  }
+  const [open, setOpen] = useState(false)
 
   const record = props.record
 
   const months = record.loanPeriodYears * 12
-  const dataSource: DataSource[] = []
+  const rows: AmortizationRow[] = []
 
   let totalPrinciplePaid = 0
 
@@ -46,121 +79,67 @@ export const ViewButton: React.FC<Props> = (props) => {
     const principlePaid = record.monthly - interestPaid
     totalPrinciplePaid += principlePaid
 
-    dataSource.push({
+    rows.push({
       key: `${record.key}:${i}`,
       year: Math.floor(i / 12),
       month: i + 1,
       interestPaid,
       principlePaid,
       totalPrinciplePaid,
-      totalInterestPaid: 0,
       totalPaid: (i + 1) * record.monthly,
       remainingPrinciple: record.price - totalPrinciplePaid,
       lifetimeCostRemaining: record.lifetimeCost - (i + 1) * record.monthly,
     })
   }
 
-  const columns = [
-    {
-      title: 'Year',
-      dataIndex: 'year',
-      align: 'right' as AlignType,
-    },
-    {
-      title: 'Month',
-      dataIndex: 'month',
-      align: 'right' as AlignType,
-    },
-    {
-      title: 'Interest Paid',
-      dataIndex: 'interestPaid',
-      align: 'right' as AlignType,
-      render: (value: number) => {
-        return Number(value).toLocaleString()
-      },
-    },
-    {
-      title: 'Principle Paid',
-      dataIndex: 'principlePaid',
-      align: 'right' as AlignType,
-      render: (value: number) => {
-        return Number(value).toLocaleString()
-      },
-    },
-    {
-      title: 'Total Principle Paid',
-      dataIndex: 'totalPrinciplePaid',
-      align: 'right' as AlignType,
-      render: (value: number) => {
-        return Number(value).toLocaleString()
-      },
-    },
-    {
-      title: 'Remaining Principle',
-      dataIndex: 'remainingPrinciple',
-      align: 'right' as AlignType,
-      render: (value: number) => {
-        return Number(value).toLocaleString()
-      },
-    },
-    {
-      title: 'Total Paid',
-      dataIndex: 'totalPaid',
-      align: 'right' as AlignType,
-      render: (value: number) => {
-        return Number(value).toLocaleString()
-      },
-    },
-    {
-      title: 'Remaining Lifetime Cost',
-      dataIndex: 'lifetimeCostRemaining',
-      align: 'right' as AlignType,
-      render: (value: number) => {
-        return Number(value).toLocaleString()
-      },
-    },
-  ]
-
   return (
-    <>
-      <Button type="primary" onClick={showModal} icon={<EyeOutlined />} />
-      <Modal
-        title="View"
-        visible={isModalVisible}
-        onCancel={handleCancel}
-        footer={[
-          <Button key="cancel" onClick={handleCancel}>
-            Cancel
-          </Button>,
-        ]}
-        width={900}
-      >
-        <div>
-          Price:
-          {Number(record.price).toLocaleString()}
-        </div>
-        <div>
-          Monthly:
-          {Number(record.monthly).toLocaleString()}
-        </div>
-        <div>
-          Down Payment:
-          {Number(record.downPaymentFixed).toLocaleString()}
-        </div>
-        <div>
-          Loan Period (Years):
-          {Number(record.loanPeriodYears).toLocaleString()}
-        </div>
-        <div>
-          Total Expected Interest:
-          {Number(record.totalInterest).toLocaleString()}
-        </div>
-        <div>
-          Expected Lifetime Cost:
-          {Number(record.lifetimeCost).toLocaleString()}
-        </div>
-        <Table columns={columns} dataSource={dataSource} pagination={false} />
-      </Modal>
-    </>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button size="icon" aria-label="View">
+          <Eye />
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[900px]">
+        <DialogHeader>
+          <DialogTitle>View</DialogTitle>
+        </DialogHeader>
+        <dl className="grid grid-cols-[14rem_1fr] gap-y-1 text-sm">
+          <dt className="text-muted-foreground">Price</dt>
+          <dd>{Number(record.price).toLocaleString()}</dd>
+          <dt className="text-muted-foreground">Monthly</dt>
+          <dd>{Number(record.monthly).toLocaleString()}</dd>
+          <dt className="text-muted-foreground">Down Payment</dt>
+          <dd>{Number(record.downPaymentFixed).toLocaleString()}</dd>
+          <dt className="text-muted-foreground">Loan Period (Years)</dt>
+          <dd>{Number(record.loanPeriodYears).toLocaleString()}</dd>
+          <dt className="text-muted-foreground">Total Expected Interest</dt>
+          <dd>{Number(record.totalInterest).toLocaleString()}</dd>
+          <dt className="text-muted-foreground">Expected Lifetime Cost</dt>
+          <dd>{Number(record.lifetimeCost).toLocaleString()}</dd>
+        </dl>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              {COLUMNS.map((column) => (
+                <TableHead key={column.title} className="text-right">
+                  {column.title}
+                </TableHead>
+              ))}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {rows.map((row) => (
+              <TableRow key={row.key}>
+                {COLUMNS.map((column) => (
+                  <TableCell key={column.title} className="text-right">
+                    {column.render(row)}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </DialogContent>
+    </Dialog>
   )
 }

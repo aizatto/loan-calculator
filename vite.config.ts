@@ -16,5 +16,18 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     setupFiles: './src/setupTests.ts',
+    alias: {
+      // react 17 has no package.json "exports" map, so node-style resolution
+      // of the extensionless jsx-runtime import in ESM deps fails under
+      // vitest. Drop these aliases with the react 19 upgrade.
+      'react/jsx-runtime': 'react/jsx-runtime.js',
+      'react/jsx-dev-runtime': 'react/jsx-dev-runtime.js',
+    },
+    server: {
+      deps: {
+        // inline radix so the jsx-runtime aliases above apply to it
+        inline: [/radix-ui/],
+      },
+    },
   },
 })

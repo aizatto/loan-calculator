@@ -4,7 +4,15 @@
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom/vitest'
 
-// jsdom does not implement matchMedia, which antd's responsive grid relies on
+// jsdom does not implement ResizeObserver, which radix primitives use
+class ResizeObserverStub {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+}
+window.ResizeObserver = window.ResizeObserver ?? ResizeObserverStub
+
+// jsdom does not implement matchMedia; stub it for components that query it
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
   value: (query: string) => ({

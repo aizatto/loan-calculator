@@ -1,8 +1,8 @@
-import { Table } from 'antd'
 import { Helmet } from 'react-helmet'
 import { LoanForm } from '../components/LoanForm'
 import { Details, DownPaymentType, LoanFormDTO } from '../components/types'
 import { useLocalStorage } from '../hooks/useLocalStorage'
+import { LoanTable, LoanTableColumnKey } from '../table/LoanTable'
 
 const calculateLoan = (dto: LoanFormDTO): Details => {
   if (dto.downPaymentType === DownPaymentType.PERCENTAGE) {
@@ -52,78 +52,18 @@ export const HomePage: React.FC = () => {
     setValues(newValues)
   }
 
-  const columns = [
-    {
-      title: 'Name',
-      dataIndex: 'name',
-    },
-    {
-      title: 'Price',
-      dataIndex: 'price',
-      render: (value: number) => {
-        return Number(value).toLocaleString()
-      },
-    },
-    {
-      title: 'Monthly',
-      dataIndex: 'monthly',
-      render: (value: number) => {
-        return Number(value).toLocaleString()
-      },
-    },
-    {
-      title: 'Down Payment',
-      dataIndex: 'downPaymentFixed',
-      render: (value: number) => {
-        return Number(value).toLocaleString()
-      },
-    },
-    {
-      title: 'Loan Period (Years)',
-      dataIndex: 'loanPeriodYears',
-    },
-    {
-      title: 'Interest Rate',
-      dataIndex: 'interestRate',
-      render: (value: number) => {
-        return `${value} %`
-      },
-    },
-    {
-      title: 'Loan Size',
-      dataIndex: 'loanSize',
-      render: (value: number) => {
-        return Number(value).toLocaleString()
-      },
-    },
-    {
-      title: 'Total Interest',
-      dataIndex: 'totalInterest',
-      render: (value: number) => {
-        return Number(value).toLocaleString()
-      },
-    },
-    {
-      title: 'Total Loan Cost',
-      dataIndex: 'totalLoanCost',
-      render: (value: number) => {
-        return Number(value).toLocaleString()
-      },
-    },
-    {
-      title: 'Lifetime Cost',
-      dataIndex: 'lifetimeCost',
-      render: (value: number) => {
-        return Number(value).toLocaleString()
-      },
-    },
-    {
-      title: 'Monthly Interest',
-      dataIndex: 'monthlyInterest',
-      render: (value: number) => {
-        return Number(value).toLocaleString()
-      },
-    },
+  const columns: LoanTableColumnKey[] = [
+    'name',
+    'price',
+    'monthly',
+    'downPaymentFixed',
+    'loanPeriodYears',
+    'interestRate',
+    'loanSize',
+    'totalInterest',
+    'totalLoanCost',
+    'lifetimeCost',
+    'monthlyInterest',
   ]
 
   return (
@@ -156,7 +96,7 @@ export const HomePage: React.FC = () => {
         }}
         onFinish={onFinish}
       />
-      <Table columns={columns} dataSource={values} pagination={false} />
+      <LoanTable columns={columns} dataSource={values} />
     </>
   )
 }

@@ -15,18 +15,22 @@ export default tseslint.config(
     languageOptions: {
       globals: globals.browser,
     },
+    rules: {
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          destructuredArrayIgnorePattern: '^_',
+        },
+      ],
+    },
   },
   {
-    // Legacy antd components scheduled for replacement by the shadcn/ui
-    // rewrite; drop this override once they are rewritten.
-    files: [
-      'src/components/LoanForm.tsx',
-      'src/components/BudgetForm.tsx',
-      'src/table/EditButton.tsx',
-      'src/routes/CarPage.tsx',
-    ],
+    // Generated shadcn/ui components export variants alongside components
+    files: ['src/components/ui/**'],
     rules: {
-      '@typescript-eslint/no-explicit-any': 'off',
+      'react-refresh/only-export-components': 'off',
     },
   }
 )
