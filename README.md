@@ -13,6 +13,15 @@ Features I want:
 
 # Contributing
 
+## Development
+
+Requires Node >= 24 (see `.nvmrc`) and [pnpm](https://pnpm.io).
+
+```sh
+pnpm install
+pnpm dev
+```
+
 ## Install git hooks
 
 ```sh

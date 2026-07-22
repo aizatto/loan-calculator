@@ -6,6 +6,7 @@
   "engines": {
     "node": ">=24"
   },
+  "packageManager": "pnpm@9.12.0",
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
     "antd": "^4.18.5",
@@ -23,6 +24,7 @@
     "@types/react": "^17.0.20",
     "@types/react-dom": "^17.0.9",
     "@types/react-helmet": "^6.1.5",
+    "@types/testing-library__jest-dom": "^5.14.9",
     "@vitejs/plugin-react": "^6.0.3",
     "autoprefixer": "^10.4.2",
     "gh-pages": "^3.2.3",
@@ -39,7 +41,7 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "test": "echo \"tests migrated to vitest in a later phase\" && exit 0",
-    "predeploy": "yarn run build",
+    "predeploy": "pnpm run build",
     "deploy": "gh-pages -d dist"
   },
   "eslintConfig": {

@@ -51,7 +51,7 @@ export const BudgetForm: React.FC<Props> = (props) => {
             ]}
           >
             <InputNumber
-              onChange={(value: number) => {
+              onChange={(value: number | null) => {
                 setPreviewValues(
                   props.onChange({
                     ...previewValues,
@@ -95,7 +95,7 @@ export const BudgetForm: React.FC<Props> = (props) => {
           >
             <InputNumber
               addonAfter={downPayment.addonAfter}
-              onChange={(value: number) => {
+              onChange={(value: number | null) => {
                 switch (previewValues.downPaymentType) {
                   case DownPaymentType.FIXED:
                     setPreviewValues(
@@ -127,7 +127,7 @@ export const BudgetForm: React.FC<Props> = (props) => {
           >
             <InputNumber
               addonAfter="years"
-              onChange={(value: number) => {
+              onChange={(value: number | null) => {
                 setPreviewValues(
                   props.onChange({
                     ...previewValues,
@@ -147,7 +147,7 @@ export const BudgetForm: React.FC<Props> = (props) => {
           >
             <InputNumber
               formatter={(value) => `${value}%`}
-              onChange={(value: number) => {
+              onChange={(value: number | null) => {
                 setPreviewValues(
                   props.onChange({
                     ...previewValues,
