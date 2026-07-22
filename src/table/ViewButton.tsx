@@ -2,7 +2,8 @@ import { useState } from 'react'
 import { Modal, Button, Table } from 'antd'
 import { EyeOutlined } from '@ant-design/icons'
 import { Details } from '../components/types'
-import { AlignType } from 'rc-table/lib/interface'
+
+type AlignType = 'left' | 'center' | 'right'
 
 interface Props {
   record: Details

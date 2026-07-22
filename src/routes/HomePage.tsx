@@ -133,19 +133,19 @@ export const HomePage: React.FC = () => {
         <link
           rel="apple-touch-icon"
           sizes="180x180"
-          href={`${process.env.PUBLIC_URL}/favicons/home/apple-touch-icon.png`}
+          href={`${import.meta.env.BASE_URL}favicons/home/apple-touch-icon.png`}
         />
         <link
           rel="icon"
           type="image/png"
           sizes="32x32"
-          href={`${process.env.PUBLIC_URL}/favicons/home/favicon-32x32.png`}
+          href={`${import.meta.env.BASE_URL}favicons/home/favicon-32x32.png`}
         />
         <link
           rel="icon"
           type="image/png"
           sizes="16x16"
-          href={`${process.env.PUBLIC_URL}/favicons/home/favicon-16x16.png`}
+          href={`${import.meta.env.BASE_URL}favicons/home/favicon-16x16.png`}
         />
       </Helmet>
       <h1>Home Loan Calculator</h1>

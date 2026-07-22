@@ -178,19 +178,19 @@ export const CarPage: React.FC = () => {
         <link
           rel="apple-touch-icon"
           sizes="180x180"
-          href={`${process.env.PUBLIC_URL}/favicons/car/apple-touch-icon.png`}
+          href={`${import.meta.env.BASE_URL}favicons/car/apple-touch-icon.png`}
         />
         <link
           rel="icon"
           type="image/png"
           sizes="32x32"
-          href={`${process.env.PUBLIC_URL}/favicons/car/favicon-32x32.png`}
+          href={`${import.meta.env.BASE_URL}favicons/car/favicon-32x32.png`}
         />
         <link
           rel="icon"
           type="image/png"
           sizes="16x16"
-          href={`${process.env.PUBLIC_URL}/favicons/car/favicon-16x16.png`}
+          href={`${import.meta.env.BASE_URL}favicons/car/favicon-16x16.png`}
         />
       </Helmet>
       <h1>Car Loan Calculator</h1>
