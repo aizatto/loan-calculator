@@ -1,4 +1,4 @@
-import { Controller, type UseFormReturn } from 'react-hook-form'
+import { Controller, useWatch, type UseFormReturn } from 'react-hook-form'
 import { Button } from '@/components/ui/button'
 import { CopyButton } from '@/components/CopyButton'
 import { Input } from '@/components/ui/input'
@@ -23,7 +23,9 @@ export const LoanForm: React.FC<Props> = (props) => {
   const internalForm = useLoanForm(props.initialValues)
   const form = props.form ?? internalForm
 
-  const values = form.watch()
+  // useWatch re-renders only this component; form.watch() would re-render
+  // the component owning the form (the whole page) on every keystroke
+  const values = useWatch({ control: form.control }) as LoanFormDTO
   const preview = props.onChange(toLoanDTO(values))
 
   const downPayment =

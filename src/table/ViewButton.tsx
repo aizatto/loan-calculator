@@ -97,7 +97,8 @@ export const ViewButton: React.FC<Props> = (props) => {
   const [open, setOpen] = useState(false)
 
   const record = props.record
-  const rows = amortizationSchedule(record, props.kind)
+  // hundreds of rows per saved record; only build them for an open dialog
+  const rows = open ? amortizationSchedule(record, props.kind) : []
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
