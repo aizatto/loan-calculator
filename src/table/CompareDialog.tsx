@@ -37,7 +37,11 @@ const delta = (key: LoanTableColumnKey, base: Details, record: Details) => {
   if (diff === 0) {
     return null
   }
-  return `${diff > 0 ? '+' : '-'}${fmtMoney(Math.abs(diff))}`
+  const sign = diff > 0 ? '+' : '-'
+  const amount = `${sign}${fmtMoney(Math.abs(diff))}`
+  const percent =
+    from !== 0 ? `${sign}${Math.abs((diff / from) * 100).toFixed(1)}%` : null
+  return { amount, percent }
 }
 
 export const CompareDialog: React.FC<Props> = (props) => {
@@ -60,7 +64,12 @@ export const CompareDialog: React.FC<Props> = (props) => {
       ...props.records.map((record, index) => {
         const value = String(renderCell(key, record))
         const diff = index > 0 ? delta(key, base, record) : null
-        return diff ? `${value} (${diff})` : value
+        if (!diff) {
+          return value
+        }
+        return `${value} (${diff.amount}${
+          diff.percent ? `, ${diff.percent}` : ''
+        })`
       }),
     ])
 
@@ -121,7 +130,8 @@ export const CompareDialog: React.FC<Props> = (props) => {
                       <div>{renderCell(key, record)}</div>
                       {diff ? (
                         <div className="text-xs text-muted-foreground">
-                          {diff}
+                          {diff.amount}
+                          {diff.percent ? ` (${diff.percent})` : ''}
                         </div>
                       ) : null}
                     </TableCell>

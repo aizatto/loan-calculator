@@ -51,12 +51,12 @@ test('selecting rows enables compare with deltas against the first pick', async 
   const dialog = screen.getByRole('dialog')
   expect(dialog).toHaveTextContent('Condo B(base)')
   // Condo A price shows its value and the delta vs B: 1,000,000 - 1,200,000
-  expect(dialog).toHaveTextContent('1,000,000-200,000')
+  expect(dialog).toHaveTextContent('1,000,000-200,000 (-16.7%)')
   // lifetime cost delta: 1,500,000 - 1,800,000
-  expect(dialog).toHaveTextContent('1,500,000-300,000')
+  expect(dialog).toHaveTextContent('1,500,000-300,000 (-16.7%)')
   // sqft row is included ahead of price per sqft, with its delta
   expect(dialog).toHaveTextContent('Sqft')
-  expect(dialog).toHaveTextContent('1,000-200')
+  expect(dialog).toHaveTextContent('1,000-200 (-16.7%)')
 
   // copy as markdown produces a markdown table with inline deltas
   const writeText = vi.fn().mockResolvedValue(undefined)
@@ -69,16 +69,16 @@ test('selecting rows enables compare with deltas against the first pick', async 
   // every line is padded to the same width
   expect(new Set(lines.map((line: string) => line.length)).size).toBe(1)
   expect(lines[0]).toBe(
-    '| Field         | Condo B (base) |              Condo A |'
+    '| Field         | Condo B (base) |                      Condo A |'
   )
   expect(lines[1]).toBe(
-    '| ------------- | -------------: | -------------------: |'
+    '| ------------- | -------------: | ---------------------------: |'
   )
   expect(lines).toContain(
-    '| Price         |      1,200,000 | 1,000,000 (-200,000) |'
+    '| Price         |      1,200,000 | 1,000,000 (-200,000, -16.7%) |'
   )
   expect(lines).toContain(
-    '| Lifetime Cost |      1,800,000 | 1,500,000 (-300,000) |'
+    '| Lifetime Cost |      1,800,000 | 1,500,000 (-300,000, -16.7%) |'
   )
 })
 
