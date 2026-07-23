@@ -28,8 +28,6 @@ import { Details } from '../components/types'
 interface Props {
   record: Details
   kind: AmortizationKind
-  // title line for the copied text, e.g. the calculator's name
-  title: string
 }
 
 // every field and computed value of a saved row, grouped into the terms,
@@ -132,14 +130,13 @@ export const ViewButton: React.FC<Props> = (props) => {
         <div>
           <CopyButton
             getText={() =>
-              [
-                props.title,
-                ...detailSections(record).map((section) =>
+              detailSections(record)
+                .map((section) =>
                   section
                     .map(([label, value]) => `${label}: ${value}`)
                     .join('\n')
-                ),
-              ].join('\n---\n')
+                )
+                .join('\n---\n')
             }
           />
         </div>

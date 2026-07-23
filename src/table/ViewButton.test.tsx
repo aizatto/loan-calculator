@@ -26,7 +26,7 @@ test('view dialog lists every field and copies them', async () => {
   const writeText = vi.fn().mockResolvedValue(undefined)
   Object.assign(navigator, { clipboard: { writeText } })
 
-  render(<ViewButton record={record} kind="flat" title="Car Loan Calculator" />)
+  render(<ViewButton record={record} kind="flat" />)
   await userEvent.click(screen.getByRole('button', { name: 'View' }))
 
   // every field is displayed
@@ -49,8 +49,8 @@ test('view dialog lists every field and copies them', async () => {
 
   await userEvent.click(screen.getByRole('button', { name: /copy/i }))
   const text = writeText.mock.calls[0][0]
-  expect(text.startsWith('Car Loan Calculator\n---\n')).toBe(true)
-  expect(text).toContain('Name: My Car')
+  // starts directly with the fields, no title header
+  expect(text.startsWith('Name: My Car')).toBe(true)
   expect(text).toContain('Price: 260,000')
   expect(text).toContain('Sqft: 1,000 (260 / sqft)')
   expect(text).toContain('Down Payment: 10% (26,000)')

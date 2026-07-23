@@ -32,7 +32,7 @@ test('copies fields and calculations to the clipboard', async () => {
       initialValues={initialValues}
       onChange={calculate}
       onFinish={() => {}}
-      copyTitle="Home Loan Calculator"
+      showCopy
     />
   )
 
@@ -40,7 +40,8 @@ test('copies fields and calculations to the clipboard', async () => {
 
   expect(writeText).toHaveBeenCalledTimes(1)
   const text = writeText.mock.calls[0][0]
-  expect(text.startsWith('Home Loan Calculator\n---\n')).toBe(true)
+  // starts directly with the fields, no title header
+  expect(text.startsWith('Price: 1,000,000')).toBe(true)
   // no dangling Name line when the name is empty
   expect(text).not.toContain('Name:')
   expect(text).toContain('Price: 1,000,000')

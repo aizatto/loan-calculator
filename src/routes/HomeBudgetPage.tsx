@@ -73,18 +73,13 @@ export const HomeBudgetPage: React.FC = () => {
           return calculateMortage(values)
         }}
         onFinish={onFinish}
-        copyTitle="Reverse Home Loan Calculator"
       />
       <LoanTable
         columns={columns}
         dataSource={values}
         actions={(record) => (
           <>
-            <ViewButton
-              record={record}
-              kind="amortized"
-              title="Reverse Home Loan Calculator"
-            />
+            <ViewButton record={record} kind="amortized" />
             <LoadButton onLoad={() => form.reset(toBudgetDTO(record))} />
             <EditBudgetButton
               record={record}

@@ -73,7 +73,7 @@ export const HomePage: React.FC = () => {
           return calculateLoan(values)
         }}
         onFinish={onFinish}
-        copyTitle="Home Loan Calculator"
+        showCopy
         showSqft
       />
       <LoanTable
@@ -81,11 +81,7 @@ export const HomePage: React.FC = () => {
         dataSource={values}
         actions={(record) => (
           <>
-            <ViewButton
-              record={record}
-              kind="amortized"
-              title="Home Loan Calculator"
-            />
+            <ViewButton record={record} kind="amortized" />
             <LoadButton onLoad={() => form.reset(toLoanDTO(record))} />
             <EditButton
               record={record}

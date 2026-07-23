@@ -15,8 +15,7 @@ interface Props {
   onChange: (values: LoanFormDTO) => Details
   onFinish: (values: LoanFormDTO) => void
   disableSubmit?: boolean
-  // enables the copy button; used as the copied text's title line
-  copyTitle?: string
+  showCopy?: boolean
   showSqft?: boolean
 }
 
@@ -131,18 +130,12 @@ export const LoanForm: React.FC<Props> = (props) => {
         ) : null}
       </dl>
 
-      {props.disableSubmit && !props.copyTitle ? null : (
+      {props.disableSubmit && !props.showCopy ? null : (
         <div className="flex gap-2">
           {props.disableSubmit ? null : <Button type="submit">Save</Button>}
-          {props.copyTitle ? (
+          {props.showCopy ? (
             <CopyButton
-              getText={() =>
-                formToClipboardText(
-                  props.copyTitle!,
-                  toLoanDTO(values),
-                  preview
-                )
-              }
+              getText={() => formToClipboardText(toLoanDTO(values), preview)}
             />
           ) : null}
         </div>

@@ -83,14 +83,11 @@ export const downPaymentText = (
     : fmtMoney(dto.downPaymentFixed)
 
 export const formToClipboardText = (
-  title: string,
   dto: LoanFormDTO,
   preview: Details
 ): string => {
   const lines = [
-    title,
     ...(dto.name ? [`Name: ${dto.name}`] : []),
-    '---',
     `Price: ${fmtMoney(dto.price)}`,
     ...(dto.sqft
       ? [
@@ -113,14 +110,11 @@ export const formToClipboardText = (
 }
 
 export const budgetFormToClipboardText = (
-  title: string,
   dto: BudgetFormDTO,
   preview: Details
 ): string => {
   const lines = [
-    title,
     ...(dto.name ? [`Name: ${dto.name}`] : []),
-    '---',
     `Monthly: ${fmtMoney(dto.monthly)}`,
     `Down Payment: ${downPaymentText(dto, preview.downPaymentFixed)}`,
     `Loan Period: ${dto.loanPeriodYears} years`,

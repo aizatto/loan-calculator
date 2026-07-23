@@ -19,8 +19,6 @@ interface Props {
   onChange: (values: BudgetFormDTO) => Details
   onFinish: (values: BudgetFormDTO) => void
   disableSubmit?: boolean
-  // enables the copy button; used as the copied text's title line
-  copyTitle?: string
 }
 
 export const BudgetForm: React.FC<Props> = (props) => {
@@ -120,20 +118,14 @@ export const BudgetForm: React.FC<Props> = (props) => {
         <dd>{Number(preview.lifetimeCost).toLocaleString()}</dd>
       </dl>
 
-      {props.disableSubmit && !props.copyTitle ? null : (
+      {props.disableSubmit ? null : (
         <div className="flex gap-2">
-          {props.disableSubmit ? null : <Button type="submit">Save</Button>}
-          {props.copyTitle ? (
-            <CopyButton
-              getText={() =>
-                budgetFormToClipboardText(
-                  props.copyTitle!,
-                  toBudgetDTO(values),
-                  preview
-                )
-              }
-            />
-          ) : null}
+          <Button type="submit">Save</Button>
+          <CopyButton
+            getText={() =>
+              budgetFormToClipboardText(toBudgetDTO(values), preview)
+            }
+          />
         </div>
       )}
     </form>
