@@ -73,13 +73,18 @@ export const CarBudgetPage: React.FC = () => {
           return calculateDTO(values)
         }}
         onFinish={onFinish}
+        copyTitle="Reverse Car Loan Calculator"
       />
       <LoanTable
         columns={columns}
         dataSource={values}
         actions={(record) => (
           <>
-            <ViewButton record={record} kind="flat" />
+            <ViewButton
+              record={record}
+              kind="flat"
+              title="Reverse Car Loan Calculator"
+            />
             <LoadButton onLoad={() => form.reset(toBudgetDTO(record))} />
             <EditBudgetButton
               record={record}

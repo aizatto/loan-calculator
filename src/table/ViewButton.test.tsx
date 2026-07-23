@@ -26,7 +26,7 @@ test('view dialog lists every field and copies them', async () => {
   const writeText = vi.fn().mockResolvedValue(undefined)
   Object.assign(navigator, { clipboard: { writeText } })
 
-  render(<ViewButton record={record} kind="flat" />)
+  render(<ViewButton record={record} kind="flat" title="Car Loan Calculator" />)
   await userEvent.click(screen.getByRole('button', { name: 'View' }))
 
   // every field is displayed
@@ -34,37 +34,32 @@ test('view dialog lists every field and copies them', async () => {
     'Name',
     'Price',
     'Sqft',
-    'Price / Sqft',
-    'Monthly',
-    'Down Payment (Type)',
-    'Down Payment (%)',
     'Down Payment',
-    'Loan Period (Years)',
+    'Loan Period',
     'Interest Rate',
+    'Monthly',
     'Loan Size',
+    'Monthly Interest',
     'Total Interest',
     'Total Loan Cost',
     'Lifetime Cost',
-    'Monthly Interest',
   ]) {
     expect(screen.getByText(label)).toBeInTheDocument()
   }
 
   await userEvent.click(screen.getByRole('button', { name: /copy/i }))
   const text = writeText.mock.calls[0][0]
+  expect(text.startsWith('Car Loan Calculator\n---\n')).toBe(true)
   expect(text).toContain('Name: My Car')
   expect(text).toContain('Price: 260,000')
-  expect(text).toContain('Sqft: 1,000')
-  expect(text).toContain('Price / Sqft: 260')
+  expect(text).toContain('Sqft: 1,000 (260 / sqft)')
+  expect(text).toContain('Down Payment: 10% (26,000)')
+  expect(text).toContain('Loan Period: 9 years')
+  expect(text).toContain('Interest Rate: 2.5%')
   expect(text).toContain('Monthly: 2,654.17')
-  expect(text).toContain('Down Payment (Type): percentage')
-  expect(text).toContain('Down Payment (%): 10 %')
-  expect(text).toContain('Down Payment: 26,000')
-  expect(text).toContain('Loan Period (Years): 9 years')
-  expect(text).toContain('Interest Rate: 2.5 %')
   expect(text).toContain('Loan Size: 234,000')
-  expect(text).toContain('Total Interest: 52,650')
-  expect(text).toContain('Total Loan Cost: 286,650')
-  expect(text).toContain('Lifetime Cost: 312,650')
   expect(text).toContain('Monthly Interest: 487.5')
+  expect(text).toContain(
+    '---\nTotal Interest: 52,650\nTotal Loan Cost: 286,650\nLifetime Cost: 312,650'
+  )
 })

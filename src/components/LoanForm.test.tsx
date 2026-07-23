@@ -32,7 +32,7 @@ test('copies fields and calculations to the clipboard', async () => {
       initialValues={initialValues}
       onChange={calculate}
       onFinish={() => {}}
-      showCopy
+      copyTitle="Home Loan Calculator"
     />
   )
 
@@ -40,15 +40,19 @@ test('copies fields and calculations to the clipboard', async () => {
 
   expect(writeText).toHaveBeenCalledTimes(1)
   const text = writeText.mock.calls[0][0]
+  expect(text.startsWith('Home Loan Calculator\n---\n')).toBe(true)
+  // no dangling Name line when the name is empty
+  expect(text).not.toContain('Name:')
   expect(text).toContain('Price: 1,000,000')
-  expect(text).toContain('Down Payment: 10 %')
-  expect(text).toContain('Loan Period (Years): 35 years')
-  expect(text).toContain('Interest Rate: 2.88 %')
+  expect(text).toContain('Down Payment: 10% (100,000)')
+  expect(text).toContain('Loan Period: 35 years')
+  expect(text).toContain('Interest Rate: 2.88%')
   expect(text).toContain('Monthly: 1,000')
-  expect(text).toContain('Down Payment: 100,000')
   expect(text).toContain('Loan Size: 900,000')
-  expect(text).toContain('Total Interest: 100,000')
-  expect(text).toContain('Lifetime Cost: 1,100,000')
+  // totals live in their own final section
+  expect(text).toContain(
+    '---\nTotal Interest: 100,000\nLifetime Cost: 1,100,000'
+  )
   expect(await screen.findByText('Copied')).toBeInTheDocument()
 })
 

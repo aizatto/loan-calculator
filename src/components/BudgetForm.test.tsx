@@ -32,6 +32,7 @@ test('copies fields and calculations to the clipboard', async () => {
       initialValues={initialValues}
       onChange={calculate}
       onFinish={() => {}}
+      copyTitle="Reverse Car Loan Calculator"
     />
   )
 
@@ -39,13 +40,13 @@ test('copies fields and calculations to the clipboard', async () => {
 
   expect(writeText).toHaveBeenCalledTimes(1)
   const text = writeText.mock.calls[0][0]
+  expect(text.startsWith('Reverse Car Loan Calculator\n---\n')).toBe(true)
   expect(text).toContain('Monthly: 2,000')
-  expect(text).toContain('Down Payment: 10 %')
-  expect(text).toContain('Loan Period (Years): 9 years')
-  expect(text).toContain('Interest Rate: 2.5 %')
+  expect(text).toContain('Down Payment: 10% (26,000)')
+  expect(text).toContain('Loan Period: 9 years')
+  expect(text).toContain('Interest Rate: 2.5%')
   expect(text).toContain('Price: 500,000')
   expect(text).toContain('Loan Size: 450,000')
-  expect(text).toContain('Total Interest: 50,000')
-  expect(text).toContain('Lifetime Cost: 550,000')
+  expect(text).toContain('---\nTotal Interest: 50,000\nLifetime Cost: 550,000')
   expect(await screen.findByText('Copied')).toBeInTheDocument()
 })

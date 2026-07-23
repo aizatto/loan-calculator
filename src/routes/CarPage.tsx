@@ -45,7 +45,7 @@ export const CarPage: React.FC = () => {
 
   const actions = (record: Details) => (
     <>
-      <ViewButton record={record} kind="flat" />
+      <ViewButton record={record} kind="flat" title="Car Loan Calculator" />
       <LoadButton onLoad={() => form.reset(toLoanDTO(record))} />
       <EditButton
         record={record}
@@ -101,7 +101,7 @@ export const CarPage: React.FC = () => {
           return calculateLoan(values)
         }}
         onFinish={onFinish}
-        showCopy
+        copyTitle="Car Loan Calculator"
       />
       <LoanTable
         columns={columns}

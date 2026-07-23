@@ -17,52 +17,52 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { CopyButton } from '@/components/CopyButton'
+import { downPaymentText, fmtMoney as money } from '@/components/loanForms'
 import {
   amortizationSchedule,
   type AmortizationKind,
   type AmortizationRow,
 } from '@/lib/calculations'
-import { Details, DownPaymentType } from '../components/types'
+import { Details } from '../components/types'
 
 interface Props {
   record: Details
   kind: AmortizationKind
+  // title line for the copied text, e.g. the calculator's name
+  title: string
 }
 
-// snap floating point residue (e.g. -1e-10 rendering as "-0") to zero
-const money = (value: number) =>
-  (Math.abs(value) < 0.0005 ? 0 : value).toLocaleString()
-
-// every field and computed value of a saved row, driving both the summary
-// list in the dialog and its copy button
-const detailRows = (record: Details): [string, string][] => [
-  ['Name', record.name ?? ''],
-  ['Price', money(record.price)],
-  ...(record.sqft
-    ? ([
-        ['Sqft', money(record.sqft)],
-        [
-          'Price / Sqft',
-          money(record.pricePerSqft ?? record.price / record.sqft),
-        ],
-      ] as [string, string][])
-    : []),
-  ['Monthly', money(record.monthly)],
-  ['Down Payment (Type)', record.downPaymentType],
-  ...(record.downPaymentType === DownPaymentType.PERCENTAGE
-    ? ([['Down Payment (%)', `${record.downPaymentPercentage} %`]] as [
-        string,
-        string,
-      ][])
-    : []),
-  ['Down Payment', money(record.downPaymentFixed)],
-  ['Loan Period (Years)', `${record.loanPeriodYears} years`],
-  ['Interest Rate', `${record.interestRate} %`],
-  ['Loan Size', money(record.loanSize)],
-  ['Total Interest', money(record.totalInterest)],
-  ['Total Loan Cost', money(record.totalLoanCost)],
-  ['Lifetime Cost', money(record.lifetimeCost)],
-  ['Monthly Interest', money(record.monthlyInterest)],
+// every field and computed value of a saved row, grouped into the terms,
+// the repayment, and the lifetime totals; drives both the summary list in
+// the dialog and its copy button
+const detailSections = (record: Details): [string, string][][] => [
+  [
+    ...(record.name ? ([['Name', record.name]] as [string, string][]) : []),
+    ['Price', money(record.price)],
+    ...(record.sqft
+      ? ([
+          [
+            'Sqft',
+            `${money(record.sqft)} (${money(
+              record.pricePerSqft ?? record.price / record.sqft
+            )} / sqft)`,
+          ],
+        ] as [string, string][])
+      : []),
+    ['Down Payment', downPaymentText(record, record.downPaymentFixed)],
+    ['Loan Period', `${record.loanPeriodYears} years`],
+    ['Interest Rate', `${record.interestRate}%`],
+  ],
+  [
+    ['Monthly', money(record.monthly)],
+    ['Loan Size', money(record.loanSize)],
+    ['Monthly Interest', money(record.monthlyInterest)],
+  ],
+  [
+    ['Total Interest', money(record.totalInterest)],
+    ['Total Loan Cost', money(record.totalLoanCost)],
+    ['Lifetime Cost', money(record.lifetimeCost)],
+  ],
 ]
 
 const COLUMNS: { title: string; render: (row: AmortizationRow) => string }[] = [
@@ -112,19 +112,34 @@ export const ViewButton: React.FC<Props> = (props) => {
           <DialogTitle>View</DialogTitle>
         </DialogHeader>
         <dl className="grid grid-cols-[14rem_1fr] gap-y-1 text-sm">
-          {detailRows(record).map(([label, value]) => (
-            <div key={label} className="col-span-2 grid grid-cols-subgrid">
-              <dt className="text-muted-foreground">{label}</dt>
-              <dd>{value}</dd>
+          {detailSections(record).map((section, index) => (
+            <div
+              key={index}
+              className={
+                'col-span-2 grid grid-cols-subgrid gap-y-1' +
+                (index > 0 ? ' mt-2 border-t pt-2' : '')
+              }
+            >
+              {section.map(([label, value]) => (
+                <div key={label} className="col-span-2 grid grid-cols-subgrid">
+                  <dt className="text-muted-foreground">{label}</dt>
+                  <dd>{value}</dd>
+                </div>
+              ))}
             </div>
           ))}
         </dl>
         <div>
           <CopyButton
             getText={() =>
-              detailRows(record)
-                .map(([label, value]) => `${label}: ${value}`)
-                .join('\n')
+              [
+                props.title,
+                ...detailSections(record).map((section) =>
+                  section
+                    .map(([label, value]) => `${label}: ${value}`)
+                    .join('\n')
+                ),
+              ].join('\n---\n')
             }
           />
         </div>

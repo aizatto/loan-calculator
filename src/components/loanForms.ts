@@ -63,52 +63,74 @@ export const toBudgetDTO = (values: BudgetFormDTO): BudgetFormDTO => ({
   interestRate: Number(values.interestRate),
 })
 
+// money formatting for copied text: thousands separators, at most two
+// decimals, and floating point residue snapped to zero
+export const fmtMoney = (value: number) =>
+  (Math.abs(value) < 0.0005 ? 0 : value).toLocaleString(undefined, {
+    maximumFractionDigits: 2,
+  })
+
+// "10% (100,000)" for percentage down payments, "100,000" for fixed
+export const downPaymentText = (
+  dto: Pick<
+    BudgetFormDTO,
+    'downPaymentType' | 'downPaymentPercentage' | 'downPaymentFixed'
+  >,
+  computedFixed: number
+) =>
+  dto.downPaymentType === DownPaymentType.PERCENTAGE
+    ? `${dto.downPaymentPercentage}% (${fmtMoney(computedFixed)})`
+    : fmtMoney(dto.downPaymentFixed)
+
 export const formToClipboardText = (
+  title: string,
   dto: LoanFormDTO,
   preview: Details
 ): string => {
   const lines = [
-    `Name: ${dto.name ?? ''}`,
-    `Price: ${Number(dto.price).toLocaleString()}`,
-    ...(dto.sqft ? [`Sqft: ${Number(dto.sqft).toLocaleString()}`] : []),
-    `Down Payment (Type): ${dto.downPaymentType}`,
-    dto.downPaymentType === DownPaymentType.PERCENTAGE
-      ? `Down Payment: ${dto.downPaymentPercentage} %`
-      : `Down Payment: ${Number(dto.downPaymentFixed).toLocaleString()}`,
-    `Loan Period (Years): ${dto.loanPeriodYears} years`,
-    `Interest Rate: ${dto.interestRate} %`,
+    title,
+    ...(dto.name ? [`Name: ${dto.name}`] : []),
     '---',
-    `Monthly: ${Number(preview.monthly).toLocaleString()}`,
-    `Down Payment: ${Number(preview.downPaymentFixed).toLocaleString()}`,
-    `Loan Size: ${Number(preview.loanSize).toLocaleString()}`,
-    `Total Interest: ${Number(preview.totalInterest).toLocaleString()}`,
-    `Lifetime Cost: ${Number(preview.lifetimeCost).toLocaleString()}`,
-    ...(preview.pricePerSqft !== undefined
-      ? [`Price / Sqft: ${Number(preview.pricePerSqft).toLocaleString()}`]
+    `Price: ${fmtMoney(dto.price)}`,
+    ...(dto.sqft
+      ? [
+          `Sqft: ${fmtMoney(dto.sqft)} (${fmtMoney(
+            preview.pricePerSqft ?? dto.price / dto.sqft
+          )} / sqft)`,
+        ]
       : []),
+    `Down Payment: ${downPaymentText(dto, preview.downPaymentFixed)}`,
+    `Loan Period: ${dto.loanPeriodYears} years`,
+    `Interest Rate: ${dto.interestRate}%`,
+    '---',
+    `Monthly: ${fmtMoney(preview.monthly)}`,
+    `Loan Size: ${fmtMoney(preview.loanSize)}`,
+    '---',
+    `Total Interest: ${fmtMoney(preview.totalInterest)}`,
+    `Lifetime Cost: ${fmtMoney(preview.lifetimeCost)}`,
   ]
   return lines.join('\n')
 }
 
 export const budgetFormToClipboardText = (
+  title: string,
   dto: BudgetFormDTO,
   preview: Details
 ): string => {
   const lines = [
-    `Name: ${dto.name ?? ''}`,
-    `Monthly: ${Number(dto.monthly).toLocaleString()}`,
-    `Down Payment (Type): ${dto.downPaymentType}`,
-    dto.downPaymentType === DownPaymentType.PERCENTAGE
-      ? `Down Payment: ${dto.downPaymentPercentage} %`
-      : `Down Payment: ${Number(dto.downPaymentFixed).toLocaleString()}`,
-    `Loan Period (Years): ${dto.loanPeriodYears} years`,
-    `Interest Rate: ${dto.interestRate} %`,
+    title,
+    ...(dto.name ? [`Name: ${dto.name}`] : []),
     '---',
-    `Price: ${Number(preview.price).toLocaleString()}`,
-    `Down Payment: ${Number(preview.downPaymentFixed).toLocaleString()}`,
-    `Loan Size: ${Number(preview.loanSize).toLocaleString()}`,
-    `Total Interest: ${Number(preview.totalInterest).toLocaleString()}`,
-    `Lifetime Cost: ${Number(preview.lifetimeCost).toLocaleString()}`,
+    `Monthly: ${fmtMoney(dto.monthly)}`,
+    `Down Payment: ${downPaymentText(dto, preview.downPaymentFixed)}`,
+    `Loan Period: ${dto.loanPeriodYears} years`,
+    `Interest Rate: ${dto.interestRate}%`,
+    '---',
+    `Price: ${fmtMoney(preview.price)}`,
+    `Loan Size: ${fmtMoney(preview.loanSize)}`,
+    '---',
+    `Total Interest: ${fmtMoney(preview.totalInterest)}`,
+    `Lifetime Cost: ${fmtMoney(preview.lifetimeCost)}`,
   ]
   return lines.join('\n')
 }
