@@ -65,12 +65,20 @@ test('selecting rows enables compare with deltas against the first pick', async 
     screen.getByRole('button', { name: /copy as markdown/i })
   )
   const markdown = writeText.mock.calls[0][0]
-  const lines = markdown.split('\n')
-  expect(lines[0]).toBe('| Field | Condo B (base) | Condo A |')
-  expect(lines[1]).toBe('| --- | ---: | ---: |')
-  expect(lines).toContain('| Price | 1,200,000 | 1,000,000 (-200,000) |')
+  const lines: string[] = markdown.split('\n')
+  // every line is padded to the same width
+  expect(new Set(lines.map((line: string) => line.length)).size).toBe(1)
+  expect(lines[0]).toBe(
+    '| Field         | Condo B (base) |              Condo A |'
+  )
+  expect(lines[1]).toBe(
+    '| ------------- | -------------: | -------------------: |'
+  )
   expect(lines).toContain(
-    '| Lifetime Cost | 1,800,000 | 1,500,000 (-300,000) |'
+    '| Price         |      1,200,000 | 1,000,000 (-200,000) |'
+  )
+  expect(lines).toContain(
+    '| Lifetime Cost |      1,800,000 | 1,500,000 (-300,000) |'
   )
 })
 

@@ -54,17 +54,31 @@ export const CompareDialog: React.FC<Props> = (props) => {
     (record.name || `Row ${index + 1}`) + (index === 0 ? ' (base)' : '')
 
   const toMarkdown = () => {
-    const header = `| Field | ${props.records.map(columnLabel).join(' | ')} |`
-    const separator = `| --- | ${props.records.map(() => '---:').join(' | ')} |`
-    const rows = fieldKeys.map((key) => {
-      const cells = props.records.map((record, index) => {
+    const headerCells = ['Field', ...props.records.map(columnLabel)]
+    const bodyRows = fieldKeys.map((key) => [
+      COLUMNS[key].title,
+      ...props.records.map((record, index) => {
         const value = String(renderCell(key, record))
         const diff = index > 0 ? delta(key, base, record) : null
         return diff ? `${value} (${diff})` : value
-      })
-      return `| ${COLUMNS[key].title} | ${cells.join(' | ')} |`
-    })
-    return [header, separator, ...rows].join('\n')
+      }),
+    ])
+
+    // pad every column to its widest cell so the raw text lines up;
+    // the field column is left-aligned, value columns right-aligned
+    const widths = headerCells.map((header, col) =>
+      Math.max(header.length, 3, ...bodyRows.map((row) => row[col].length))
+    )
+    const pad = (cell: string, col: number) =>
+      col === 0 ? cell.padEnd(widths[col]) : cell.padStart(widths[col])
+    const line = (cells: string[]) => `| ${cells.map(pad).join(' | ')} |`
+    const separator = `| ${widths
+      .map((width, col) =>
+        col === 0 ? '-'.repeat(width) : '-'.repeat(width - 1) + ':'
+      )
+      .join(' | ')} |`
+
+    return [line(headerCells), separator, ...bodyRows.map(line)].join('\n')
   }
 
   return (
