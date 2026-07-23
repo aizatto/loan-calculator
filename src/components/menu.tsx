@@ -1,7 +1,6 @@
 import {
   Briefcase,
   Car,
-  CircleHelp,
   FilePlus,
   FlaskConical,
   GitBranch,
@@ -34,11 +33,6 @@ const internalItems: InternalItem[] = [
 const externalItems: ExternalItem[] = [
   { href: 'https://www.aizatto.com/', label: 'aizatto.com', icon: FilePlus },
   { href: 'https://www.build.my/', label: 'build.my', icon: FlaskConical },
-  {
-    href: 'https://www.deepthought.app/',
-    label: 'Deep Thought',
-    icon: CircleHelp,
-  },
   {
     href: 'https://www.github.com/aizatto/loan-calculator/',
     label: 'GitHub',
