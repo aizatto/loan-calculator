@@ -7,6 +7,8 @@ const record = (key: string, name: string, price: number): Details => ({
   key,
   name,
   price,
+  sqft: price / 1000,
+  pricePerSqft: 1000,
   monthly: price / 100,
   downPaymentType: DownPaymentType.PERCENTAGE,
   downPaymentPercentage: 10,
@@ -29,7 +31,7 @@ const dataSource = [
 test('selecting rows enables compare with deltas against the first pick', async () => {
   render(
     <LoanTable
-      columns={['name', 'price', 'monthly', 'lifetimeCost']}
+      columns={['name', 'price', 'pricePerSqft', 'monthly', 'lifetimeCost']}
       dataSource={dataSource}
     />
   )
@@ -52,6 +54,9 @@ test('selecting rows enables compare with deltas against the first pick', async 
   expect(dialog).toHaveTextContent('1,000,000-200,000')
   // lifetime cost delta: 1,500,000 - 1,800,000
   expect(dialog).toHaveTextContent('1,500,000-300,000')
+  // sqft row is included ahead of price per sqft, with its delta
+  expect(dialog).toHaveTextContent('Sqft')
+  expect(dialog).toHaveTextContent('1,000-200')
 })
 
 test('clear resets the selection', async () => {

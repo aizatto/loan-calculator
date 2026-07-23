@@ -44,6 +44,10 @@ export const CompareDialog: React.FC<Props> = (props) => {
 
   const base = props.records[0]
   const fieldKeys = props.columns.filter((key) => key !== 'name')
+  // show the sqft itself ahead of the derived price per sqft
+  if (fieldKeys.includes('pricePerSqft') && !fieldKeys.includes('sqft')) {
+    fieldKeys.splice(fieldKeys.indexOf('pricePerSqft'), 0, 'sqft')
+  }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
