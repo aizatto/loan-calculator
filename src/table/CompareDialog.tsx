@@ -15,6 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { CopyButton } from '@/components/CopyButton'
 import { fmtMoney } from '@/components/loanForms'
 import { Details } from '@/components/types'
 import { COLUMNS, renderCell, type LoanTableColumnKey } from './columns'
@@ -47,6 +48,23 @@ export const CompareDialog: React.FC<Props> = (props) => {
   // show the sqft itself ahead of the derived price per sqft
   if (fieldKeys.includes('pricePerSqft') && !fieldKeys.includes('sqft')) {
     fieldKeys.splice(fieldKeys.indexOf('pricePerSqft'), 0, 'sqft')
+  }
+
+  const columnLabel = (record: Details, index: number) =>
+    (record.name || `Row ${index + 1}`) + (index === 0 ? ' (base)' : '')
+
+  const toMarkdown = () => {
+    const header = `| Field | ${props.records.map(columnLabel).join(' | ')} |`
+    const separator = `| --- | ${props.records.map(() => '---:').join(' | ')} |`
+    const rows = fieldKeys.map((key) => {
+      const cells = props.records.map((record, index) => {
+        const value = String(renderCell(key, record))
+        const diff = index > 0 ? delta(key, base, record) : null
+        return diff ? `${value} (${diff})` : value
+      })
+      return `| ${COLUMNS[key].title} | ${cells.join(' | ')} |`
+    })
+    return [header, separator, ...rows].join('\n')
   }
 
   return (
@@ -99,6 +117,9 @@ export const CompareDialog: React.FC<Props> = (props) => {
             ))}
           </TableBody>
         </Table>
+        <div>
+          <CopyButton label="Copy as Markdown" getText={toMarkdown} />
+        </div>
       </DialogContent>
     </Dialog>
   )

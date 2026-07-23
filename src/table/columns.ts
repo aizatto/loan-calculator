@@ -1,3 +1,4 @@
+import { fmtMoney } from '@/components/loanForms'
 import { Details } from '@/components/types'
 
 export type LoanTableColumnKey =
@@ -51,7 +52,7 @@ export const renderCell = (key: LoanTableColumnKey, record: Details) => {
     return ''
   }
   if (column.numeric) {
-    return Number(value).toLocaleString()
+    return fmtMoney(Number(value))
   }
   return value
 }

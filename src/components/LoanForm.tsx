@@ -6,7 +6,12 @@ import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Field, FieldLabel } from '@/components/ui/field'
 import { DownPaymentType, Details, LoanFormDTO } from './types'
-import { formToClipboardText, toLoanDTO, useLoanForm } from './loanForms'
+import {
+  fmtMoney,
+  formToClipboardText,
+  toLoanDTO,
+  useLoanForm,
+} from './loanForms'
 import { FormNumberField } from './FormNumberField'
 
 interface Props {
@@ -113,19 +118,19 @@ export const LoanForm: React.FC<Props> = (props) => {
 
       <dl className="grid grid-cols-[10rem_1fr] gap-y-1 text-sm">
         <dt className="text-muted-foreground">Monthly</dt>
-        <dd>{Number(preview.monthly).toLocaleString()}</dd>
+        <dd>{fmtMoney(preview.monthly)}</dd>
         <dt className="text-muted-foreground">Down Payment</dt>
-        <dd>{Number(preview.downPaymentFixed).toLocaleString()}</dd>
+        <dd>{fmtMoney(preview.downPaymentFixed)}</dd>
         <dt className="text-muted-foreground">Loan Size</dt>
-        <dd>{Number(preview.loanSize).toLocaleString()}</dd>
+        <dd>{fmtMoney(preview.loanSize)}</dd>
         <dt className="text-muted-foreground">Total Interest</dt>
-        <dd>{Number(preview.totalInterest).toLocaleString()}</dd>
+        <dd>{fmtMoney(preview.totalInterest)}</dd>
         <dt className="text-muted-foreground">Lifetime Cost</dt>
-        <dd>{Number(preview.lifetimeCost).toLocaleString()}</dd>
+        <dd>{fmtMoney(preview.lifetimeCost)}</dd>
         {preview.pricePerSqft !== undefined ? (
           <>
             <dt className="text-muted-foreground">Price / Sqft</dt>
-            <dd>{Number(preview.pricePerSqft).toLocaleString()}</dd>
+            <dd>{fmtMoney(preview.pricePerSqft)}</dd>
           </>
         ) : null}
       </dl>

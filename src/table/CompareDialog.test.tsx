@@ -57,6 +57,21 @@ test('selecting rows enables compare with deltas against the first pick', async 
   // sqft row is included ahead of price per sqft, with its delta
   expect(dialog).toHaveTextContent('Sqft')
   expect(dialog).toHaveTextContent('1,000-200')
+
+  // copy as markdown produces a markdown table with inline deltas
+  const writeText = vi.fn().mockResolvedValue(undefined)
+  Object.assign(navigator, { clipboard: { writeText } })
+  await userEvent.click(
+    screen.getByRole('button', { name: /copy as markdown/i })
+  )
+  const markdown = writeText.mock.calls[0][0]
+  const lines = markdown.split('\n')
+  expect(lines[0]).toBe('| Field | Condo B (base) | Condo A |')
+  expect(lines[1]).toBe('| --- | ---: | ---: |')
+  expect(lines).toContain('| Price | 1,200,000 | 1,000,000 (-200,000) |')
+  expect(lines).toContain(
+    '| Lifetime Cost | 1,800,000 | 1,500,000 (-300,000) |'
+  )
 })
 
 test('clear resets the selection', async () => {

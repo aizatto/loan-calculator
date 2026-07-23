@@ -8,6 +8,7 @@ import { Field, FieldLabel } from '@/components/ui/field'
 import { DownPaymentType, Details, BudgetFormDTO } from './types'
 import {
   budgetFormToClipboardText,
+  fmtMoney,
   toBudgetDTO,
   useBudgetForm,
 } from './loanForms'
@@ -107,15 +108,15 @@ export const BudgetForm: React.FC<Props> = (props) => {
 
       <dl className="grid grid-cols-[10rem_1fr] gap-y-1 text-sm">
         <dt className="text-muted-foreground">Price</dt>
-        <dd>{Number(preview.price).toLocaleString()}</dd>
+        <dd>{fmtMoney(preview.price)}</dd>
         <dt className="text-muted-foreground">Down Payment</dt>
-        <dd>{Number(preview.downPaymentFixed).toLocaleString()}</dd>
+        <dd>{fmtMoney(preview.downPaymentFixed)}</dd>
         <dt className="text-muted-foreground">Loan Size</dt>
-        <dd>{Number(preview.loanSize).toLocaleString()}</dd>
+        <dd>{fmtMoney(preview.loanSize)}</dd>
         <dt className="text-muted-foreground">Total Interest</dt>
-        <dd>{Number(preview.totalInterest).toLocaleString()}</dd>
+        <dd>{fmtMoney(preview.totalInterest)}</dd>
         <dt className="text-muted-foreground">Lifetime Cost</dt>
-        <dd>{Number(preview.lifetimeCost).toLocaleString()}</dd>
+        <dd>{fmtMoney(preview.lifetimeCost)}</dd>
       </dl>
 
       {props.disableSubmit ? null : (

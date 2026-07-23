@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 
 interface Props {
   getText: () => string
+  label?: string
 }
 
 export const CopyButton: React.FC<Props> = (props) => {
@@ -23,7 +24,7 @@ export const CopyButton: React.FC<Props> = (props) => {
   return (
     <Button type="button" variant="outline" onClick={handleCopy}>
       {copied ? <Check /> : <Copy />}
-      {copied ? 'Copied' : 'Copy'}
+      {copied ? 'Copied' : (props.label ?? 'Copy')}
     </Button>
   )
 }
