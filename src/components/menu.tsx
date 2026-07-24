@@ -10,6 +10,7 @@ import {
 import { Link, useLocation } from 'react-router'
 import { cn } from '@/lib/utils'
 import { buttonVariants } from '@/components/ui/button'
+import { ThemeToggle } from '@/components/ThemeToggle'
 
 interface InternalItem {
   to: string
@@ -79,6 +80,9 @@ export const Menu: React.FC = () => {
           {item.label}
         </a>
       ))}
+      <div className="ml-auto">
+        <ThemeToggle />
+      </div>
     </nav>
   )
 }
