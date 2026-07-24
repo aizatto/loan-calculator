@@ -10,8 +10,21 @@
     />
     <link rel="manifest" href="/loan-calculator/manifest.json" />
     <title>Car and Home Loan Calculator</title>
-    <script type="module" crossorigin src="/loan-calculator/assets/index-CRhpvhaP.js"></script>
-    <link rel="stylesheet" crossorigin href="/loan-calculator/assets/index-COspiE9h.css">
+    <script>
+      // apply the saved theme before paint to avoid a flash of the wrong theme
+      ;(function () {
+        try {
+          var stored = localStorage.getItem('theme')
+          var systemDark = window.matchMedia(
+            '(prefers-color-scheme: dark)'
+          ).matches
+          var dark = stored === 'dark' || ((!stored || stored === 'system') && systemDark)
+          document.documentElement.classList.toggle('dark', dark)
+        } catch (e) {}
+      })()
+    </script>
+    <script type="module" crossorigin src="/loan-calculator/assets/index-CYVaQ9YL.js"></script>
+    <link rel="stylesheet" crossorigin href="/loan-calculator/assets/index-VTIUa6CR.css">
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
