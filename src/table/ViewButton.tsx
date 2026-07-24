@@ -17,51 +17,19 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { CopyButton } from '@/components/CopyButton'
-import { downPaymentText, fmtMoney as money } from '@/components/loanForms'
+import { fmtMoney as money } from '@/components/loanForms'
 import {
   amortizationSchedule,
   type AmortizationKind,
   type AmortizationRow,
 } from '@/lib/calculations'
 import { Details } from '../components/types'
+import { detailSections, recordToClipboardText } from './recordText'
 
 interface Props {
   record: Details
   kind: AmortizationKind
 }
-
-// every field and computed value of a saved row, grouped into the terms,
-// the repayment, and the lifetime totals; drives both the summary list in
-// the dialog and its copy button
-const detailSections = (record: Details): [string, string][][] => [
-  [
-    ...(record.name ? ([['Name', record.name]] as [string, string][]) : []),
-    ['Price', money(record.price)],
-    ...(record.sqft
-      ? ([
-          [
-            'Sqft',
-            `${money(record.sqft)} (${money(
-              record.pricePerSqft ?? record.price / record.sqft
-            )} / sqft)`,
-          ],
-        ] as [string, string][])
-      : []),
-    ['Down Payment', downPaymentText(record, record.downPaymentFixed)],
-    ['Loan Period', `${record.loanPeriodYears} years`],
-    ['Interest Rate', `${record.interestRate}%`],
-  ],
-  [
-    ['Monthly', money(record.monthly)],
-    ['Loan Size', money(record.loanSize)],
-    ['Monthly Interest', money(record.monthlyInterest)],
-  ],
-  [
-    ['Total Interest', money(record.totalInterest)],
-    ['Total Loan Cost', money(record.totalLoanCost)],
-    ['Lifetime Cost', money(record.lifetimeCost)],
-  ],
-]
 
 const COLUMNS: { title: string; render: (row: AmortizationRow) => string }[] = [
   { title: 'Year', render: (row) => row.year },
@@ -128,17 +96,7 @@ export const ViewButton: React.FC<Props> = (props) => {
           ))}
         </dl>
         <div>
-          <CopyButton
-            getText={() =>
-              detailSections(record)
-                .map((section) =>
-                  section
-                    .map(([label, value]) => `${label}: ${value}`)
-                    .join('\n')
-                )
-                .join('\n---\n')
-            }
-          />
+          <CopyButton getText={() => recordToClipboardText(record)} />
         </div>
         <Table>
           <TableHeader>

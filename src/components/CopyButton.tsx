@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button'
 interface Props {
   getText: () => string
   label?: string
+  // icon-only button (no text), e.g. for table action columns
+  iconOnly?: boolean
 }
 
 export const CopyButton: React.FC<Props> = (props) => {
@@ -19,6 +21,20 @@ export const CopyButton: React.FC<Props> = (props) => {
     }
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
+  }
+
+  if (props.iconOnly) {
+    return (
+      <Button
+        type="button"
+        variant="outline"
+        size="icon"
+        aria-label="Copy"
+        onClick={handleCopy}
+      >
+        {copied ? <Check /> : <Copy />}
+      </Button>
+    )
   }
 
   return (

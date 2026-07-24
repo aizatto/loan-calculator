@@ -3,6 +3,7 @@ import { toLoanDTO, useLoanForm } from '../components/loanForms'
 import { Details, DownPaymentType, LoanFormDTO } from '../components/types'
 import { calculateCarLoan as calculateLoan } from '@/lib/calculations'
 import { useLocalStorage } from '../hooks/useLocalStorage'
+import { CopyRowButton } from '../table/CopyRowButton'
 import { DeleteButton } from '../table/DeleteButton'
 import { EditButton } from '../table/EditButton'
 import { LoadButton } from '../table/LoadButton'
@@ -46,6 +47,7 @@ export const CarPage: React.FC = () => {
   const actions = (record: Details) => (
     <>
       <ViewButton record={record} kind="flat" />
+      <CopyRowButton record={record} />
       <LoadButton onLoad={() => form.reset(toLoanDTO(record))} />
       <EditButton
         record={record}
