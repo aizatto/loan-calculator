@@ -13,6 +13,7 @@ import {
   useLoanForm,
 } from './loanForms'
 import { FormNumberField } from './FormNumberField'
+import { MalaysiaCostBreakdown } from './MalaysiaCostBreakdown'
 
 interface Props {
   form?: UseFormReturn<LoanFormDTO>
@@ -134,6 +135,8 @@ export const LoanForm: React.FC<Props> = (props) => {
           </>
         ) : null}
       </dl>
+
+      <MalaysiaCostBreakdown record={preview} />
 
       {props.disableSubmit && !props.showCopy ? null : (
         <div className="flex gap-2">

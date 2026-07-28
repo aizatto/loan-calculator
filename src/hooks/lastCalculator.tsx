@@ -8,6 +8,7 @@ export const CALCULATOR_PATHS = [
   '/car-budget',
   '/home',
   '/home-budget',
+  '/malaysia-home',
 ] as const
 
 // the calculator route to land on, defaulting to the car loan calculator

@@ -2,6 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm, type Resolver } from 'react-hook-form'
 import { z } from 'zod'
 import { BudgetFormDTO, Details, DownPaymentType, LoanFormDTO } from './types'
+import { malaysiaCopyLines } from '@/lib/malaysia'
 
 // HTML number inputs yield strings (and '' when cleared); antd's InputNumber
 // yielded numbers. Coerce on validation so the DTOs keep their exact shape,
@@ -105,6 +106,9 @@ export const formToClipboardText = (
     '---',
     `Total Interest: ${fmtMoney(preview.totalInterest)}`,
     `Lifetime Cost: ${fmtMoney(preview.lifetimeCost)}`,
+    ...(preview.initialCosts !== undefined
+      ? ['---', ...malaysiaCopyLines(preview)]
+      : []),
   ]
   return lines.join('\n')
 }

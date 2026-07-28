@@ -15,6 +15,17 @@ export type LoanTableColumnKey =
   | 'totalLoanCost'
   | 'lifetimeCost'
   | 'monthlyInterest'
+  | 'stampDutyMOT'
+  | 'legalFeesMOT'
+  | 'stampDutyLoan'
+  | 'legalFeesLoan'
+  | 'spaStamping'
+  | 'spaDisbursement'
+  | 'loanDisbursement'
+  | 'valuationFees'
+  | 'govTax'
+  | 'bankProcessingFee'
+  | 'initialCosts'
 
 export interface ColumnDef {
   title: string
@@ -40,6 +51,17 @@ export const COLUMNS: Record<LoanTableColumnKey, ColumnDef> = {
   totalLoanCost: { title: 'Total Loan Cost', numeric: true },
   lifetimeCost: { title: 'Lifetime Cost', numeric: true },
   monthlyInterest: { title: 'Monthly Interest', numeric: true },
+  stampDutyMOT: { title: 'Stamp Duty (MOT)', numeric: true },
+  legalFeesMOT: { title: 'Legal Fees (MOT)', numeric: true },
+  stampDutyLoan: { title: 'Stamp Duty (Loan)', numeric: true },
+  legalFeesLoan: { title: 'Legal Fees (Loan)', numeric: true },
+  spaStamping: { title: 'SPA Stamping', numeric: true },
+  spaDisbursement: { title: 'SPA Disbursement', numeric: true },
+  loanDisbursement: { title: 'Loan Disbursement', numeric: true },
+  valuationFees: { title: 'Valuation Fees', numeric: true },
+  govTax: { title: 'Government Tax (SST)', numeric: true },
+  bankProcessingFee: { title: 'Bank Processing Fee', numeric: true },
+  initialCosts: { title: 'Initial Costs', numeric: true },
 }
 
 export const renderCell = (key: LoanTableColumnKey, record: Details) => {

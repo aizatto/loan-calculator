@@ -29,6 +29,7 @@ const internalItems: InternalItem[] = [
   { to: '/car-budget', label: 'Reverse Car Loan Calculator', icon: Car },
   { to: '/home', label: 'Home Loan Calculator', icon: House },
   { to: '/home-budget', label: 'Reverse Home Loan Calculator', icon: House },
+  { to: '/malaysia-home', label: 'Malaysia Home Loan Calculator', icon: House },
 ]
 
 const externalItems: ExternalItem[] = [

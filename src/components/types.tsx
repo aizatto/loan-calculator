@@ -30,7 +30,22 @@ export type Details = BudgetFormDTO &
     lifetimeCost: number
     monthlyInterest: number
     pricePerSqft?: number
-  }
+  } & Partial<MalaysiaFeeFields>
+
+// Malaysian home-buying costs; only populated by the Malaysia calculator
+export type MalaysiaFeeFields = {
+  stampDutyMOT: number
+  legalFeesMOT: number
+  stampDutyLoan: number
+  legalFeesLoan: number
+  spaStamping: number
+  spaDisbursement: number
+  loanDisbursement: number
+  valuationFees: number
+  govTax: number
+  bankProcessingFee: number
+  initialCosts: number
+}
 
 // export type LoanDetails = LoanForm & {
 //   key: string

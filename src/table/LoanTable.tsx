@@ -35,6 +35,8 @@ interface Props {
   dataSource: Details[]
   sortable?: boolean
   actions?: (record: Details) => React.ReactNode
+  // columns shown in the compare dialog; defaults to the table columns
+  compareColumns?: LoanTableColumnKey[]
 }
 
 export const LoanTable: React.FC<Props> = (props) => {
@@ -83,7 +85,7 @@ export const LoanTable: React.FC<Props> = (props) => {
         <div className="flex items-center gap-2">
           <CompareDialog
             records={selectedRecords}
-            columns={props.columns}
+            columns={props.compareColumns ?? props.columns}
             disabled={selectedRecords.length < 2}
           />
           <span className="text-sm text-muted-foreground">

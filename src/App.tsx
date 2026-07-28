@@ -1,4 +1,5 @@
 import { HashRouter, Navigate, Route, Routes } from 'react-router'
+import { TooltipProvider } from './components/ui/tooltip'
 import { Menu } from './components/menu'
 import {
   lastCalculatorPath,
@@ -8,6 +9,7 @@ import { CarPage } from './routes/CarPage'
 import { CarBudgetPage } from './routes/CarBudgetPage'
 import { HomePage } from './routes/HomePage'
 import { HomeBudgetPage } from './routes/HomeBudgetPage'
+import { MalaysiaHomePage } from './routes/MalaysiaHomePage'
 
 function AppRoutes() {
   useRememberCalculator()
@@ -24,6 +26,7 @@ function AppRoutes() {
           <Route path="/car-budget" element={<CarBudgetPage />} />
           <Route path="/home" element={<HomePage />} />
           <Route path="/home-budget" element={<HomeBudgetPage />} />
+          <Route path="/malaysia-home" element={<MalaysiaHomePage />} />
         </Routes>
       </main>
     </>
@@ -32,7 +35,7 @@ function AppRoutes() {
 
 function App() {
   return (
-    <>
+    <TooltipProvider>
       <HashRouter>
         <AppRoutes />
         <footer className="p-4 text-sm text-muted-foreground">
@@ -49,7 +52,7 @@ function App() {
           )}
         </footer>
       </HashRouter>
-    </>
+    </TooltipProvider>
   )
 }
 

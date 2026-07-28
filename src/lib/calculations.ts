@@ -4,6 +4,7 @@ import {
   DownPaymentType,
   LoanFormDTO,
 } from '@/components/types'
+import { calculateMalaysiaFees } from './malaysia'
 
 const key = () => (Math.random() + 1).toString(36).substring(7)
 
@@ -163,6 +164,18 @@ export const calculateHomeLoan = (dto: LoanFormDTO): Details => {
     monthly,
     pricePerSqft: dto.sqft ? dto.price / dto.sqft : undefined,
   }
+}
+
+// Home loan plus the estimated Malaysian upfront costs (stamp duties, legal
+// fees, disbursements, valuation, SST, processing fee)
+export const calculateMalaysiaHomeLoan = (dto: LoanFormDTO): Details => {
+  const details = calculateHomeLoan(dto)
+  const fees = calculateMalaysiaFees(
+    details.price,
+    details.loanSize,
+    details.downPaymentFixed
+  )
+  return { ...details, ...fees }
 }
 
 // Inverse of calculateHomeLoan: the loan size is the present value of the
