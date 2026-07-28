@@ -25,6 +25,7 @@ export type LoanTableColumnKey =
   | 'valuationFees'
   | 'govTax'
   | 'bankProcessingFee'
+  | 'totalFees'
   | 'initialCosts'
 
 export interface ColumnDef {
@@ -61,6 +62,7 @@ export const COLUMNS: Record<LoanTableColumnKey, ColumnDef> = {
   valuationFees: { title: 'Valuation Fees', numeric: true },
   govTax: { title: 'Government Tax (SST)', numeric: true },
   bankProcessingFee: { title: 'Bank Processing Fee', numeric: true },
+  totalFees: { title: 'Total Fees', numeric: true },
   initialCosts: { title: 'Initial Costs', numeric: true },
 }
 

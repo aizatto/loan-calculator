@@ -67,6 +67,9 @@ export interface MalaysiaFees {
   valuationFees: number
   govTax: number
   bankProcessingFee: number
+  // sum of every fee above (excludes the down payment)
+  totalFees: number
+  // totalFees + down payment
   initialCosts: number
 }
 
@@ -102,20 +105,24 @@ export const calculateMalaysiaFees = (
     bankProcessingFee: BANK_PROCESSING,
   }
 
-  const initialCosts =
-    downPayment + Object.values(fees).reduce((sum, fee) => sum + fee, 0)
+  const totalFees = Object.values(fees).reduce((sum, fee) => sum + fee, 0)
+  const initialCosts = totalFees + downPayment
 
-  return { ...fees, initialCosts }
+  return { ...fees, totalFees, initialCosts }
 }
 
 // label, value and a plain-language note on how each fee was derived; drives
-// the form preview tooltips, the view dialog, compare, and copy text
+// the form preview tooltips, the view dialog, compare, and copy text.
+// variant marks the group subtotal and the grand total for emphasis.
 export interface MalaysiaFeeItem {
   label: string
   value: number
   tooltip: string
+  variant?: 'subtotal' | 'total'
 }
 
+// two groups — the fees (with a subtotal) then the down payment — summing to
+// the estimated total initial costs
 export const malaysiaFeeItems = (record: Details): MalaysiaFeeItem[] => {
   if (record.initialCosts === undefined) {
     return []
@@ -179,10 +186,23 @@ export const malaysiaFeeItems = (record: Details): MalaysiaFeeItem[] => {
       tooltip: 'Bank loan processing fee — estimated (RM50–RM300).',
     },
     {
-      label: 'Estimated Initial Costs',
+      label: 'Total Fees',
+      value: record.totalFees ?? 0,
+      tooltip: 'Sum of every fee above (excludes the down payment).',
+      variant: 'subtotal',
+    },
+    {
+      label: 'Down Payment',
+      value: record.downPaymentFixed,
+      tooltip: 'The down payment paid upfront at purchase.',
+      variant: 'subtotal',
+    },
+    {
+      label: 'Estimated Total Initial Costs',
       value: record.initialCosts,
       tooltip:
-        'Down payment plus every fee above — the estimated cash needed upfront.',
+        'Total fees plus the down payment — the estimated cash needed upfront.',
+      variant: 'total',
     },
   ]
 }

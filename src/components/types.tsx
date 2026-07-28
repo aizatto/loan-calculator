@@ -44,6 +44,7 @@ export type MalaysiaFeeFields = {
   valuationFees: number
   govTax: number
   bankProcessingFee: number
+  totalFees: number
   initialCosts: number
 }
 

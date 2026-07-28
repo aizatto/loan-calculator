@@ -45,9 +45,8 @@ describe('calculateMalaysiaFees', () => {
     expect(fees.bankProcessingFee).toBe(175)
   })
 
-  test('initial costs sum the down payment and every fee', () => {
-    const expected =
-      100_000 +
+  test('total fees sum every fee but not the down payment', () => {
+    const expectedFees =
       24_000 +
       9_000 +
       4_500 +
@@ -58,7 +57,11 @@ describe('calculateMalaysiaFees', () => {
       2_050 +
       fees.govTax +
       175
-    closeTo(fees.initialCosts, expected)
+    closeTo(fees.totalFees, expectedFees)
+  })
+
+  test('initial costs are the total fees plus the down payment', () => {
+    closeTo(fees.initialCosts, fees.totalFees + 100_000)
   })
 
   test('legal fees never fall below the RM500 minimum', () => {

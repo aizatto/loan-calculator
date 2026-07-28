@@ -22,17 +22,23 @@ export const MalaysiaCostBreakdown: React.FC<{ record: Details }> = ({
     <div className="mt-2 border-t pt-2">
       <div className="mb-1 text-sm font-medium">Estimated Initial Costs</div>
       <dl className="grid grid-cols-[minmax(10rem,1fr)_auto] gap-y-1 text-sm">
-        {items.map((item, index) => {
-          const isTotal = index === items.length - 1
+        {items.map((item) => {
+          const emphasis =
+            item.variant === 'subtotal'
+              ? ' mt-1 border-t pt-1 font-medium'
+              : item.variant === 'total'
+                ? ' mt-1 border-t pt-1 text-base font-semibold'
+                : ''
+          const labelClass =
+            item.variant === undefined ? 'text-muted-foreground' : ''
           return (
             <div
               key={item.label}
               className={
-                'col-span-2 grid grid-cols-subgrid items-center' +
-                (isTotal ? ' mt-1 border-t pt-1 font-medium' : '')
+                'col-span-2 grid grid-cols-subgrid items-center' + emphasis
               }
             >
-              <dt className="flex items-center gap-1 text-muted-foreground">
+              <dt className={`flex items-center gap-1 ${labelClass}`}>
                 {item.label}
                 <Tooltip>
                   <TooltipTrigger asChild>

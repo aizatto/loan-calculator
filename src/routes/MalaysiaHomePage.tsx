@@ -39,6 +39,8 @@ const compareColumns: LoanTableColumnKey[] = [
   'valuationFees',
   'govTax',
   'bankProcessingFee',
+  'totalFees',
+  'downPaymentFixed',
   'initialCosts',
 ]
 
