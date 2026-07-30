@@ -4,6 +4,7 @@ import { BudgetFormDTO, Details, DownPaymentType } from '../components/types'
 import { calculateCarBudget as calculateDTO } from '@/lib/calculations'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { CopyRowButton } from '../table/CopyRowButton'
+import { CopySpreadsheetButton } from '../table/CopySpreadsheetButton'
 import { DeleteButton } from '../table/DeleteButton'
 import { EditBudgetButton } from '../table/EditBudgetButton'
 import { LoadButton } from '../table/LoadButton'
@@ -82,6 +83,7 @@ export const CarBudgetPage: React.FC = () => {
           <>
             <ViewButton record={record} kind="flat" />
             <CopyRowButton record={record} />
+            <CopySpreadsheetButton record={record} />
             <LoadButton onLoad={() => form.reset(toBudgetDTO(record))} />
             <EditBudgetButton
               record={record}

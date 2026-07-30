@@ -53,3 +53,12 @@ export const recordToClipboardText = (record: Details): string =>
       section.map(([label, value]) => `${label}: ${value}`).join('\n')
     )
     .join('\n---\n')
+
+// tab-separated field/value rows for pasting into a spreadsheet: each field
+// lands in one row across two columns, with a blank row between sections
+export const recordToTSV = (record: Details): string =>
+  detailSections(record)
+    .map((section) =>
+      section.map(([label, value]) => `${label}\t${value}`).join('\n')
+    )
+    .join('\n\n')

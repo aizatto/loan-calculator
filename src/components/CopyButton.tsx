@@ -7,6 +7,8 @@ interface Props {
   label?: string
   // icon-only button (no text), e.g. for table action columns
   iconOnly?: boolean
+  // idle icon; defaults to the copy glyph
+  icon?: React.ReactNode
 }
 
 export const CopyButton: React.FC<Props> = (props) => {
@@ -29,17 +31,17 @@ export const CopyButton: React.FC<Props> = (props) => {
         type="button"
         variant="outline"
         size="icon"
-        aria-label="Copy"
+        aria-label={props.label ?? 'Copy'}
         onClick={handleCopy}
       >
-        {copied ? <Check /> : <Copy />}
+        {copied ? <Check /> : (props.icon ?? <Copy />)}
       </Button>
     )
   }
 
   return (
     <Button type="button" variant="outline" onClick={handleCopy}>
-      {copied ? <Check /> : <Copy />}
+      {copied ? <Check /> : (props.icon ?? <Copy />)}
       {copied ? 'Copied' : (props.label ?? 'Copy')}
     </Button>
   )

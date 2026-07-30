@@ -4,6 +4,7 @@ import { Details, DownPaymentType, LoanFormDTO } from '../components/types'
 import { calculateHomeLoan as calculateLoan } from '@/lib/calculations'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { CopyRowButton } from '../table/CopyRowButton'
+import { CopySpreadsheetButton } from '../table/CopySpreadsheetButton'
 import { DeleteButton } from '../table/DeleteButton'
 import { EditButton } from '../table/EditButton'
 import { LoadButton } from '../table/LoadButton'
@@ -84,6 +85,7 @@ export const HomePage: React.FC = () => {
           <>
             <ViewButton record={record} kind="amortized" />
             <CopyRowButton record={record} />
+            <CopySpreadsheetButton record={record} />
             <LoadButton onLoad={() => form.reset(toLoanDTO(record))} />
             <EditButton
               record={record}
