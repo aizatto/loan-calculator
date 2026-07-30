@@ -32,6 +32,7 @@ export const loanFormSchema = z.object({
   ...baseFormSchema,
   price: requiredNumber('Please input your Price'),
   sqft: optionalNumber(),
+  mortgageInsuranceRate: optionalNumber(),
 })
 
 export const budgetFormSchema = z.object({
@@ -47,6 +48,11 @@ export const toLoanDTO = (values: LoanFormDTO): LoanFormDTO => ({
   price: Number(values.price),
   // sqft is optional; an empty input must stay undefined, not become 0
   sqft: values.sqft ? Number(values.sqft) : undefined,
+  mortgageInsuranceRate:
+    values.mortgageInsuranceRate === undefined ||
+    values.mortgageInsuranceRate === null
+      ? undefined
+      : Number(values.mortgageInsuranceRate),
   downPaymentType: values.downPaymentType,
   downPaymentFixed: Number(values.downPaymentFixed),
   downPaymentPercentage: Number(values.downPaymentPercentage),

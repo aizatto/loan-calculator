@@ -15,6 +15,8 @@ type Form = {
 export type LoanFormDTO = Form & {
   price: number
   sqft?: number
+  // mortgage insurance (MRTA) premium rate, % of the loan amount
+  mortgageInsuranceRate?: number
 }
 
 export type BudgetFormDTO = Form & {
@@ -44,6 +46,7 @@ export type MalaysiaFeeFields = {
   valuationFees: number
   govTax: number
   bankProcessingFee: number
+  mortgageInsurance: number
   totalFees: number
   initialCosts: number
 }

@@ -6,8 +6,8 @@ const closeTo = (actual: number, expected: number) =>
   expect(actual).toBeCloseTo(expected, 4)
 
 describe('calculateMalaysiaFees', () => {
-  // RM1,000,000 property, RM900,000 loan, RM100,000 down payment
-  const fees = calculateMalaysiaFees(1_000_000, 900_000, 100_000)
+  // RM1,000,000 property, RM900,000 loan, RM100,000 down payment, 3% MRTA
+  const fees = calculateMalaysiaFees(1_000_000, 900_000, 100_000, 3)
 
   test('stamp duty MOT is tiered on the property price', () => {
     // 1%*100k + 2%*400k + 3%*500k = 1000 + 8000 + 15000
@@ -45,6 +45,17 @@ describe('calculateMalaysiaFees', () => {
     expect(fees.bankProcessingFee).toBe(175)
   })
 
+  test('mortgage insurance is the rate applied to the loan', () => {
+    // 3% of RM900,000
+    closeTo(fees.mortgageInsurance, 27_000)
+    // and honours a custom rate
+    const custom = calculateMalaysiaFees(1_000_000, 900_000, 100_000, 5)
+    closeTo(custom.mortgageInsurance, 45_000)
+    // defaults to 3% when omitted
+    const defaulted = calculateMalaysiaFees(1_000_000, 900_000, 100_000)
+    closeTo(defaulted.mortgageInsurance, 27_000)
+  })
+
   test('total fees sum every fee but not the down payment', () => {
     const expectedFees =
       24_000 +
@@ -56,7 +67,8 @@ describe('calculateMalaysiaFees', () => {
       1_250 +
       2_050 +
       fees.govTax +
-      175
+      175 +
+      27_000
     closeTo(fees.totalFees, expectedFees)
   })
 

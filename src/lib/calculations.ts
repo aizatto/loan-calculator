@@ -4,7 +4,10 @@ import {
   DownPaymentType,
   LoanFormDTO,
 } from '@/components/types'
-import { calculateMalaysiaFees } from './malaysia'
+import {
+  calculateMalaysiaFees,
+  DEFAULT_MORTGAGE_INSURANCE_RATE,
+} from './malaysia'
 
 const key = () => (Math.random() + 1).toString(36).substring(7)
 
@@ -170,12 +173,15 @@ export const calculateHomeLoan = (dto: LoanFormDTO): Details => {
 // fees, disbursements, valuation, SST, processing fee)
 export const calculateMalaysiaHomeLoan = (dto: LoanFormDTO): Details => {
   const details = calculateHomeLoan(dto)
+  const mortgageInsuranceRate =
+    dto.mortgageInsuranceRate ?? DEFAULT_MORTGAGE_INSURANCE_RATE
   const fees = calculateMalaysiaFees(
     details.price,
     details.loanSize,
-    details.downPaymentFixed
+    details.downPaymentFixed,
+    mortgageInsuranceRate
   )
-  return { ...details, ...fees }
+  return { ...details, ...fees, mortgageInsuranceRate }
 }
 
 // Inverse of calculateHomeLoan: the loan size is the present value of the

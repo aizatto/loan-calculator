@@ -23,6 +23,7 @@ interface Props {
   disableSubmit?: boolean
   showCopy?: boolean
   showSqft?: boolean
+  showMortgageInsurance?: boolean
 }
 
 export const LoanForm: React.FC<Props> = (props) => {
@@ -116,6 +117,15 @@ export const LoanForm: React.FC<Props> = (props) => {
         label="Interest Rate (%)"
         suffix="%"
       />
+
+      {props.showMortgageInsurance ? (
+        <FormNumberField
+          control={form.control}
+          name="mortgageInsuranceRate"
+          label="Mortgage Insurance Rate (%)"
+          suffix="%"
+        />
+      ) : null}
 
       <dl className="grid grid-cols-[10rem_1fr] gap-y-1 text-sm">
         <dt className="text-muted-foreground">Monthly</dt>

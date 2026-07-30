@@ -67,16 +67,21 @@ export interface MalaysiaFees {
   valuationFees: number
   govTax: number
   bankProcessingFee: number
+  mortgageInsurance: number
   // sum of every fee above (excludes the down payment)
   totalFees: number
   // totalFees + down payment
   initialCosts: number
 }
 
+// mortgage insurance (MRTA) premium rate applied when none is supplied
+export const DEFAULT_MORTGAGE_INSURANCE_RATE = 3
+
 export const calculateMalaysiaFees = (
   price: number,
   loanAmount: number,
-  downPayment: number
+  downPayment: number,
+  mortgageInsuranceRate: number = DEFAULT_MORTGAGE_INSURANCE_RATE
 ): MalaysiaFees => {
   const stampDutyMOT = tiered(price, STAMP_DUTY_MOT_BANDS)
   const legalFeesMOT = Math.max(tiered(price, LEGAL_FEE_BANDS), LEGAL_FEE_MIN)
@@ -92,6 +97,9 @@ export const calculateMalaysiaFees = (
     legalFeesMOT + legalFeesLoan + SPA_DISBURSEMENT + LOAN_DISBURSEMENT
   const govTax = lawyerFees * SST_RATE
 
+  // mortgage insurance (MRTA) premium — a percentage of the loan amount
+  const mortgageInsurance = loanAmount * (mortgageInsuranceRate / 100)
+
   const fees = {
     stampDutyMOT,
     legalFeesMOT,
@@ -103,6 +111,7 @@ export const calculateMalaysiaFees = (
     valuationFees,
     govTax,
     bankProcessingFee: BANK_PROCESSING,
+    mortgageInsurance,
   }
 
   const totalFees = Object.values(fees).reduce((sum, fee) => sum + fee, 0)
@@ -184,6 +193,13 @@ export const malaysiaFeeItems = (record: Details): MalaysiaFeeItem[] => {
       label: 'Bank Processing Fee',
       value: record.bankProcessingFee ?? 0,
       tooltip: 'Bank loan processing fee — estimated (RM50–RM300).',
+    },
+    {
+      label: 'Mortgage Insurance',
+      value: record.mortgageInsurance ?? 0,
+      tooltip: `Mortgage insurance (MRTA) premium: ${
+        record.mortgageInsuranceRate ?? DEFAULT_MORTGAGE_INSURANCE_RATE
+      }% of the loan amount.`,
     },
     {
       label: 'Total Fees',
