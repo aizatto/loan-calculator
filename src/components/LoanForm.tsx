@@ -132,6 +132,12 @@ export const LoanForm: React.FC<Props> = (props) => {
         <dd>{fmtMoney(preview.monthly)}</dd>
         <dt className="text-muted-foreground">Down Payment</dt>
         <dd>{fmtMoney(preview.downPaymentFixed)}</dd>
+        {preview.mortgageInsurance !== undefined ? (
+          <>
+            <dt className="text-muted-foreground">Mortgage Insurance</dt>
+            <dd>{fmtMoney(preview.mortgageInsurance)}</dd>
+          </>
+        ) : null}
         <dt className="text-muted-foreground">Loan Size</dt>
         <dd>{fmtMoney(preview.loanSize)}</dd>
         <dt className="text-muted-foreground">Total Interest</dt>

@@ -108,6 +108,9 @@ export const formToClipboardText = (
     `Interest Rate: ${dto.interestRate}%`,
     '---',
     `Monthly: ${fmtMoney(preview.monthly)}`,
+    ...(preview.mortgageInsurance !== undefined
+      ? [`Mortgage Insurance: ${fmtMoney(preview.mortgageInsurance)}`]
+      : []),
     `Loan Size: ${fmtMoney(preview.loanSize)}`,
     '---',
     `Total Interest: ${fmtMoney(preview.totalInterest)}`,

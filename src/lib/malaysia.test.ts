@@ -6,8 +6,8 @@ const closeTo = (actual: number, expected: number) =>
   expect(actual).toBeCloseTo(expected, 4)
 
 describe('calculateMalaysiaFees', () => {
-  // RM1,000,000 property, RM900,000 loan, RM100,000 down payment, 3% MRTA
-  const fees = calculateMalaysiaFees(1_000_000, 900_000, 100_000, 3)
+  // RM1,000,000 property, RM900,000 loan, RM100,000 down payment
+  const fees = calculateMalaysiaFees(1_000_000, 900_000, 100_000)
 
   test('stamp duty MOT is tiered on the property price', () => {
     // 1%*100k + 2%*400k + 3%*500k = 1000 + 8000 + 15000
@@ -45,18 +45,7 @@ describe('calculateMalaysiaFees', () => {
     expect(fees.bankProcessingFee).toBe(175)
   })
 
-  test('mortgage insurance is the rate applied to the loan', () => {
-    // 3% of RM900,000
-    closeTo(fees.mortgageInsurance, 27_000)
-    // and honours a custom rate
-    const custom = calculateMalaysiaFees(1_000_000, 900_000, 100_000, 5)
-    closeTo(custom.mortgageInsurance, 45_000)
-    // defaults to 3% when omitted
-    const defaulted = calculateMalaysiaFees(1_000_000, 900_000, 100_000)
-    closeTo(defaulted.mortgageInsurance, 27_000)
-  })
-
-  test('total fees sum every fee but not the down payment', () => {
+  test('total fees sum every fee but not the down payment or insurance', () => {
     const expectedFees =
       24_000 +
       9_000 +
@@ -67,8 +56,7 @@ describe('calculateMalaysiaFees', () => {
       1_250 +
       2_050 +
       fees.govTax +
-      175 +
-      27_000
+      175
     closeTo(fees.totalFees, expectedFees)
   })
 
@@ -83,7 +71,7 @@ describe('calculateMalaysiaFees', () => {
   })
 })
 
-test('calculateMalaysiaHomeLoan keeps the mortgage fields and adds the fees', () => {
+describe('calculateMalaysiaHomeLoan', () => {
   const details = calculateMalaysiaHomeLoan({
     price: 1_000_000,
     downPaymentType: DownPaymentType.PERCENTAGE,
@@ -91,8 +79,30 @@ test('calculateMalaysiaHomeLoan keeps the mortgage fields and adds the fees', ()
     downPaymentFixed: 0,
     loanPeriodYears: 35,
     interestRate: 3.8,
+    mortgageInsuranceRate: 3,
   })
-  closeTo(details.loanSize, 900_000)
-  closeTo(details.stampDutyMOT!, 24_000)
-  expect(details.initialCosts).toBeGreaterThan(details.downPaymentFixed)
+
+  test('mortgage insurance is financed into the loan size', () => {
+    // (1,000,000 - 100,000) + 3% of 900,000 = 900,000 + 27,000
+    closeTo(details.mortgageInsurance!, 27_000)
+    closeTo(details.loanSize, 927_000)
+  })
+
+  test('the monthly payment amortizes the financed principal', () => {
+    const r = 0.038 / 12
+    closeTo(details.monthly, 927_000 * (r / (1 - Math.pow(1 + r, -420))))
+    closeTo(details.totalInterest, details.monthly * 420 - 927_000)
+  })
+
+  test('insurance is not part of the upfront costs', () => {
+    // initial costs = total fees + down payment, no insurance
+    closeTo(
+      details.initialCosts!,
+      details.totalFees! + details.downPaymentFixed
+    )
+  })
+
+  test('fees still track the property price', () => {
+    closeTo(details.stampDutyMOT!, 24_000)
+  })
 })

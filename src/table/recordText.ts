@@ -29,6 +29,12 @@ export const detailSections = (record: Details): [string, string][][] => {
     ],
     [
       ['Monthly', money(record.monthly)],
+      ...(record.mortgageInsurance !== undefined
+        ? ([['Mortgage Insurance', money(record.mortgageInsurance)]] as [
+            string,
+            string,
+          ][])
+        : []),
       ['Loan Size', money(record.loanSize)],
       ['Monthly Interest', money(record.monthlyInterest)],
     ],

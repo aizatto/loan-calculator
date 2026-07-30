@@ -172,16 +172,45 @@ export const calculateHomeLoan = (dto: LoanFormDTO): Details => {
 // Home loan plus the estimated Malaysian upfront costs (stamp duties, legal
 // fees, disbursements, valuation, SST, processing fee)
 export const calculateMalaysiaHomeLoan = (dto: LoanFormDTO): Details => {
-  const details = calculateHomeLoan(dto)
+  const base = calculateHomeLoan(dto)
   const mortgageInsuranceRate =
     dto.mortgageInsuranceRate ?? DEFAULT_MORTGAGE_INSURANCE_RATE
+
+  // the MRTA premium is financed into the loan, so it is added to the
+  // borrowed principal: loanSize = (price - down payment) + insurance
+  const baseLoan = base.price - base.downPaymentFixed
+  const mortgageInsurance = baseLoan * (mortgageInsuranceRate / 100)
+  const loanSize = baseLoan + mortgageInsurance
+
+  // re-amortize on the financed principal
+  const months = base.loanPeriodYears * 12
+  const rate = base.interestRate / 100 / 12
+  const monthly = loanSize * (rate / (1 - Math.pow(1 + rate, -1 * months)))
+  const totalInterest = monthly * months - loanSize
+  const totalLoanCost = loanSize + totalInterest
+  const lifetimeCost = monthly * months + base.downPaymentFixed
+  const monthlyInterest = totalInterest / months
+
+  // fees are based on the property price and the financed loan amount; the
+  // insurance premium itself is part of the loan, not the upfront costs
   const fees = calculateMalaysiaFees(
-    details.price,
-    details.loanSize,
-    details.downPaymentFixed,
-    mortgageInsuranceRate
+    base.price,
+    loanSize,
+    base.downPaymentFixed
   )
-  return { ...details, ...fees, mortgageInsuranceRate }
+
+  return {
+    ...base,
+    ...fees,
+    loanSize,
+    monthly,
+    totalInterest,
+    totalLoanCost,
+    lifetimeCost,
+    monthlyInterest,
+    mortgageInsurance,
+    mortgageInsuranceRate,
+  }
 }
 
 // Inverse of calculateHomeLoan: the loan size is the present value of the
