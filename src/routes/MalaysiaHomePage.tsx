@@ -55,7 +55,9 @@ export const MalaysiaHomePage: React.FC = () => {
       downPaymentFixed: 100000,
       loanPeriodYears: 35,
       interestRate: 3.8,
+      mortgageInsuranceType: DownPaymentType.PERCENTAGE,
       mortgageInsuranceRate: 3,
+      mortgageInsuranceFixed: 20000,
     }),
   ])
 

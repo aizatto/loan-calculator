@@ -32,13 +32,21 @@ export const loanFormSchema = z.object({
   ...baseFormSchema,
   price: requiredNumber('Please input your Price'),
   sqft: optionalNumber(),
+  mortgageInsuranceType: z.enum(DownPaymentType).optional(),
   mortgageInsuranceRate: optionalNumber(),
+  mortgageInsuranceFixed: optionalNumber(),
 })
 
 export const budgetFormSchema = z.object({
   ...baseFormSchema,
   monthly: requiredNumber('Please input your Monthly Budget'),
 })
+
+// an optional numeric input: '' / null stay undefined, otherwise coerced
+const optionalToNumber = (value: number | undefined | null) =>
+  value === undefined || value === null || (value as unknown) === ''
+    ? undefined
+    : Number(value)
 
 // Form state can briefly hold strings while the user types; these produce a
 // fresh, fully numeric DTO (calculateLoan and friends mutate their argument,
@@ -48,11 +56,9 @@ export const toLoanDTO = (values: LoanFormDTO): LoanFormDTO => ({
   price: Number(values.price),
   // sqft is optional; an empty input must stay undefined, not become 0
   sqft: values.sqft ? Number(values.sqft) : undefined,
-  mortgageInsuranceRate:
-    values.mortgageInsuranceRate === undefined ||
-    values.mortgageInsuranceRate === null
-      ? undefined
-      : Number(values.mortgageInsuranceRate),
+  mortgageInsuranceType: values.mortgageInsuranceType,
+  mortgageInsuranceRate: optionalToNumber(values.mortgageInsuranceRate),
+  mortgageInsuranceFixed: optionalToNumber(values.mortgageInsuranceFixed),
   downPaymentType: values.downPaymentType,
   downPaymentFixed: Number(values.downPaymentFixed),
   downPaymentPercentage: Number(values.downPaymentPercentage),

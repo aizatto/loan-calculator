@@ -173,13 +173,19 @@ export const calculateHomeLoan = (dto: LoanFormDTO): Details => {
 // fees, disbursements, valuation, SST, processing fee)
 export const calculateMalaysiaHomeLoan = (dto: LoanFormDTO): Details => {
   const base = calculateHomeLoan(dto)
+  const mortgageInsuranceType =
+    dto.mortgageInsuranceType ?? DownPaymentType.PERCENTAGE
   const mortgageInsuranceRate =
     dto.mortgageInsuranceRate ?? DEFAULT_MORTGAGE_INSURANCE_RATE
 
   // the MRTA premium is financed into the loan, so it is added to the
-  // borrowed principal: loanSize = (price - down payment) + insurance
+  // borrowed principal: loanSize = (price - down payment) + insurance.
+  // The premium is a % of the base loan, or a fixed amount.
   const baseLoan = base.price - base.downPaymentFixed
-  const mortgageInsurance = baseLoan * (mortgageInsuranceRate / 100)
+  const mortgageInsurance =
+    mortgageInsuranceType === DownPaymentType.FIXED
+      ? (dto.mortgageInsuranceFixed ?? 0)
+      : baseLoan * (mortgageInsuranceRate / 100)
   const loanSize = baseLoan + mortgageInsurance
 
   // re-amortize on the financed principal
@@ -209,6 +215,7 @@ export const calculateMalaysiaHomeLoan = (dto: LoanFormDTO): Details => {
     lifetimeCost,
     monthlyInterest,
     mortgageInsurance,
+    mortgageInsuranceType,
     mortgageInsuranceRate,
   }
 }

@@ -43,10 +43,13 @@ const LEGAL_FEE_BANDS: Band[] = [
 ]
 const LEGAL_FEE_MIN = 500
 
-// Valuation fees for completed properties — tiered on the property price
+// Valuation fees — tiered on the property price, per BOVAEA's Seventh
+// Schedule (Rule 48). Above RM15m is negotiable; we extend the 0.15% band.
 const VALUATION_BANDS: Band[] = [
   { size: 100_000, rate: 0.0025 },
-  { size: Infinity, rate: 0.002 },
+  { size: 1_900_000, rate: 0.002 },
+  { size: 5_000_000, rate: 0.00167 },
+  { size: Infinity, rate: 0.0015 },
 ]
 
 // flat / range-based fees; ranges use their midpoint as an estimate
@@ -177,7 +180,7 @@ export const malaysiaFeeItems = (record: Details): MalaysiaFeeItem[] => {
       label: 'Valuation Fees',
       value: record.valuationFees ?? 0,
       tooltip:
-        'For completed properties: 0.25% of the first RM100k, 0.20% of the remainder.',
+        'Buyer-paid property valuation, regulated by BOVAEA (Seventh Schedule, Rule 48): 0.25% of the first RM100k, 0.20% up to RM2m, 0.167% up to RM7m, 0.15% up to RM15m, negotiable above.',
     },
     {
       label: 'Government Tax (SST)',

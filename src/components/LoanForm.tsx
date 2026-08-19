@@ -40,6 +40,11 @@ export const LoanForm: React.FC<Props> = (props) => {
       ? { name: 'downPaymentFixed' as const, suffix: undefined }
       : { name: 'downPaymentPercentage' as const, suffix: '%' }
 
+  const mortgageInsurance =
+    values.mortgageInsuranceType === DownPaymentType.FIXED
+      ? { name: 'mortgageInsuranceFixed' as const, suffix: undefined }
+      : { name: 'mortgageInsuranceRate' as const, suffix: '%' }
+
   return (
     <form
       autoComplete="off"
@@ -119,12 +124,46 @@ export const LoanForm: React.FC<Props> = (props) => {
       />
 
       {props.showMortgageInsurance ? (
-        <FormNumberField
-          control={form.control}
-          name="mortgageInsuranceRate"
-          label="Mortgage Insurance Rate (%)"
-          suffix="%"
-        />
+        <>
+          <Field>
+            <FieldLabel>Mortgage Insurance (Type)</FieldLabel>
+            <Controller
+              control={form.control}
+              name="mortgageInsuranceType"
+              render={({ field }) => (
+                <RadioGroup
+                  value={field.value ?? DownPaymentType.PERCENTAGE}
+                  onValueChange={field.onChange}
+                  className="gap-2"
+                >
+                  <div className="flex items-center gap-2">
+                    <RadioGroupItem
+                      value={DownPaymentType.PERCENTAGE}
+                      id="mortgageInsuranceType-percentage"
+                    />
+                    <Label htmlFor="mortgageInsuranceType-percentage">
+                      Percentage
+                    </Label>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <RadioGroupItem
+                      value={DownPaymentType.FIXED}
+                      id="mortgageInsuranceType-fixed"
+                    />
+                    <Label htmlFor="mortgageInsuranceType-fixed">Fixed</Label>
+                  </div>
+                </RadioGroup>
+              )}
+            />
+          </Field>
+
+          <FormNumberField
+            control={form.control}
+            name={mortgageInsurance.name}
+            label="Mortgage Insurance"
+            suffix={mortgageInsurance.suffix}
+          />
+        </>
       ) : null}
 
       <dl className="grid grid-cols-[10rem_1fr] gap-y-1 text-sm">

@@ -15,8 +15,10 @@ type Form = {
 export type LoanFormDTO = Form & {
   price: number
   sqft?: number
-  // mortgage insurance (MRTA) premium rate, % of the loan amount
+  // mortgage insurance (MRTA) premium: a % of the loan amount, or a fixed sum
+  mortgageInsuranceType?: DownPaymentType
   mortgageInsuranceRate?: number
+  mortgageInsuranceFixed?: number
 }
 
 export type BudgetFormDTO = Form & {

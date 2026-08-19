@@ -31,6 +31,10 @@ describe('calculateMalaysiaFees', () => {
   test('valuation fees are tiered on the property price', () => {
     // 0.25%*100k + 0.2%*900k = 250 + 1800
     closeTo(fees.valuationFees, 2_050)
+    // RM8m spans four BOVAEA bands
+    const big = calculateMalaysiaFees(8_000_000, 7_000_000, 1_000_000)
+    // 0.25%*100k + 0.2%*1.9m + 0.167%*5m + 0.15%*1m
+    closeTo(big.valuationFees, 250 + 3_800 + 8_350 + 1_500)
   })
 
   test('government tax is 6% of total lawyer fees', () => {
@@ -86,6 +90,21 @@ describe('calculateMalaysiaHomeLoan', () => {
     // (1,000,000 - 100,000) + 3% of 900,000 = 900,000 + 27,000
     closeTo(details.mortgageInsurance!, 27_000)
     closeTo(details.loanSize, 927_000)
+  })
+
+  test('a fixed mortgage insurance premium is used as-is', () => {
+    const fixed = calculateMalaysiaHomeLoan({
+      price: 1_000_000,
+      downPaymentType: DownPaymentType.PERCENTAGE,
+      downPaymentPercentage: 10,
+      downPaymentFixed: 0,
+      loanPeriodYears: 35,
+      interestRate: 3.8,
+      mortgageInsuranceType: DownPaymentType.FIXED,
+      mortgageInsuranceFixed: 20_000,
+    })
+    closeTo(fixed.mortgageInsurance!, 20_000)
+    closeTo(fixed.loanSize, 920_000)
   })
 
   test('the monthly payment amortizes the financed principal', () => {
