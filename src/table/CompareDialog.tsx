@@ -18,12 +18,7 @@ import {
 import { CopyButton } from '@/components/CopyButton'
 import { fmtMoney } from '@/components/loanForms'
 import { Details } from '@/components/types'
-import {
-  COLUMNS,
-  columnValue,
-  renderCell,
-  type LoanTableColumnKey,
-} from './columns'
+import { COLUMNS, renderCell, type LoanTableColumnKey } from './columns'
 
 interface Props {
   // in selection order; the first record is the baseline
@@ -33,8 +28,8 @@ interface Props {
 }
 
 const delta = (key: LoanTableColumnKey, base: Details, record: Details) => {
-  const from = columnValue(key, base)
-  const to = columnValue(key, record)
+  const from = Number(base[key])
+  const to = Number(record[key])
   if (!Number.isFinite(from) || !Number.isFinite(to)) {
     return null
   }

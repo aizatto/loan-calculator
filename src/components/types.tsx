@@ -36,8 +36,6 @@ export type Details = BudgetFormDTO &
     lifetimeCost: number
     monthlyInterest: number
     pricePerSqft?: number
-    // derived column (monthly × tenure); computed at render, never stored
-    totalPayment?: number
   } & Partial<MalaysiaFeeFields>
 
 // Malaysian home-buying costs; only populated by the Malaysia calculator

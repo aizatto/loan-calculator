@@ -12,12 +12,7 @@ import {
 } from '@/components/ui/table'
 import { Details } from '@/components/types'
 import { CompareDialog } from './CompareDialog'
-import {
-  columnValue,
-  COLUMNS,
-  renderCell,
-  type LoanTableColumnKey,
-} from './columns'
+import { COLUMNS, renderCell, type LoanTableColumnKey } from './columns'
 
 export type { LoanTableColumnKey }
 
@@ -25,7 +20,7 @@ const compare = (key: LoanTableColumnKey, a: Details, b: Details): number => {
   if (key === 'name') {
     return a.name?.localeCompare(b.name ?? '') ?? 0
   }
-  return columnValue(key, a) - columnValue(key, b)
+  return Number(a[key]) - Number(b[key])
 }
 
 type SortDirection = 'asc' | 'desc'

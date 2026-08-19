@@ -24,7 +24,7 @@ const columns: LoanTableColumnKey[] = [
   'mortgageInsurance',
   'initialCosts',
   'loanSize',
-  'totalPayment',
+  'totalLoanCost',
   'totalCostOfOwnership',
 ]
 
@@ -40,7 +40,7 @@ const compareColumns: LoanTableColumnKey[] = [
   'mortgageInsurance',
   'loanSize',
   'totalInterest',
-  'totalPayment',
+  'totalLoanCost',
   'stampDutyMOT',
   'legalFeesMOT',
   'stampDutyLoan',
