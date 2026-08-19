@@ -35,6 +35,7 @@ export const loanFormSchema = z.object({
   mortgageInsuranceType: z.enum(DownPaymentType).optional(),
   mortgageInsuranceRate: optionalNumber(),
   mortgageInsuranceFixed: optionalNumber(),
+  additionalInitialCosts: optionalNumber(),
 })
 
 export const budgetFormSchema = z.object({
@@ -59,6 +60,7 @@ export const toLoanDTO = (values: LoanFormDTO): LoanFormDTO => ({
   mortgageInsuranceType: values.mortgageInsuranceType,
   mortgageInsuranceRate: optionalToNumber(values.mortgageInsuranceRate),
   mortgageInsuranceFixed: optionalToNumber(values.mortgageInsuranceFixed),
+  additionalInitialCosts: optionalToNumber(values.additionalInitialCosts),
   downPaymentType: values.downPaymentType,
   downPaymentFixed: Number(values.downPaymentFixed),
   downPaymentPercentage: Number(values.downPaymentPercentage),
@@ -120,7 +122,11 @@ export const formToClipboardText = (
     `Loan Size: ${fmtMoney(preview.loanSize)}`,
     '---',
     `Total Interest: ${fmtMoney(preview.totalInterest)}`,
-    `Lifetime Cost: ${fmtMoney(preview.lifetimeCost)}`,
+    // Lifetime Cost is superseded by Total Cost of Ownership on the Malaysia
+    // calculator
+    ...(preview.totalCostOfOwnership === undefined
+      ? [`Lifetime Cost: ${fmtMoney(preview.lifetimeCost)}`]
+      : []),
     ...(preview.initialCosts !== undefined
       ? ['---', ...malaysiaCopyLines(preview)]
       : []),

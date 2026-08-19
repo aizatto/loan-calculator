@@ -19,6 +19,8 @@ export type LoanFormDTO = Form & {
   mortgageInsuranceType?: DownPaymentType
   mortgageInsuranceRate?: number
   mortgageInsuranceFixed?: number
+  // extra user-entered fees, added to the estimated upfront costs
+  additionalInitialCosts?: number
 }
 
 export type BudgetFormDTO = Form & {
@@ -48,6 +50,7 @@ export type MalaysiaFeeFields = {
   valuationFees: number
   govTax: number
   bankProcessingFee: number
+  additionalInitialCosts: number
   mortgageInsurance: number
   totalFees: number
   initialCosts: number

@@ -41,7 +41,14 @@ export const detailSections = (record: Details): [string, string][][] => {
     [
       ['Total Interest', money(record.totalInterest)],
       ['Total Loan Cost', money(record.totalLoanCost)],
-      ['Lifetime Cost', money(record.lifetimeCost)],
+      // Lifetime Cost is superseded by Total Cost of Ownership on the
+      // Malaysia calculator
+      ...(record.totalCostOfOwnership === undefined
+        ? ([['Lifetime Cost', money(record.lifetimeCost)]] as [
+            string,
+            string,
+          ][])
+        : []),
     ],
     ...(malaysiaSection.length > 0 ? [malaysiaSection] : []),
     ...(record.totalCostOfOwnership !== undefined

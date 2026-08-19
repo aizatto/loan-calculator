@@ -70,6 +70,8 @@ export interface MalaysiaFees {
   valuationFees: number
   govTax: number
   bankProcessingFee: number
+  // extra costs the user enters manually
+  additionalInitialCosts: number
   // sum of every fee above (excludes the down payment)
   totalFees: number
   // totalFees + down payment
@@ -84,7 +86,8 @@ export const DEFAULT_MORTGAGE_INSURANCE_RATE = 3
 export const calculateMalaysiaFees = (
   price: number,
   loanAmount: number,
-  downPayment: number
+  downPayment: number,
+  additionalInitialCosts: number = 0
 ): MalaysiaFees => {
   const stampDutyMOT = tiered(price, STAMP_DUTY_MOT_BANDS)
   const legalFeesMOT = Math.max(tiered(price, LEGAL_FEE_BANDS), LEGAL_FEE_MIN)
@@ -111,6 +114,7 @@ export const calculateMalaysiaFees = (
     valuationFees,
     govTax,
     bankProcessingFee: BANK_PROCESSING,
+    additionalInitialCosts,
   }
 
   const totalFees = Object.values(fees).reduce((sum, fee) => sum + fee, 0)
@@ -192,6 +196,11 @@ export const malaysiaFeeItems = (record: Details): MalaysiaFeeItem[] => {
       label: 'Bank Processing Fee',
       value: record.bankProcessingFee ?? 0,
       tooltip: 'Bank loan processing fee — estimated (RM50–RM300).',
+    },
+    {
+      label: 'Additional Initial Costs',
+      value: record.additionalInitialCosts ?? 0,
+      tooltip: 'Any extra upfront costs you enter — added to the total.',
     },
     {
       label: 'Total Fees',

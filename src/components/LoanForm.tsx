@@ -24,6 +24,7 @@ interface Props {
   showCopy?: boolean
   showSqft?: boolean
   showMortgageInsurance?: boolean
+  showAdditionalFees?: boolean
 }
 
 export const LoanForm: React.FC<Props> = (props) => {
@@ -166,6 +167,14 @@ export const LoanForm: React.FC<Props> = (props) => {
         </>
       ) : null}
 
+      {props.showAdditionalFees ? (
+        <FormNumberField
+          control={form.control}
+          name="additionalInitialCosts"
+          label="Additional Initial Costs (optional)"
+        />
+      ) : null}
+
       <dl className="grid grid-cols-[10rem_1fr] gap-y-1 text-sm">
         <dt className="text-muted-foreground">Monthly</dt>
         <dd>{fmtMoney(preview.monthly)}</dd>
@@ -181,8 +190,14 @@ export const LoanForm: React.FC<Props> = (props) => {
         <dd>{fmtMoney(preview.loanSize)}</dd>
         <dt className="text-muted-foreground">Total Interest</dt>
         <dd>{fmtMoney(preview.totalInterest)}</dd>
-        <dt className="text-muted-foreground">Lifetime Cost</dt>
-        <dd>{fmtMoney(preview.lifetimeCost)}</dd>
+        {/* Lifetime Cost is superseded by Total Cost of Ownership when the
+            Malaysian upfront costs are included */}
+        {preview.totalCostOfOwnership === undefined ? (
+          <>
+            <dt className="text-muted-foreground">Lifetime Cost</dt>
+            <dd>{fmtMoney(preview.lifetimeCost)}</dd>
+          </>
+        ) : null}
         {preview.pricePerSqft !== undefined ? (
           <>
             <dt className="text-muted-foreground">Price / Sqft</dt>

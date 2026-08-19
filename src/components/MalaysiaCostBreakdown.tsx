@@ -78,8 +78,8 @@ export const MalaysiaCostBreakdown: React.FC<{ record: Details }> = ({
                 </button>
               </TooltipTrigger>
               <TooltipContent className="max-w-xs">
-                Lifetime Cost plus Total Fees — the loan repayments and down
-                payment over the full term plus the upfront fees.
+                The loan repayments and down payment over the full term, plus
+                the total upfront fees.
               </TooltipContent>
             </Tooltip>
           </span>

@@ -20,6 +20,7 @@ interface Props {
   onDuplicate: (values: LoanFormDTO) => void
   showSqft?: boolean
   showMortgageInsurance?: boolean
+  showAdditionalFees?: boolean
 }
 
 export const EditButton: React.FC<Props> = (props) => {
@@ -54,6 +55,7 @@ export const EditButton: React.FC<Props> = (props) => {
           disableSubmit
           showSqft={props.showSqft}
           showMortgageInsurance={props.showMortgageInsurance}
+          showAdditionalFees={props.showAdditionalFees}
         />
         <DialogFooter>
           <Button variant="outline" onClick={() => setOpen(false)}>

@@ -202,7 +202,8 @@ export const calculateMalaysiaHomeLoan = (dto: LoanFormDTO): Details => {
   const fees = calculateMalaysiaFees(
     base.price,
     loanSize,
-    base.downPaymentFixed
+    base.downPaymentFixed,
+    dto.additionalInitialCosts ?? 0
   )
 
   // the fully-loaded cost: loan repayments and down payment (lifetimeCost)

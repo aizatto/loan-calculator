@@ -131,4 +131,24 @@ describe('calculateMalaysiaHomeLoan', () => {
       details.lifetimeCost + details.totalFees!
     )
   })
+
+  test('additional initial costs add to the fees and totals', () => {
+    const withExtra = calculateMalaysiaHomeLoan({
+      price: 1_000_000,
+      downPaymentType: DownPaymentType.PERCENTAGE,
+      downPaymentPercentage: 10,
+      downPaymentFixed: 0,
+      loanPeriodYears: 35,
+      interestRate: 3.8,
+      additionalInitialCosts: 5_000,
+    })
+    closeTo(withExtra.additionalInitialCosts!, 5_000)
+    // total fees, initial costs and TCO all rise by exactly the extra amount
+    closeTo(withExtra.totalFees!, details.totalFees! + 5_000)
+    closeTo(withExtra.initialCosts!, details.initialCosts! + 5_000)
+    closeTo(
+      withExtra.totalCostOfOwnership!,
+      details.totalCostOfOwnership! + 5_000
+    )
+  })
 })

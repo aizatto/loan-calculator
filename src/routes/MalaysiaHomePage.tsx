@@ -23,7 +23,6 @@ const columns: LoanTableColumnKey[] = [
   'interestRate',
   'mortgageInsurance',
   'loanSize',
-  'lifetimeCost',
   'initialCosts',
   'totalCostOfOwnership',
 ]
@@ -42,8 +41,8 @@ const compareColumns: LoanTableColumnKey[] = [
   'valuationFees',
   'govTax',
   'bankProcessingFee',
+  'additionalInitialCosts',
   'totalFees',
-  'downPaymentFixed',
   'initialCosts',
   'totalCostOfOwnership',
 ]
@@ -60,6 +59,7 @@ export const MalaysiaHomePage: React.FC = () => {
       mortgageInsuranceType: DownPaymentType.PERCENTAGE,
       mortgageInsuranceRate: 3,
       mortgageInsuranceFixed: 20000,
+      additionalInitialCosts: 0,
     }),
   ])
 
@@ -116,6 +116,7 @@ export const MalaysiaHomePage: React.FC = () => {
         showCopy
         showSqft
         showMortgageInsurance
+        showAdditionalFees
       />
       <LoanTable
         columns={columns}
@@ -131,6 +132,7 @@ export const MalaysiaHomePage: React.FC = () => {
               record={record}
               showSqft
               showMortgageInsurance
+              showAdditionalFees
               onChange={(values) => {
                 return calculateLoan(values)
               }}
