@@ -102,8 +102,31 @@ export const MalaysiaCostBreakdown: React.FC<{ record: Details }> = ({
             className="mt-2"
             label="Total Loan Cost"
             value={record.totalLoanCost}
-            tooltip="Loan size plus interest — the total repaid to the bank over the full tenure."
+            tooltip="Loan principal, financed mortgage insurance and interest — the total repaid to the bank over the full tenure."
           />
+          {/* how the Total Loan Cost is made up */}
+          <dl className="grid grid-cols-[minmax(10rem,1fr)_auto] gap-y-1 pt-1 pl-4 text-xs text-muted-foreground">
+            {(
+              [
+                ['Monthly Instalment', fmtMoney(record.monthly)],
+                [
+                  'Total number of months',
+                  fmtMoney(record.loanPeriodYears * 12),
+                ],
+                ['Mortgage Insurance', fmtMoney(record.mortgageInsurance ?? 0)],
+                [
+                  'Loan Principal',
+                  fmtMoney(record.loanSize - (record.mortgageInsurance ?? 0)),
+                ],
+                ['Loan Interest', fmtMoney(record.totalInterest)],
+              ] as [string, string][]
+            ).map(([label, value]) => (
+              <div key={label} className="col-span-2 grid grid-cols-subgrid">
+                <dt>{label}</dt>
+                <dd className="text-right tabular-nums">{value}</dd>
+              </div>
+            ))}
+          </dl>
           <SummaryRow
             className="mt-1"
             label="Total Cost of Ownership"
