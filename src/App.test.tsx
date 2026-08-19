@@ -7,17 +7,18 @@ beforeEach(() => {
   window.location.hash = '#/'
 })
 
-test('lands on the car loan calculator by default', () => {
+// routes are lazy-loaded, so wait for the page chunk to resolve
+test('lands on the car loan calculator by default', async () => {
   render(<App />)
   expect(
-    screen.getByRole('heading', { name: /car loan calculator/i })
+    await screen.findByRole('heading', { name: /car loan calculator/i })
   ).toBeInTheDocument()
 })
 
-test('lands on the last used calculator', () => {
+test('lands on the last used calculator', async () => {
   window.localStorage.setItem('last-calculator', '/home')
   render(<App />)
   expect(
-    screen.getByRole('heading', { name: /home loan calculator/i })
+    await screen.findByRole('heading', { name: /home loan calculator/i })
   ).toBeInTheDocument()
 })

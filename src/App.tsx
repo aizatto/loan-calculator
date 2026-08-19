@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react'
 import { HashRouter, Navigate, Route, Routes } from 'react-router'
 import { TooltipProvider } from './components/ui/tooltip'
 import { Menu } from './components/menu'
@@ -5,11 +6,26 @@ import {
   lastCalculatorPath,
   useRememberCalculator,
 } from './hooks/lastCalculator'
-import { CarPage } from './routes/CarPage'
-import { CarBudgetPage } from './routes/CarBudgetPage'
-import { HomePage } from './routes/HomePage'
-import { HomeBudgetPage } from './routes/HomeBudgetPage'
-import { MalaysiaHomePage } from './routes/MalaysiaHomePage'
+
+// each calculator is a lazily-loaded chunk so the initial bundle only carries
+// the shell and whichever calculator the landing route resolves to
+const CarPage = lazy(() =>
+  import('./routes/CarPage').then((m) => ({ default: m.CarPage }))
+)
+const CarBudgetPage = lazy(() =>
+  import('./routes/CarBudgetPage').then((m) => ({ default: m.CarBudgetPage }))
+)
+const HomePage = lazy(() =>
+  import('./routes/HomePage').then((m) => ({ default: m.HomePage }))
+)
+const HomeBudgetPage = lazy(() =>
+  import('./routes/HomeBudgetPage').then((m) => ({ default: m.HomeBudgetPage }))
+)
+const MalaysiaHomePage = lazy(() =>
+  import('./routes/MalaysiaHomePage').then((m) => ({
+    default: m.MalaysiaHomePage,
+  }))
+)
 
 function AppRoutes() {
   useRememberCalculator()
@@ -17,17 +33,19 @@ function AppRoutes() {
     <>
       <Menu />
       <main className="flex flex-col gap-4 p-4">
-        <Routes>
-          <Route
-            path="/"
-            element={<Navigate to={lastCalculatorPath()} replace />}
-          />
-          <Route path="/car" element={<CarPage />} />
-          <Route path="/car-budget" element={<CarBudgetPage />} />
-          <Route path="/home" element={<HomePage />} />
-          <Route path="/home-budget" element={<HomeBudgetPage />} />
-          <Route path="/malaysia-home" element={<MalaysiaHomePage />} />
-        </Routes>
+        <Suspense fallback={null}>
+          <Routes>
+            <Route
+              path="/"
+              element={<Navigate to={lastCalculatorPath()} replace />}
+            />
+            <Route path="/car" element={<CarPage />} />
+            <Route path="/car-budget" element={<CarBudgetPage />} />
+            <Route path="/home" element={<HomePage />} />
+            <Route path="/home-budget" element={<HomeBudgetPage />} />
+            <Route path="/malaysia-home" element={<MalaysiaHomePage />} />
+          </Routes>
+        </Suspense>
       </main>
     </>
   )

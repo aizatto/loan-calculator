@@ -33,3 +33,16 @@ git config core.hooksPath .githooks
 ```sh
 ./scripts/prettier.sh all
 ```
+
+## Deployment
+
+The app is deployed to GitHub Pages (the `gh-pages` branch) from the built
+`dist/` output:
+
+```sh
+pnpm run deploy
+```
+
+This runs the production build and publishes it with `gh-pages`. Use
+`pnpm run deploy`, not `pnpm deploy` — the latter is a built-in pnpm command
+that ignores the script.
