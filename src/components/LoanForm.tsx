@@ -190,6 +190,14 @@ export const LoanForm: React.FC<Props> = (props) => {
         <dd>{fmtMoney(preview.loanSize)}</dd>
         <dt className="text-muted-foreground">Total Interest</dt>
         <dd>{fmtMoney(preview.totalInterest)}</dd>
+        {/* Total Loan Cost (loan size + interest) shown alongside the Malaysian
+            costs; it equals the total payment over the tenure */}
+        {preview.totalCostOfOwnership !== undefined ? (
+          <>
+            <dt className="text-muted-foreground">Total Loan Cost</dt>
+            <dd>{fmtMoney(preview.totalLoanCost)}</dd>
+          </>
+        ) : null}
         {/* Lifetime Cost is superseded by Total Cost of Ownership when the
             Malaysian upfront costs are included */}
         {preview.totalCostOfOwnership === undefined ? (

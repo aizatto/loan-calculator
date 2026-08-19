@@ -22,16 +22,25 @@ const columns: LoanTableColumnKey[] = [
   'loanPeriodYears',
   'interestRate',
   'mortgageInsurance',
+  'initialCosts',
   'loanSize',
   'totalPayment',
-  'initialCosts',
   'totalCostOfOwnership',
 ]
 
 // compare shows the full Malaysian fee breakdown
 const compareColumns: LoanTableColumnKey[] = [
-  ...columns.slice(0, -2),
+  'name',
+  'price',
+  'pricePerSqft',
+  'monthly',
+  'downPaymentFixed',
+  'loanPeriodYears',
+  'interestRate',
+  'mortgageInsurance',
+  'loanSize',
   'totalInterest',
+  'totalPayment',
   'stampDutyMOT',
   'legalFeesMOT',
   'stampDutyLoan',
