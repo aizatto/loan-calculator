@@ -8,6 +8,39 @@ import { fmtMoney } from '@/components/loanForms'
 import { Details } from '@/components/types'
 import { malaysiaFeeItems } from '@/lib/malaysia'
 
+// a bordered summary line with a tooltip, used for the totals below the
+// itemised breakdown
+const SummaryRow: React.FC<{
+  label: string
+  value: number
+  tooltip: string
+  bold?: boolean
+  className?: string
+}> = ({ label, value, tooltip, bold, className }) => (
+  <div
+    className={`flex items-center justify-between border-t pt-2 ${
+      bold ? 'text-base font-semibold' : 'text-sm font-medium'
+    } ${className ?? ''}`}
+  >
+    <span className="flex items-center gap-1">
+      {label}
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <button
+            type="button"
+            aria-label={`How ${label} is calculated`}
+            className="text-muted-foreground"
+          >
+            <Info className="size-3.5" />
+          </button>
+        </TooltipTrigger>
+        <TooltipContent className="max-w-xs">{tooltip}</TooltipContent>
+      </Tooltip>
+    </span>
+    <span className="tabular-nums">{fmtMoney(value)}</span>
+  </div>
+)
+
 // the estimated Malaysian upfront costs, each with a tooltip explaining how it
 // was derived; the final "Estimated Initial Costs" row is emphasised
 export const MalaysiaCostBreakdown: React.FC<{ record: Details }> = ({
@@ -64,29 +97,21 @@ export const MalaysiaCostBreakdown: React.FC<{ record: Details }> = ({
       </dl>
 
       {record.totalCostOfOwnership !== undefined ? (
-        <div className="mt-2 flex items-center justify-between border-t pt-2 text-base font-semibold">
-          <span className="flex items-center gap-1">
-            Total Cost of Ownership
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  type="button"
-                  aria-label="How Total Cost of Ownership is calculated"
-                  className="text-muted-foreground"
-                >
-                  <Info className="size-3.5" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent className="max-w-xs">
-                The loan repayments and down payment over the full term, plus
-                the total upfront fees.
-              </TooltipContent>
-            </Tooltip>
-          </span>
-          <span className="tabular-nums">
-            {fmtMoney(record.totalCostOfOwnership)}
-          </span>
-        </div>
+        <>
+          <SummaryRow
+            className="mt-2"
+            label="Total Loan Cost"
+            value={record.totalLoanCost}
+            tooltip="Loan size plus interest — the total repaid to the bank over the full tenure."
+          />
+          <SummaryRow
+            className="mt-1"
+            label="Total Cost of Ownership"
+            value={record.totalCostOfOwnership}
+            tooltip="Estimated Total Initial Costs plus Total Loan Cost — the fully-loaded cost."
+            bold
+          />
+        </>
       ) : null}
     </div>
   )
