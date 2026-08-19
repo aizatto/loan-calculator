@@ -124,4 +124,11 @@ describe('calculateMalaysiaHomeLoan', () => {
   test('fees still track the property price', () => {
     closeTo(details.stampDutyMOT!, 24_000)
   })
+
+  test('total cost of ownership is lifetime cost plus total fees', () => {
+    closeTo(
+      details.totalCostOfOwnership!,
+      details.lifetimeCost + details.totalFees!
+    )
+  })
 })

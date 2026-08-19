@@ -44,6 +44,14 @@ export const detailSections = (record: Details): [string, string][][] => {
       ['Lifetime Cost', money(record.lifetimeCost)],
     ],
     ...(malaysiaSection.length > 0 ? [malaysiaSection] : []),
+    ...(record.totalCostOfOwnership !== undefined
+      ? [
+          [['Total Cost of Ownership', money(record.totalCostOfOwnership)]] as [
+            string,
+            string,
+          ][],
+        ]
+      : []),
   ]
 }
 

@@ -28,6 +28,7 @@ export type LoanTableColumnKey =
   | 'mortgageInsurance'
   | 'totalFees'
   | 'initialCosts'
+  | 'totalCostOfOwnership'
 
 export interface ColumnDef {
   title: string
@@ -66,6 +67,7 @@ export const COLUMNS: Record<LoanTableColumnKey, ColumnDef> = {
   mortgageInsurance: { title: 'Mortgage Insurance', numeric: true },
   totalFees: { title: 'Total Fees', numeric: true },
   initialCosts: { title: 'Initial Costs', numeric: true },
+  totalCostOfOwnership: { title: 'Total Cost of Ownership', numeric: true },
 }
 
 export const renderCell = (key: LoanTableColumnKey, record: Details) => {

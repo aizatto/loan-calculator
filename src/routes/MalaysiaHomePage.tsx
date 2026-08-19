@@ -25,11 +25,12 @@ const columns: LoanTableColumnKey[] = [
   'loanSize',
   'lifetimeCost',
   'initialCosts',
+  'totalCostOfOwnership',
 ]
 
 // compare shows the full Malaysian fee breakdown
 const compareColumns: LoanTableColumnKey[] = [
-  ...columns.slice(0, -1),
+  ...columns.slice(0, -2),
   'totalInterest',
   'stampDutyMOT',
   'legalFeesMOT',
@@ -44,6 +45,7 @@ const compareColumns: LoanTableColumnKey[] = [
   'totalFees',
   'downPaymentFixed',
   'initialCosts',
+  'totalCostOfOwnership',
 ]
 
 export const MalaysiaHomePage: React.FC = () => {

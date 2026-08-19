@@ -205,6 +205,11 @@ export const calculateMalaysiaHomeLoan = (dto: LoanFormDTO): Details => {
     base.downPaymentFixed
   )
 
+  // the fully-loaded cost: loan repayments and down payment (lifetimeCost)
+  // plus the upfront fees. totalFees, not initialCosts, avoids double-
+  // counting the down payment already in lifetimeCost.
+  const totalCostOfOwnership = lifetimeCost + fees.totalFees
+
   return {
     ...base,
     ...fees,
@@ -217,6 +222,7 @@ export const calculateMalaysiaHomeLoan = (dto: LoanFormDTO): Details => {
     mortgageInsurance,
     mortgageInsuranceType,
     mortgageInsuranceRate,
+    totalCostOfOwnership,
   }
 }
 

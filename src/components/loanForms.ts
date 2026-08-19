@@ -124,6 +124,12 @@ export const formToClipboardText = (
     ...(preview.initialCosts !== undefined
       ? ['---', ...malaysiaCopyLines(preview)]
       : []),
+    ...(preview.totalCostOfOwnership !== undefined
+      ? [
+          '---',
+          `Total Cost of Ownership: ${fmtMoney(preview.totalCostOfOwnership)}`,
+        ]
+      : []),
   ]
   return lines.join('\n')
 }

@@ -51,6 +51,7 @@ export type MalaysiaFeeFields = {
   mortgageInsurance: number
   totalFees: number
   initialCosts: number
+  totalCostOfOwnership: number
 }
 
 // export type LoanDetails = LoanForm & {

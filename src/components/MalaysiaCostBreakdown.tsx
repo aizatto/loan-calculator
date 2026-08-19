@@ -62,6 +62,32 @@ export const MalaysiaCostBreakdown: React.FC<{ record: Details }> = ({
           )
         })}
       </dl>
+
+      {record.totalCostOfOwnership !== undefined ? (
+        <div className="mt-2 flex items-center justify-between border-t pt-2 text-base font-semibold">
+          <span className="flex items-center gap-1">
+            Total Cost of Ownership
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  aria-label="How Total Cost of Ownership is calculated"
+                  className="text-muted-foreground"
+                >
+                  <Info className="size-3.5" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent className="max-w-xs">
+                Lifetime Cost plus Total Fees — the loan repayments and down
+                payment over the full term plus the upfront fees.
+              </TooltipContent>
+            </Tooltip>
+          </span>
+          <span className="tabular-nums">
+            {fmtMoney(record.totalCostOfOwnership)}
+          </span>
+        </div>
+      ) : null}
     </div>
   )
 }
