@@ -13,6 +13,7 @@ export type LoanTableColumnKey =
   | 'loanSize'
   | 'totalInterest'
   | 'totalLoanCost'
+  | 'totalPayment'
   | 'lifetimeCost'
   | 'monthlyInterest'
   | 'stampDutyMOT'
@@ -35,6 +36,17 @@ export interface ColumnDef {
   title: string
   numeric?: boolean
   format?: (record: Details) => string
+  // numeric value for compare deltas when the column has no direct field
+  value?: (record: Details) => number
+}
+
+// numeric value of a column for a record, used by compare deltas
+export const columnValue = (
+  key: LoanTableColumnKey,
+  record: Details
+): number => {
+  const column = COLUMNS[key]
+  return column.value ? column.value(record) : Number(record[key])
 }
 
 export const COLUMNS: Record<LoanTableColumnKey, ColumnDef> = {
@@ -53,6 +65,13 @@ export const COLUMNS: Record<LoanTableColumnKey, ColumnDef> = {
   loanSize: { title: 'Loan Size', numeric: true },
   totalInterest: { title: 'Total Interest', numeric: true },
   totalLoanCost: { title: 'Total Loan Cost', numeric: true },
+  // sum of all monthly installments paid to the bank over the full tenure
+  totalPayment: {
+    title: 'Total Payment (End of Tenure)',
+    numeric: true,
+    value: (record) => record.monthly * record.loanPeriodYears * 12,
+    format: (record) => fmtMoney(record.monthly * record.loanPeriodYears * 12),
+  },
   lifetimeCost: { title: 'Lifetime Cost', numeric: true },
   monthlyInterest: { title: 'Monthly Interest', numeric: true },
   stampDutyMOT: { title: 'Stamp Duty (MOT)', numeric: true },

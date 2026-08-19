@@ -23,6 +23,7 @@ const columns: LoanTableColumnKey[] = [
   'interestRate',
   'mortgageInsurance',
   'loanSize',
+  'totalPayment',
   'initialCosts',
   'totalCostOfOwnership',
 ]
